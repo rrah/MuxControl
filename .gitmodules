@@ -1,0 +1,3 @@
+[submodule "Devices"]
+	path = Devices
+	url = https://github.com/rrah/Devices
