@@ -1,3 +1,4 @@
 /settings.xml
-
+/*.log
 /*.pyc
+/Devices/*.pyc
