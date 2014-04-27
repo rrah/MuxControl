@@ -13,6 +13,8 @@ import sys
 
 sys.path.append('Devices/')
 
+import logging
+
 import wx
 import wx.aui
 import wx.lib.newevent
@@ -52,6 +54,9 @@ app = wx.App(False)
 panelList = []
 
 settings = et.parse('settings.xml')
+
+logging.basicConfig(filename = 'MuxControl.log', level = logging.DEBUG)
+logging.info('Starting up')
 
 
 # IDs
@@ -1271,6 +1276,7 @@ class UpdateThread(Thread):
                         except (socket.timeout):
                             lostDev(dev.getName())
             except (wx.PyDeadObjectError, NameError):
+                print 'Not good...'
                 break
             sleep(15)
 
@@ -1328,6 +1334,7 @@ for dev in settings.find('devices').findall('*'):
                 lostDev(dev.getName())
         except socket.error:
             lostDev(dev.getName())
+        logging.info('{} connected'.format(dev.getName()))
     else:
         dev.setEnabled(False)
 
@@ -1347,4 +1354,5 @@ for dev in devList:
 
 del devList
 
+logging.info('Exiting')
 exit()
