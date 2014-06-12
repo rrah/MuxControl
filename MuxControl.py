@@ -39,6 +39,8 @@ import telnet as tel
 
 import transLight as trl
 
+import casparcg as ccg
+
 ##import hedco
 
 from threading import *
@@ -101,6 +103,29 @@ class DevPanel(scroll.ScrolledPanel):
         elif dev.getName() == 'hub':
             self.menuOptions = ['Inputs', 'Outputs', 'Details', 'Tally']
 
+
+class GfxPanel(DevPanel):
+    
+    def play(self, e):
+        
+        text = self.text.GetValue()
+        self.dev.runTemplate("WOODSTOCK2014THIRDS", f0 = text)
+    
+    def stop(self, e):
+        
+        self.dev.stop(1, 20, 1)
+    
+    def __init__(self, parent, dev, *args, **kwargs):
+        DevPanel.__init__(self, parent, dev, *args, **kwargs)
+        self.sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.text = wx.TextCtrl(self)
+        play = wx.Button(self, label = 'Play')
+        stop = wx.Button(self, label = 'Stop')
+        self.sizer.AddMany([(self.text), (play), (stop)])
+        self.SetSizer(self.sizer)
+        self.sizer.Fit(self)
+        self.Bind(wx.EVT_BUTTON, self.play, play)
+        self.Bind(wx.EVT_BUTTON, self.stop, stop)
 
 class HedcoPanel(DevPanel):
 
@@ -659,7 +684,6 @@ class SourceSelectionCurrent(wx.StaticBox):
         wx.StaticBox.__init__(self, label = label, *args, **kwargs)
 
 
-
 class SourceSelection(wxx.WizardPage):
 
     def __init__(self, *args, **kwargs):
@@ -770,6 +794,9 @@ class MainBook(wx.aui.AuiNotebook):
                             'Transmission Light'),
                         (TarantulaPanel(parent = self, name = 'TarantulaPanel'),
                             'Tarantula Control'),
+                        (GfxPanel(parent = self, name = 'GfxPanel', 
+                                            dev = devList.findDev('CasparCG')), 
+                            'Graphics'),
 ##                        (HedcoPanel(self, name = 'HedcoPanel'), 'Hedco Control')
                         ]
         self.AddPage(wx.Panel(self), '')
@@ -1310,7 +1337,7 @@ def EVT_LINK(win, EVT_ID, func):
 devTypeDict = {'Transmission Light': trl.TransmissionLight,
                 'Mux': yvp.Mux, 'Videohub': vh.Videohub,
                 'Hedco': None, 'Tarantula': tara.Tarantula,
-                'Tally': yvp.Tally}
+                'Tally': yvp.Tally, 'CasparCG': ccg.Casparcg}
 
 devList = DevList()
 
