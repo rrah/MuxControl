@@ -41,6 +41,8 @@ import transLight as trl
 
 import casparcg as ccg
 
+import vikinx as vik
+
 ##import hedco
 
 from threading import *
@@ -100,6 +102,8 @@ class DevPanel(scroll.ScrolledPanel):
         self.menuOptions = []
         if dev.getName() == 'mux':
             self.menuOptions = ['Inputs', 'Tally']
+        elif dev.getName() == 'vik':
+            self.menuOptions = ['Inputs', 'Outputs', 'Tally']
         elif dev.getName() == 'hub':
             self.menuOptions = ['Inputs', 'Outputs', 'Details', 'Tally']
 
@@ -167,6 +171,7 @@ class ButtonPanel(DevPanel):
         """
         Update the connections for the mux"""
 
+        self.loadLabels()
         dev = self.GetDev().getName()
         if dev == 'hub':
             self.updateLabels(self.dev.getInputLabels(), 'in')
@@ -174,10 +179,10 @@ class ButtonPanel(DevPanel):
             for connection in self.dev.getConnections():
                 self.makeLinked(connection[1], connection[0])
 
-        elif dev == 'mux':
+        elif dev == 'mux' or dev == 'vik':
             for link in self.GetDev().getMap():
                 self.makeLinked(link[0], link[1])
-
+        
     def makeLinked(self, in_, out):
 
         """
@@ -192,7 +197,7 @@ class ButtonPanel(DevPanel):
         if devName == 'mux':
             input_ = self.inputButtons[in_ - 1]
             output = self.outputButtons[out - 1]
-        elif devName == 'hub':
+        elif devName == 'hub' or devName == 'vik':
             input_ = self.inputButtons[in_]
             output = self.outputButtons[out]
         if input_.IsEnabled() and output.IsEnabled():
@@ -202,7 +207,7 @@ class ButtonPanel(DevPanel):
                     '{}\nConnected to\n{}'.format(outLabel, inLabel))
             if devName == 'mux':
                 colour = colourDict[out]
-            elif devName =='hub':
+            elif devName =='hub' or devName == 'vik':
                 colour = colourDict[out + 1]
             if output.connected is None:
                 output.connected = input_
@@ -233,9 +238,9 @@ class ButtonPanel(DevPanel):
         mux = self.dev
         hub = self.dev
         tal = devList.findDev('tally')
-        if devName == 'mux':
+        if self.dev.getName() == 'mux':
             try:
-                mux.link(in_, out)
+                self.dev.link(in_, out)
                 self.makeLinked(in_, out)
                 if in_ in tal.config:
                     talOut = tal.config.index(in_) + 1
@@ -244,10 +249,13 @@ class ButtonPanel(DevPanel):
                 tal.link(out, talOut)
             except socket.error:
                 raise socket.error
-        elif devName == 'hub':
-            hub.setConnection(in_ - 1, out - 1)
-            hub.update()
-            self.onHubUpdate(True)
+        elif devName == 'hub' or self.dev.getName() == 'vik':
+            self.dev.setConnection(in_ - 1, out - 1)
+            self.dev.update()
+            if self.dev.getName() == 'hub':
+                self.onHubUpdate(True)
+            else:
+                self.onUpdate(True)
 
     def select(self, e):
 
@@ -334,9 +342,9 @@ class ButtonPanel(DevPanel):
             if buttonLabel.tag == 'input':
                 button = self.inputButtons[int(buttonLabel.attrib['num']) - 1]
             else:
-                button =self.outputButtons[int(buttonLabel.attrib['num']) - 1]
-            name = buttonLabel.find('name').text
-            if type(name) == str and name != '' and name != 'Unused':
+                button = self.outputButtons[int(buttonLabel.attrib['num']) - 1]
+            name = str(buttonLabel.find('name').text)
+            if  name != '' and name != 'Unused':
                 button.SetLabel(name)
                 button.SetName(name)
             elif name == '' or name == 'Unused':
@@ -357,6 +365,9 @@ class ButtonPanel(DevPanel):
             inRows = 6
             outCols = 2
         elif dev.getName() == 'hub':
+            inRows = 4
+            outCols = 4
+        elif dev.getName() == 'vik':
             inRows = 4
             outCols = 4
         else:
@@ -798,6 +809,10 @@ class MainBook(wx.aui.AuiNotebook):
                                             dev = devList.findDev('CasparCG')), 
                             'Graphics'),
 ##                        (HedcoPanel(self, name = 'HedcoPanel'), 'Hedco Control')
+                        (ButtonPanel(self, name = 'VikPanel',
+                                    dev = devList.findDev('vik'),
+                                    in_ = 16, out = 16),
+                            'V1616 Control'),
                         ]
         self.AddPage(wx.Panel(self), '')
         for panel in panelList:
@@ -961,6 +976,7 @@ class LabelPanel(scroll.ScrolledPanel):
             else:
                 self.sourceButtons[i].Disable()
         self.saveLabels()
+        self.panel.onUpdate(True)
         self.GetParent().Destroy()
 
     def saveLabels(self):
@@ -1291,6 +1307,10 @@ class UpdateThread(Thread):
                                 dev.update()
                                 wx.PostEvent(self. getPanel('Hub Control'),
                                                                 EVT_UPDATE())
+                            if dev.getName() == 'vik':
+                                dev.update()
+                                wx.PostEvent(self. getPanel('V1616 Control'),
+                                                                EVT_UPDATE())
 
                             if dev.getName() == 'tarantula':
                                 tarantula.updateShowData()
@@ -1303,7 +1323,6 @@ class UpdateThread(Thread):
                         except (socket.timeout):
                             lostDev(dev.getName())
             except (wx.PyDeadObjectError, NameError):
-                print 'Not good...'
                 break
             sleep(15)
 
@@ -1337,7 +1356,8 @@ def EVT_LINK(win, EVT_ID, func):
 devTypeDict = {'Transmission Light': trl.TransmissionLight,
                 'Mux': yvp.Mux, 'Videohub': vh.Videohub,
                 'Hedco': None, 'Tarantula': tara.Tarantula,
-                'Tally': yvp.Tally, 'CasparCG': ccg.Casparcg}
+                'Tally': yvp.Tally, 'CasparCG': ccg.Casparcg,
+                'V1616': vik.Vikinx}
 
 devList = DevList()
 
