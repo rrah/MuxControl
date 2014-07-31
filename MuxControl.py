@@ -57,17 +57,30 @@ app = wx.App(False)
 
 panelList = []
 
-settings = et.parse('settings.xml')
-
 logging.basicConfig(filename = 'MuxControl.log', level = logging.DEBUG)
 logging.info('Starting up')
 
+while True:
+    try:
+        settings = et.parse('settings.xml')
+        break
+    except IOError as e:
+        if e.args[0] == 2:
+            logging.info('Can\'t find settings.xml. Creating settings')
+            shutil.copyfile('example_settings.xml', 'settings.xml')
+        else:
+            raise e
 
 # IDs
 EVT_UPDATE_ID = wx.NewId()
 EVT_LOST_CONNECTION_ID = wx.NewId()
 EVT_TIME_UPDATE_ID = wx.NewId()
 EVT_NEXT_PAGE_ID = wx.NewId()
+
+
+class DeviceError(Exception):
+
+    pass
 
 
 class DevList(list):
@@ -81,7 +94,7 @@ class DevList(list):
         for dev in list(self):
             if dev.getName().lower() == name.lower():
                 return dev
-        return None
+        raise DeviceError
 
 
 class DevPanel(scroll.ScrolledPanel):
@@ -109,16 +122,16 @@ class DevPanel(scroll.ScrolledPanel):
 
 
 class GfxPanel(DevPanel):
-    
+
     def play(self, e):
-        
+
         text = self.text.GetValue()
         self.dev.runTemplate("WOODSTOCK2014THIRDS", f0 = text)
-    
+
     def stop(self, e):
-        
+
         self.dev.stop(1, 20, 1)
-    
+
     def __init__(self, parent, dev, *args, **kwargs):
         DevPanel.__init__(self, parent, dev, *args, **kwargs)
         self.sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -182,7 +195,7 @@ class ButtonPanel(DevPanel):
         elif dev == 'mux' or dev == 'vik':
             for link in self.GetDev().getMap():
                 self.makeLinked(link[0], link[1])
-        
+
     def makeLinked(self, in_, out):
 
         """
@@ -805,8 +818,8 @@ class MainBook(wx.aui.AuiNotebook):
                             'Transmission Light'),
                         (TarantulaPanel(parent = self, name = 'TarantulaPanel'),
                             'Tarantula Control'),
-                        (GfxPanel(parent = self, name = 'GfxPanel', 
-                                            dev = devList.findDev('CasparCG')), 
+                        (GfxPanel(parent = self, name = 'GfxPanel',
+                                            dev = devList.findDev('CasparCG')),
                             'Graphics'),
 ##                        (HedcoPanel(self, name = 'HedcoPanel'), 'Hedco Control')
                         (ButtonPanel(self, name = 'VikPanel',
