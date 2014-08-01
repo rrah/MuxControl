@@ -45,6 +45,8 @@ import vikinx as vik
 
 ##import hedco
 
+import shutil
+
 from threading import *
 
 from time import sleep
