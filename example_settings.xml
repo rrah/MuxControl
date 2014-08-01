@@ -156,12 +156,12 @@
             <host>trans.ystv</host>
             <port>2000</port>
         </trans>
-        <tarantula enabled="True">
+        <tarantula enabled="False">
             <type>Tarantula</type>
             <host>tarantula.ystv</host>
             <port>9815</port>
         </tarantula>
-        <hub enabled="True">
+        <hub enabled="False">
             <type>Videohub</type>
             <host>192.168.1.1</host>
             <port>9990</port>
@@ -301,7 +301,147 @@
             <host>tally.ystv</host>
             <port>2000</port>
         </tally>
-    </devices>
+		<vik enabled="False">
+            <type>V1616</type>
+            <host>192.168.1.2</host>
+            <port>2001</port>
+            <labels>
+                <input num="1">
+                    <name>Cam 1</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="2">
+                    <name>Cam 2</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="3">
+                    <name>Cam 3</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="4">
+                    <name>Cam 4</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="5">
+                    <name>Cam 5</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="6">
+                    <name>Cam 6</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="7">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </input>
+                <input num="8">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </input>
+                <input num="9">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </input>
+                <input num="10">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </input>
+                <input num="11">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </input>
+                <input num="12">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </input>
+                <input num="13">
+                    <name>Multiview</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="14">
+                    <name>Preview</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="15">
+                    <name>Program</name>
+                    <enabled>True</enabled>
+                </input>
+                <input num="16">
+                    <name>GFX</name>
+                    <enabled>True</enabled>
+                </input>
+                <output num="1">
+                    <name>DaVE 1</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="2">
+                    <name>DaVE 2</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="3">
+                    <name>DaVE 3</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="4">
+                    <name>DaVE 4</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="5">
+                    <name>Multi 1</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="6">
+                    <name>Multi 2</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="7">
+                    <name>Multi 3</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="8">
+                    <name>Multi 4</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="9">
+                    <name>Program Monitor</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="10">
+                    <name>Program Monitor 2</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="11">
+                    <name>Multiview Monitor</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="12">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </output>
+                <output num="13">
+                    <name>Unused</name>
+                    <enabled>False</enabled>
+                </output>
+                <output num="14">
+                    <name>Corio</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="15">
+                    <name>Recording</name>
+                    <enabled>True</enabled>
+                </output>
+                <output num="16">
+                    <name>Stream</name>
+                    <enabled>True</enabled>
+                </output>
+            </labels>
+        </vik>
+        <casparcg enabled="False">
+            <type>CasparCG</type>
+            <host>192.168.1.3</host>
+            <port>5250</port>
+        </casparcg>
+	</devices>
 	<panels>
 		<getstarted enabled="False">
 			<name>Get Started</name>
@@ -321,5 +461,11 @@
 		<tarantula enabled="True">
 			<name>Tarantula Control</name>
 		</tarantula>
+		<vik enabled="True">
+			<name>V1616 Control</name>
+		</vik>
+        <caspar enabled="False">
+           <name>Graphics</name> 
+        </caspar>
 	</panels>
 </settings>
