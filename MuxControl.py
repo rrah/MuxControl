@@ -196,7 +196,9 @@ class ButtonPanel(DevPanel):
 
         elif dev == 'mux' or dev == 'vik':
             for link in self.GetDev().getMap():
-                self.makeLinked(link[0], link[1])
+                # I am so sorry for this conditional
+                if dev == 'vik' and link[0] <= 15 and link[1] <= 15 and link[0] >= 0 and link[1] >= 0:
+                    self.makeLinked(link[0], link[1])
 
     def makeLinked(self, in_, out):
 
