@@ -15,32 +15,29 @@ sys.path.append('Devices/')
 
 import logging
 
+# All the wx stuff
 import wx
 import wx.aui
 import wx.lib.newevent
 import wx.lib.scrolledpanel as scroll
 import wx.gizmos as giz
 
+# Own custom wx module
 import wxPythonExtra as wxx
+
 
 import xml.etree.cElementTree as et
 
-import socket
-
 import datetime as dt
 
+# The device communication modules
+import socket
 import yvp
-
 import videohub as vh
-
 import tarantulaTel as tara
-
 import telnet as tel
-
 import transLight as trl
-
 import casparcg as ccg
-
 import vikinx as vik
 
 ##import hedco
