@@ -26,7 +26,7 @@ import wx.gizmos as giz
 import wxPythonExtra as wxx
 
 
-import xml.etree.cElementTree as et
+import json
 
 import datetime as dt
 
@@ -61,12 +61,12 @@ logging.info('Starting up')
 
 while True:
     try:
-        settings = et.parse('settings.xml')
+        settings = json.load(open('settings.json'))
         break
     except IOError as e:
         if e.args[0] == 2:
-            logging.info('Can\'t find settings.xml. Creating settings')
-            shutil.copyfile('example_settings.xml', 'settings.xml')
+            logging.info('Can\'t find settings.json. Creating settings')
+            shutil.copyfile('example_settings.json', 'settings.json')
         else:
             raise e
 
@@ -349,29 +349,33 @@ class ButtonPanel(DevPanel):
         Load the labels for each button and see if they should be
         enabled"""
 
-        buttonLabels = settings.find('devices').find(
-                                self.dev.getName()).find('labels').findall('*')
-        for buttonLabel in buttonLabels:
-            button = None
-            if buttonLabel.tag == 'input':
-                button = self.inputButtons[int(buttonLabel.attrib['num']) - 1]
-            else:
-                button = self.outputButtons[int(buttonLabel.attrib['num']) - 1]
-            name = str(buttonLabel.find('name').text)
-            if  name != '' and name != 'Unused':
-                button.SetLabel(name)
-                button.SetName(name)
-            elif name == '' or name == 'Unused':
-                button.SetLabel('')
-                button.SetName('')
-                buttonLabel.find('enabled').text = 'False'
-            else:
-                button.SetLabel('')
-                button.SetName('')
-            if buttonLabel.find('enabled').text == 'True':
-                button.Enable()
-            else:
-                button.Disable()
+        buttonLabels = settings['devices'][
+                                    self.dev.getName()]['labels']
+        for buttonType in buttonLabels:
+            ##if buttonType == 'input':
+            for buttonLabel in buttonLabels[buttonType]:
+                button = None
+                if buttonType == 'input':
+                    button = self.inputButtons[int(
+                                buttonLabel['-num']) - 1]
+                else:
+                    button = self.outputButtons[int(
+                                buttonLabel['-num']) - 1]
+                name = str(buttonLabel['name'])
+                if  name != '' and name != 'Unused':
+                    button.SetLabel(name)
+                    button.SetName(name)
+                elif name == '' or name == 'Unused':
+                    button.SetLabel('')
+                    button.SetName('')
+                    buttonLabel['enabled'] = 'False'
+                else:
+                    button.SetLabel('')
+                    button.SetName('')
+                if buttonLabel['enabled'] == 'True':
+                    button.Enable()
+                else:
+                    button.Disable()
 
     def __init__(self, parent, dev, in_ = 32, out = 4, *args, **kwargs):
         DevPanel.__init__(self, parent, dev, *args, **kwargs)
@@ -830,10 +834,11 @@ class MainBook(wx.aui.AuiNotebook):
                         ]
         self.AddPage(wx.Panel(self), '')
         for panel in panelList:
-            for panelSetting in settings.find('panels').findall('*'):
-                if panel[1] == panelSetting.find('name').text:
+            for panelSetting in settings['panels']:
+                panelSetting = settings['panels'][panelSetting]
+                if panel[1] == panelSetting['name']:
                     self.AddPage(panel[0], panel[1])
-                    if panelSetting.attrib['enabled'] == 'False':
+                    if panelSetting['-enabled'] == 'False':
                         self.RemovePage(self.GetPageCount() -1)
                     break
         self.SetSelection(1)
@@ -1375,17 +1380,16 @@ devTypeDict = {'Transmission Light': trl.TransmissionLight,
 
 devList = DevList()
 
-for dev in settings.find('devices').findall('*'):
-    enabled = dev.attrib['enabled']
-    dev = devTypeDict[dev.find('type').text](dev.find('host').text,
-                                            dev.find('port').text)
+for dev in settings['devices']:
+    dev = settings['devices'][dev]
+    enabled = dev['-enabled']
+    dev = devTypeDict[dev['type']](dev['host'], dev['port'])
     devList.append(dev)
     if enabled == 'True':
         dev.setEnabled(True)
         try:
             dev.update()
             if dev.getName() == 'mux':
-                print 'Kicked'
                 dev.kick()
         except AttributeError:
             try:
