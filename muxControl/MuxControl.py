@@ -351,10 +351,10 @@ class ButtonPanel(DevPanel):
                 button = None
                 if buttonType == 'input':
                     button = self.inputButtons[int(
-                                buttonLabel['-num']) - 1]
+                                buttonLabel['num']) - 1]
                 else:
                     button = self.outputButtons[int(
-                                buttonLabel['-num']) - 1]
+                                buttonLabel['num']) - 1]
                 name = str(buttonLabel['name'])
                 if  name != '' and name != 'Unused':
                     button.SetLabel(name)
@@ -999,20 +999,20 @@ class LabelPanel(scroll.ScrolledPanel):
         Saves the labels to the file. Seperate, cause why the
         hell not."""
         dev = self.panel.GetDev().getName()
-        buttons = settings.find('devices').find(
-                            dev).find('labels').findall(
-                                                    self.source.lower()[:-1])
+        buttons = settings['devices'][dev]['labels'][
+                                                    self.source.lower()[:-1]]
         ammendList = []
         for button in buttons:
-            i = int(button.attrib['num']) - 1
+            i = int(button['num']) - 1
             name = self.nameList[i].GetValue()
             if name == '':
                 name = 'Unused'
-            if button.find('name').text != name:
+            if button['name'] != name:
                 ammendList.append((str(i), name))
-            button.find('name').text = name
-            button.find('enabled').text = str(self.toggleList[i].GetValue())
+            button['name'] = name
+            button['enabled'] = str(self.toggleList[i].GetValue())
         if dev == 'hub':
+            hub = devList.findDev('hub')
             if self.source == 'Inputs':
                 hub.setLabels(ammendList, 'in')
             elif self.source == 'Outputs':
@@ -1023,7 +1023,7 @@ class LabelPanel(scroll.ScrolledPanel):
                 if dev == device.getName():
                     device.update()
             self.panel.onHubUpdate(None)
-        settings.write('settings.xml')
+        writeSettings()
 
 
     def __init__(self, parent, source, *args, **kwargs):
