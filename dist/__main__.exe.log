@@ -1,30 +1,10 @@
-Traceback (most recent call last):
-  File "__main__.py", line 1, in <module>
-  File "muxControl\MuxControl.pyc", line 31, in <module>
-  File "muxControl\Devices\yvp.pyc", line 14, in <module>
-  File "xml\etree\cElementTree.pyc", line 3, in <module>
-  File "_elementtree.pyc", line 12, in <module>
-  File "_elementtree.pyc", line 10, in __load
-  File "<string>", line 5, in <module>
-ImportError: No module named ElementTree
-Traceback (most recent call last):
-  File "__main__.py", line 1, in <module>
-  File "muxControl\MuxControl.pyc", line 65, in <module>
-  File "shutil.pyc", line 82, in copyfile
-IOError: [Errno 2] No such file or directory: 'example_settings.json'
-Traceback (most recent call last):
-  File "__main__.py", line 1, in <module>
-  File "muxControl\MuxControl.pyc", line 1419, in <module>
-NameError: name 'exit' is not defined
-Exception in thread Thread-1:
-Traceback (most recent call last):
-  File "threading.pyc", line 810, in __bootstrap_inner
-  File "muxControl\MuxControl.pyc", line 1267, in run
-AttributeError: 'NoneType' object has no attribute 'PostEvent'
-
 Exception in thread Thread-2:
 Traceback (most recent call last):
   File "threading.pyc", line 810, in __bootstrap_inner
-  File "muxControl\MuxControl.pyc", line 1340, in run
-AttributeError: 'NoneType' object has no attribute 'PyDeadObjectError'
+  File "muxControl\MuxControl.pyc", line 1321, in run
+  File "muxControl\Devices\videohub.pyc", line 158, in update
+  File "telnetlib.pyc", line 295, in read_until
+  File "telnetlib.pyc", line 376, in _read_until_with_select
+  File "telnetlib.pyc", line 452, in read_very_lazy
+EOFError: telnet connection closed
 
