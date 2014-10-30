@@ -576,18 +576,18 @@ class SettingPanelsPanel(wx.Panel):
                         break
                     else:
                         self.notebook.RemovePage(pageNo)
-                        for panelSetting in settings.find(
-                                                        'panels').findall('*'):
-                            if panelSetting.find(
-                                            'name').text == panel[1]:
-                                panelSetting.attrib['enabled'] = 'False'
+                        for panelSetting in settings['panels']:
+                            panelSetting = settings['panels'][panelSetting]
+                            if panelSetting['name'] == panel[1]:
+                                panelSetting['enabled'] = 'False'
                         break
             else:
                 if self.toggleList[panelList.index(panel)].GetValue():
                     self.notebook.AddPage(panel[0], panel[1])
-                    for panelSetting in settings.find('panels').findall('*'):
-                        if panelSetting.find('name').text == panel[1]:
-                            panelSetting.attrib['enabled'] = 'True'
+                    for panelSetting in settings['panels']:
+                        panelSetting = settings['panels'][panelSetting]
+                        if panelSetting['name'] == panel[1]:
+                            panelSetting['enabled'] = 'True'
                 else:
                     pass
 
