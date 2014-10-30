@@ -621,10 +621,9 @@ class SettingDevicePanel(wx.Panel):
             dev.setHost(host)
             dev.setPort(port)
             dev.setEnabled(enable)
-            settings.find('devices').find(devName).find('host').text = host
-            settings.find('devices').find(devName).find('port').text = port
-            settings.find('devices').find(
-                                    devName).attrib['enabled'] = str(enable)
+            settings['devices'][devName]['host'] = host
+            settings['devices'][devName]['port'] = port
+            settings['devices'][devName]['enabled'] = str(enable)
 
     def __init__(self, *args, **kwargs):
         wx.Panel.__init__(self, *args, **kwargs)
@@ -659,7 +658,9 @@ class SettingDialog(wx.Dialog):
 
         for page in self.notebook:
             page.saveSettings()
-        settings.write('settings.xml')
+        with open('settings.json', 'w') as outfile:
+            json.dump(settings, outfile)
+        ##settings.write('settings.xml')
         self.Destroy()
 
     def __init__(self, *args, **kwargs):
