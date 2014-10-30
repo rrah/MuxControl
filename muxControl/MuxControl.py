@@ -835,7 +835,7 @@ class MainBook(wx.aui.AuiNotebook):
                 panelSetting = settings['panels'][panelSetting]
                 if panel[1] == panelSetting['name']:
                     self.AddPage(panel[0], panel[1])
-                    if panelSetting['-enabled'] == 'False':
+                    if panelSetting['enabled'] == 'False':
                         self.RemovePage(self.GetPageCount() -1)
                     break
         self.SetSelection(1)
@@ -1350,6 +1350,9 @@ class LostDevDialog(wx.MessageDialog):
         wx.MessageDialog.__init__(self, parent, message = msg,
                                     style = wx.YES_NO, *args, **kwargs)
 
+def writeSettings():
+    with open('settings.json', 'w') as outputFile:
+        json.dump(settings, outputFile)
 
 def lostDev(dev = None):
 
@@ -1361,8 +1364,8 @@ def lostDev(dev = None):
         for device in devList:
             if device.getName() == dev:
                 device.setEnabled(False)
-                settings.find('devices').find(dev).attrib['enabled'] = "False"
-                settings.write('settings.xml')
+                settings['devices'][dev]['enabled'] = "False"
+                writeSettings()
 
 
 def EVT_LINK(win, EVT_ID, func):
@@ -1377,9 +1380,11 @@ devTypeDict = {'Transmission Light': trl.TransmissionLight,
 
 devList = DevList()
 
+print settings['devices']
+
 for dev in settings['devices']:
     dev = settings['devices'][dev]
-    enabled = dev['-enabled']
+    enabled = dev['enabled']
     dev = devTypeDict[dev['type']](dev['host'], dev['port'])
     devList.append(dev)
     if enabled == 'True':
@@ -1417,4 +1422,3 @@ for dev in devList:
 del devList
 
 logging.info('Exiting')
-exit()
