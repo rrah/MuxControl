@@ -310,12 +310,10 @@ class ButtonPanel(DevPanel):
 
     def updateLabels(self, block, type_):
         ammendList = []
-        inputSettings = settings.find('devices').find(
-                            self.GetDev().getName()).find(
-                                                    'labels').findall('input')
-        outputSettings = settings.find('devices').find(
-                            self.GetDev().getName()).find(
-                                                    'labels').findall('output')
+        inputSettings = settings['devices'][
+                            self.GetDev().getName()]['labels']['input']
+        outputSettings = settings['devices'][
+                            self.GetDev().getName()]['labels']['output']
         if type_ != 'in' and type_ != 'out':
             raise TypeError('type_ must be in or out')
         for label in block:
@@ -335,9 +333,9 @@ class ButtonPanel(DevPanel):
                     button.SetLabel(str(label[1]))
                     button.SetName(str(label[1]))
                     button.Enable()
-                buttonSettings[i].find('name').text = label[1]
-                buttonSettings[i].find('enabled').text = str(button.IsEnabled())
-        settings.write('settings.xml')
+                buttonSettings[i]['name'] = label[1]
+                buttonSettings[i]['enabled'] = str(button.IsEnabled())
+        writeSettings()
 
     def loadLabels(self):
 
@@ -1380,12 +1378,10 @@ devTypeDict = {'Transmission Light': trl.TransmissionLight,
 
 devList = DevList()
 
-print settings['devices']
-
 for dev in settings['devices']:
     dev = settings['devices'][dev]
     enabled = dev['enabled']
-    dev = devTypeDict[dev['type']](dev['host'], dev['port'])
+    dev = devTypeDict[dev['type']](str(dev['host']), int(dev['port']))
     devList.append(dev)
     if enabled == 'True':
         dev.setEnabled(True)
