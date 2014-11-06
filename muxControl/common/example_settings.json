@@ -1,191 +1,191 @@
 {
     "devices": {
       "mux": {
-        "enabled": "False",
+        "-enabled": "False",
         "type": "Mux",
         "host": "mux.ystv",
         "port": "2000",
         "labels": {
           "input": [
             {
-              "num": "1",
+              "-num": "1",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "2",
+              "-num": "2",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "3",
+              "-num": "3",
               "name": "Camera 1",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "-num": "4",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "5",
+              "-num": "5",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "6",
+              "-num": "6",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "7",
+              "-num": "7",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "8",
+              "-num": "8",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "9",
+              "-num": "9",
               "name": "Camera 2",
               "enabled": "True"
             },
             {
-              "num": "10",
+              "-num": "10",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "11",
+              "-num": "11",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "12",
+              "-num": "12",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "13",
+              "-num": "13",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "14",
+              "-num": "14",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "15",
+              "-num": "15",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "16",
+              "-num": "16",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "17",
+              "-num": "17",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "18",
+              "-num": "18",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "19",
+              "-num": "19",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "20",
+              "-num": "20",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "21",
+              "-num": "21",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "22",
+              "-num": "22",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "23",
+              "-num": "23",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "24",
+              "-num": "24",
               "name": "Camera 3",
               "enabled": "True"
             },
             {
-              "num": "25",
+              "-num": "25",
               "name": "Camera 4",
               "enabled": "True"
             },
             {
-              "num": "26",
+              "-num": "26",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "27",
+              "-num": "27",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "28",
+              "-num": "28",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "29",
+              "-num": "29",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "30",
+              "-num": "30",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "31",
+              "-num": "31",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "32",
+              "-num": "32",
               "name": "Unused",
               "enabled": "False"
             }
           ],
           "output": [
             {
-              "num": "1",
+              "-num": "1",
               "name": "DaVE 1",
               "enabled": "True"
             },
             {
-              "num": "2",
+              "-num": "2",
               "name": "DaVE 2",
               "enabled": "True"
             },
             {
-              "num": "3",
+              "-num": "3",
               "name": "DaVE 3",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "-num": "4",
               "name": "DaVE 4",
               "enabled": "True"
             }
@@ -193,183 +193,183 @@
         }
       },
       "trans": {
-        "enabled": "False",
+        "-enabled": "False",
         "type": "Transmission Light",
         "host": "trans.ystv",
         "port": "2000"
       },
       "tarantula": {
-        "enabled": "False",
+        "-enabled": "False",
         "type": "Tarantula",
         "host": "tarantula.ystv",
         "port": "9815"
       },
       "hub": {
-        "enabled": "True",
+        "-enabled": "False",
         "type": "Videohub",
-        "host": "localhost",
-        "port": "9991",
+        "host": "192.168.1.1",
+        "port": "9990",
         "labels": {
           "input": [
             {
-              "num": "1",
+              "-num": "1",
               "name": "Patch 81",
               "enabled": "True"
             },
             {
-              "num": "2",
+              "-num": "2",
               "name": "Patch 82",
               "enabled": "True"
             },
             {
-              "num": "3",
+              "-num": "3",
               "name": "Patch 83",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "-num": "4",
               "name": "Patch 91",
               "enabled": "True"
             },
             {
-              "num": "5",
+              "-num": "5",
               "name": "Patch 92",
               "enabled": "True"
             },
             {
-              "num": "6",
+              "-num": "6",
               "name": "Patch 93",
               "enabled": "True"
             },
             {
-              "num": "7",
+              "-num": "7",
               "name": "Strmre",
               "enabled": "True"
             },
             {
-              "num": "8",
+              "-num": "8",
               "name": "Vidsrv",
               "enabled": "True"
             },
             {
-              "num": "9",
+              "-num": "9",
               "name": "Program",
               "enabled": "True"
             },
             {
-              "num": "10",
+              "-num": "10",
               "name": "Preview",
               "enabled": "True"
             },
             {
-              "num": "11",
+              "-num": "11",
               "name": "Multiview",
               "enabled": "True"
             },
             {
-              "num": "12",
+              "-num": "12",
               "name": "Aux 1",
               "enabled": "True"
             },
             {
-              "num": "13",
+              "-num": "13",
               "name": "Aux 2",
               "enabled": "True"
             },
             {
-              "num": "14",
+              "-num": "14",
               "name": "Aux 3",
               "enabled": "True"
             },
             {
-              "num": "15",
+              "-num": "15",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "16",
+              "-num": "16",
               "name": "PiVT",
               "enabled": "True"
             }
           ],
           "output": [
             {
-              "num": "1",
+              "-num": "1",
               "name": "ATEM Input 1",
               "enabled": "True"
             },
             {
-              "num": "2",
+              "-num": "2",
               "name": "ATEM Input 2",
               "enabled": "True"
             },
             {
-              "num": "3",
+              "-num": "3",
               "name": "ATEM Input 3",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "-num": "4",
               "name": "ATEM Input 4",
               "enabled": "True"
             },
             {
-              "num": "5",
+              "-num": "5",
               "name": "ATEM Monitor 1",
               "enabled": "True"
             },
             {
-              "num": "6",
+              "-num": "6",
               "name": "ATEM Monitor 2",
               "enabled": "True"
             },
             {
-              "num": "7",
+              "-num": "7",
               "name": "ATEM Monitor 3",
               "enabled": "True"
             },
             {
-              "num": "8",
+              "-num": "8",
               "name": "ATEM Monitor 4",
               "enabled": "True"
             },
             {
-              "num": "9",
+              "-num": "9",
               "name": "Program Monitor",
               "enabled": "True"
             },
             {
-              "num": "10",
+              "-num": "10",
               "name": "Program Monitor 2",
               "enabled": "True"
             },
             {
-              "num": "11",
+              "-num": "11",
               "name": "Vidsrv",
               "enabled": "True"
             },
             {
-              "num": "12",
+              "-num": "12",
               "name": "Vision Mixer",
               "enabled": "True"
             },
             {
-              "num": "13",
+              "-num": "13",
               "name": "Graphics Monitor",
               "enabled": "True"
             },
             {
-              "num": "14",
+              "-num": "14",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "15",
+              "-num": "15",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "16",
+              "-num": "16",
               "name": "Stream",
               "enabled": "True"
             }
@@ -377,177 +377,177 @@
         }
       },
       "tally": {
-        "enabled": "False",
+        "-enabled": "False",
         "type": "Tally",
         "host": "tally.ystv",
         "port": "2000"
       },
       "vik": {
-        "enabled": "False",
+        "-enabled": "False",
         "type": "V1616",
         "host": "192.168.1.2",
         "port": "2001",
         "labels": {
           "input": [
             {
-              "num": "1",
+              "-num": "1",
               "name": "Cam 1",
               "enabled": "True"
             },
             {
-              "num": "2",
+              "-num": "2",
               "name": "Cam 2",
               "enabled": "True"
             },
             {
-              "num": "3",
+              "-num": "3",
               "name": "Cam 3",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "-num": "4",
               "name": "Cam 4",
               "enabled": "True"
             },
             {
-              "num": "5",
+              "-num": "5",
               "name": "Cam 5",
               "enabled": "True"
             },
             {
-              "num": "6",
+              "-num": "6",
               "name": "Cam 6",
               "enabled": "True"
             },
             {
-              "num": "7",
+              "-num": "7",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "8",
+              "-num": "8",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "9",
+              "-num": "9",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "10",
+              "-num": "10",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "11",
+              "-num": "11",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "12",
+              "-num": "12",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "13",
+              "-num": "13",
               "name": "Multiview",
               "enabled": "True"
             },
             {
-              "num": "14",
+              "-num": "14",
               "name": "Preview",
               "enabled": "True"
             },
             {
-              "num": "15",
+              "-num": "15",
               "name": "Program",
               "enabled": "True"
             },
             {
-              "num": "16",
+              "-num": "16",
               "name": "GFX",
               "enabled": "True"
             }
           ],
           "output": [
             {
-              "num": "1",
+              "-num": "1",
               "name": "DaVE 1",
               "enabled": "True"
             },
             {
-              "num": "2",
+              "-num": "2",
               "name": "DaVE 2",
               "enabled": "True"
             },
             {
-              "num": "3",
+              "-num": "3",
               "name": "DaVE 3",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "-num": "4",
               "name": "DaVE 4",
               "enabled": "True"
             },
             {
-              "num": "5",
+              "-num": "5",
               "name": "Multi 1",
               "enabled": "True"
             },
             {
-              "num": "6",
+              "-num": "6",
               "name": "Multi 2",
               "enabled": "True"
             },
             {
-              "num": "7",
+              "-num": "7",
               "name": "Multi 3",
               "enabled": "True"
             },
             {
-              "num": "8",
+              "-num": "8",
               "name": "Multi 4",
               "enabled": "True"
             },
             {
-              "num": "9",
+              "-num": "9",
               "name": "Program Monitor",
               "enabled": "True"
             },
             {
-              "num": "10",
+              "-num": "10",
               "name": "Program Monitor 2",
               "enabled": "True"
             },
             {
-              "num": "11",
+              "-num": "11",
               "name": "Multiview Monitor",
               "enabled": "True"
             },
             {
-              "num": "12",
+              "-num": "12",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "13",
+              "-num": "13",
               "name": "Unused",
               "enabled": "False"
             },
             {
-              "num": "14",
+              "-num": "14",
               "name": "Corio",
               "enabled": "True"
             },
             {
-              "num": "15",
+              "-num": "15",
               "name": "Recording",
               "enabled": "True"
             },
             {
-              "num": "16",
+              "-num": "16",
               "name": "Stream",
               "enabled": "True"
             }
@@ -555,7 +555,7 @@
         }
       },
       "casparcg": {
-        "enabled": "False",
+        "-enabled": "False",
         "type": "CasparCG",
         "host": "192.168.1.3",
         "port": "5250"
@@ -563,35 +563,35 @@
     },
     "panels": {
       "getstarted": {
-        "enabled": "False",
+        "-enabled": "False",
         "name": "Get Started"
       },
       "directorpanel": {
-        "enabled": "False",
+        "-enabled": "False",
         "name": "Director Panel"
       },
       "hub": {
-        "enabled": "True",
+        "-enabled": "True",
         "name": "Hub Control"
       },
       "mux": {
-        "enabled": "False",
+        "-enabled": "False",
         "name": "Mux Control"
       },
       "trans": {
-        "enabled": "False",
+        "-enabled": "False",
         "name": "Transmission Light"
       },
       "tarantula": {
-        "enabled": "True",
+        "-enabled": "True",
         "name": "Tarantula Control"
       },
       "vik": {
-        "enabled": "True",
+        "-enabled": "True",
         "name": "V1616 Control"
       },
       "caspar": {
-        "enabled": "False",
+        "-enabled": "False",
         "name": "Graphics"
       }
     }

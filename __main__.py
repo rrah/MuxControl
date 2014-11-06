@@ -1,1 +1,4 @@
-import muxControl.MuxControl as __main__
+import muxControl.MuxControl
+
+if __name__ == '__main__':
+    muxControl.MuxControl.main()
