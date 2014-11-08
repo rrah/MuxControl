@@ -2,6 +2,8 @@ import wx
 import wx.aui
 import logging
 
+from events import *
+
 import panels
 
 class MainWindow(wx.Frame):
@@ -9,28 +11,27 @@ class MainWindow(wx.Frame):
     """
     The main window everything else runs in"""
 
-##    def onPageChanged(self, e):
-##        if type(e) == wx.PyEvent:
-##            newSelection = e.GetEventObject().GetPage(
-##                                            e.GetEventObject().GetSelection())
-##        elif type(e) == wx.aui.AuiNotebookEvent:
-##            newSelection = e
-##        menuBar = self.GetMenuBar()
-##        menuBar.EnableTop(1, True)
-##        try:
-##            newSelection = self.mainBook.GetPage(self.mainBook.GetSelection())
-##            if type(newSelection) != type(StarterPage):
-##                for option in self.buttonMenu.GetMenuItems():
-##                    try:
-##                        if option.GetText()[1:] in newSelection.GetMenuOptions():
-##                            option.Enable(True)
-##                        else:
-##                            option.Enable(False)
-##                    except AttributeError:
-##                        menuBar.EnableTop(1, False)
-##        except ValueError:
-##            for option in self.buttonMenu.GetMenuItems():
-##                option.Enable(False)
+    def onPageChanged(self, e):
+        if type(e) == wx.PyEvent:
+            newSelection = e.GetEventObject().GetPage(
+                                            e.GetEventObject().GetSelection())
+        elif type(e) == wx.aui.AuiNotebookEvent:
+            newSelection = e
+        menuBar = self.GetMenuBar()
+        menuBar.EnableTop(1, True)
+        try:
+            newSelection = self.mainBook.GetPage(self.mainBook.GetSelection())
+            for option in self.buttonMenu.GetMenuItems():
+                try:
+                    if option.GetText()[1:] in newSelection.GetMenuOptions():
+                        option.Enable(True)
+                    else:
+                        option.Enable(False)
+                except AttributeError:
+                    menuBar.EnableTop(1, False)
+        except ValueError:
+            for option in self.buttonMenu.GetMenuItems():
+                option.Enable(False)
 
     def onConnectionSettings(self, e):
         settings = SettingDialog(self.mainBook)
@@ -96,9 +97,9 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onLabelChange, outputLabels)
         self.Bind(wx.EVT_MENU, self.onConnectionSettings, settingsMenu)
         self.Bind(wx.EVT_MENU, self.onTally, tally)
-##        self.mainBook.Bind(wx.aui.EVT_AUINOTEBOOK_PAGE_CHANGED,
-##                                                        self.onPageChanged)
-##        self.onPageChanged(None)
+        self.mainBook.Bind(wx.aui.EVT_AUINOTEBOOK_PAGE_CHANGED,
+                                                        self.onPageChanged)
+        self.onPageChanged(None)
 
         logging.debug('Loaded main window')
         self.Show()
@@ -161,3 +162,24 @@ class MainBook(wx.aui.AuiNotebook):
                     break
         self.SetSelection(1)
         self.RemovePage(0)
+
+
+sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
+outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
+
+class BasicWindow(wx.Frame):
+
+    def onLink(self, e):
+        dev = self.devList.findDev(e.dev)
+        dev.setConnection(*e.map_)
+
+    def onUpdate(self, e):
+        pass
+
+    def __init__(self, devList, *args, **kwargs):
+        wx.Frame.__init__(self, None, *args, **kwargs)
+        self.sourceSelection = panels.SourceSelection(self, sources, outputs)
+        self.devList = devList
+        self.Bind(EVT_UPDATE, self.onUpdate)
+        self.Bind(EVT_DEVICE_LINK, self.onLink)
+        self.Show()

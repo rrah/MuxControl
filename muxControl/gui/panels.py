@@ -55,18 +55,36 @@ class SourceSelection(scroll.ScrolledPanel):
     """
     Panel for selecting the sources for input to DaVE"""
 
+    def onUpdate(self, e):
+        wx.PostEvent(self.GetParent(), updateEvent())
+
+    def onButton(self, e):
+        evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().GetMap(), dev = self.dev)
+        wx.PostEvent(self.GetParent(), evt)
+
     def __init__(self, parent, inputs = None, outputs = None,
                                                     *args, **kwargs):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.outputSizer = wx.BoxSizer(wx.VERTICAL)
+        outputNum = 0
         for output in outputs:
+            title = wx.StaticText(self, label = output)
+            self.outputSizer.Add(title)
+            # Input sizer to hold the inputs, and then add the inputs
             inputSizer = wx.BoxSizer()
+            inputNum = 0
             for source in inputs:
-                button = IOButton(self, label = source)
+                button = IOButton(self, label = source, input_ = inputNum,
+                                                            output = outputNum)
                 inputSizer.Add(button)
+                self.Bind(wx.EVT_BUTTON, self.onButton, button)
+                inputNum += 1
             inputSizer.Fit(self)
             self.outputSizer.Add(inputSizer)
+            outputNum += 1
         self.SetSizer(self.outputSizer)
+        self.dev = 'hub'
+        self.onUpdate(None)
 
 
 class IOButton(wx.Button):
@@ -78,6 +96,9 @@ class IOButton(wx.Button):
 
     oldColour = wx.NullColour
     connected = None
+
+    def GetMap(self):
+        return self.input_, self.output
 
     def GetButton(self):
         return self.button
@@ -98,10 +119,12 @@ class IOButton(wx.Button):
         else:
             wx.Button.SetBackgroundColour(self, colour)
 
-    def __init__(self, parent, size = (80, 80),
-                                        button = None, *args, **kwargs):
+    def __init__(self, parent, size = (80, 80), button = None,
+                    input_ = None, output = None, *args, **kwargs):
         wx.Button.__init__(self, parent, size = size, *args, **kwargs)
         self.button = button
+        self.input_ = input_
+        self.output = output
 
 class DirectorPanel(wx.Panel):
 
@@ -160,13 +183,9 @@ class ButtonPanel(DevPanel):
         in_ = int(in_)
         out = int(out)
         devName = self.dev.getName()
-        if devName == 'mux':
-            input_ = self.inputButtons[in_ - 1]
-            output = self.outputButtons[out - 1]
-        elif devName == 'hub' or devName == 'vik':
-            input_ = self.inputButtons[in_]
-            output = self.outputButtons[out]
-            print in_, out
+        input_ = self.inputButtons[in_]
+        output = self.outputButtons[out]
+        print in_, out
         if input_.IsEnabled() and output.IsEnabled():
             inLabel = input_.GetName()
             outLabel = output.GetName()
@@ -202,27 +221,9 @@ class ButtonPanel(DevPanel):
         connect the buttons"""
 
         devName = self.dev.getName()
-        mux = self.dev
-        hub = self.dev
-        tal = devList.findDev('tally')
-        if self.dev.getName() == 'mux':
-            try:
-                self.dev.link(in_, out)
-                self.makeLinked(in_, out)
-                if in_ in tal.config:
-                    talOut = tal.config.index(in_) + 1
-                else:
-                    talOut = 0
-                tal.link(out, talOut)
-            except socket.error:
-                raise socket.error
-        elif devName == 'hub' or self.dev.getName() == 'vik':
-            self.dev.setConnection(in_ - 1, out - 1)
-            self.dev.update()
-            if self.dev.getName() == 'hub':
-                self.onHubUpdate(True)
-            else:
-                self.onUpdate(True)
+        # Zero-indexed for device control, not for human control
+        self.dev.setConnection(in_ - 1, out - 1)
+        self.dev.update()
 
     def select(self, e):
 

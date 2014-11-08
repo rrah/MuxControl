@@ -207,8 +207,8 @@
       "hub": {
         "enabled": "True",
         "type": "Videohub",
-        "host": "localhost",
-        "port": "9991",
+        "host": "192.168.10.241",
+        "port": "9990",
         "labels": {
           "input": [
             {

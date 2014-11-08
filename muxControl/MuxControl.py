@@ -73,7 +73,8 @@ def main():
         else:
             dev.setEnabled(False)
     try:
-        window = gui.windows.MainWindow(devList, settings)
+        window = gui.windows.BasicWindow(devList)
+##        window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
     except:
         logging.exception('Something went wrong')
