@@ -169,17 +169,28 @@ outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 
 class BasicWindow(wx.Frame):
 
+    def getSources(self):
+        dev = self.devList.findDev('hub')
+        sources = []
+        for i in dev.getInputLabels()[:8]:
+            sources.append(i[1])
+        sinks = []
+        for i in dev.getOutputLabels()[:4]:
+            sinks.append(i[1])
+        return sources, sinks
+
     def onLink(self, e):
         dev = self.devList.findDev(e.dev)
         dev.setConnection(*e.map_)
+        dev.setConnection(e.map_[0], e.map_[1] + 4)
 
     def onUpdate(self, e):
         pass
 
     def __init__(self, devList, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, **kwargs)
-        self.sourceSelection = panels.SourceSelection(self, sources, outputs)
         self.devList = devList
+        self.sourceSelection = panels.SourceSelection(self, *self.getSources())
         self.Bind(EVT_UPDATE, self.onUpdate)
         self.Bind(EVT_DEVICE_LINK, self.onLink)
         self.Show()

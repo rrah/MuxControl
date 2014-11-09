@@ -1,4 +1,7 @@
 import wx
+import wxExtras.wxPythonExtra as wxx
+
+import firstrun
 
 import logging
 
@@ -20,3 +23,12 @@ def lostDev(dev = None):
         dev.setEnabled(False)
 ##        settings['devices'][dev]['enabled'] = "False"
 ##      writeSettings()
+
+
+class FirstTimeDialog(wxx.Wizard):
+
+    def __init__(self, *args, **kwargs):
+        wxx.Wizard.__init__(self, None, *args, **kwargs)
+        self.addPage(firstrun.DeviceSelection(self))
+        self.addPage(firstrun.SourceSelection(self))
+        self.run()

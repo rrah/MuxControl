@@ -56,7 +56,6 @@ def main():
         dev = settings['devices'][dev]
         enabled = dev['enabled']
         dev = devTypeDict[dev['type']](str(dev['host']), int(dev['port']))
-        print [dev.getHost(), dev.getPort()]
         devList.append(dev)
         if enabled == 'True':
             dev.setEnabled(True)
@@ -73,7 +72,9 @@ def main():
         else:
             dev.setEnabled(False)
     try:
-        window = gui.windows.BasicWindow(devList)
+        window = gui.dialogs.FirstTimeDialog()
+        window.Destroy()
+##        window = gui.windows.BasicWindow(devList)
 ##        window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
     except:
