@@ -18,9 +18,18 @@ devices = ['Hub', 'Vikinx', 'Mux']
 
 class DeviceSelection(wxx.WizardPage):
 
+    def get_device(self):
+        return self.device
+
+    def onRadioSelect(self, e):
+        self.device = e.GetEventObject().GetStringSelection()
+
     def __init__(self, *args, **kwargs):
         wxx.WizardPage.__init__(self, *args, **kwargs)
         devSelect = wx.RadioBox(self, choices = devices, majorDimension = 1)
+        self.device = devSelect.GetStringSelection()
+        self.Bind(wx.EVT_RADIOBOX, self.onRadioSelect, devSelect)
+
 
 class SourceSelection(wxx.WizardPage):
 
@@ -32,3 +41,23 @@ class SourceSelection(wxx.WizardPage):
             sourceSelect.SetValue(True)
             self.sourcesSizer.Add(sourceSelect)
         self.SetSizer(self.sourcesSizer)
+
+
+class DeviceSettings(wxx.WizardPage):
+
+    def set_device(self, device):
+
+        self.device = device
+        host_label = wx.StaticText(self, label = 'Host:')
+        host_text = wx.TextCtrl(self)
+        port_label = wx.StaticText(self, label = 'Port:')
+        port_text = wx.TextCtrl(self)
+        self.sizer.AddMany([(host_label), (host_text), (port_label), (port_text)])
+        if device == 'Hub':
+            host_text.SetLabel('192.168.10.241')
+            port_text.SetLabel('9990')
+        self.SetSizer(self.sizer)
+
+    def __init__(self, *args, **kwargs):
+        wxx.WizardPage.__init__(self, *args, **kwargs)
+        self.sizer = wx.GridSizer(cols = 2)

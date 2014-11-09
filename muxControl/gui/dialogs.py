@@ -30,5 +30,11 @@ class FirstTimeDialog(wxx.Wizard):
     def __init__(self, *args, **kwargs):
         wxx.Wizard.__init__(self, None, *args, **kwargs)
         self.addPage(firstrun.DeviceSelection(self))
+        self.addPage(firstrun.DeviceSettings(self))
         self.addPage(firstrun.SourceSelection(self))
         self.run()
+
+    def onPageChanging(self, e):
+        page = e.GetPage()
+        if type(page) == firstrun.DeviceSelection:
+            self.pages[1].set_device(page.get_device())

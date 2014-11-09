@@ -44,33 +44,33 @@ def main():
 
     logging.debug('Starting main window')
 
-    # Set up the list of devices
-    logging.debug('Loading devices')
-    devList = DevList()
-    devTypeDict = {'Transmission Light': trl.TransmissionLight,
-                'Mux': yvp.Mux, 'Videohub': vh.Videohub,
-                'Tarantula': tara.Tarantula, 'Tally': yvp.Tally,
-                'CasparCG': ccg.Casparcg, 'V1616': vik.Vikinx}
-
-    for dev in settings['devices']:
-        dev = settings['devices'][dev]
-        enabled = dev['enabled']
-        dev = devTypeDict[dev['type']](str(dev['host']), int(dev['port']))
-        devList.append(dev)
-        if enabled == 'True':
-            dev.setEnabled(True)
-            try:
-                dev.update()
-                if dev.getName() == 'mux':
-                    dev.kick()
-            except AttributeError:
-                dev.open()
-                dev.close()
-            except socket.error:
-                gui.dialogs.lostDev(dev)
-            logging.info('{} connected'.format(dev.getName()))
-        else:
-            dev.setEnabled(False)
+##    # Set up the list of devices
+##    logging.debug('Loading devices')
+##    devList = DevList()
+##    devTypeDict = {'Transmission Light': trl.TransmissionLight,
+##                'Mux': yvp.Mux, 'Videohub': vh.Videohub,
+##                'Tarantula': tara.Tarantula, 'Tally': yvp.Tally,
+##                'CasparCG': ccg.Casparcg, 'V1616': vik.Vikinx}
+##
+##    for dev in settings['devices']:
+##        dev = settings['devices'][dev]
+##        enabled = dev['enabled']
+##        dev = devTypeDict[dev['type']](str(dev['host']), int(dev['port']))
+##        devList.append(dev)
+##        if enabled == 'True':
+##            dev.setEnabled(True)
+##            try:
+##                dev.update()
+##                if dev.getName() == 'mux':
+##                    dev.kick()
+##            except AttributeError:
+##                dev.open()
+##                dev.close()
+##            except socket.error:
+##                gui.dialogs.lostDev(dev)
+##            logging.info('{} connected'.format(dev.getName()))
+##        else:
+##            dev.setEnabled(False)
     try:
         window = gui.dialogs.FirstTimeDialog()
         window.Destroy()

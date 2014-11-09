@@ -61,15 +61,15 @@ class Wizard(wiz.Wizard):
 
     def onPageChanged(self, evt):
 
-        if evt.GetDirection():  dir = "forward"
-        else:                   dir = "backward"
+        if evt.GetDirection():  dir_ = "forward"
+        else:                   dir_ = "backward"
         page = evt.GetPage()
 
 
     def onPageChanging(self, evt):
 
-        if evt.GetDirection():  dir = "forward"
-        else:                   dir = "backward"
+        if evt.GetDirection():  dir_ = "forward"
+        else:                   dir_ = "backward"
         page = evt.GetPage()
 
     def onCancel(self, evt):
