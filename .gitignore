@@ -1,5 +1,14 @@
 
 /*.log
 /*.pyc
-/Devices/*.pyc
+/muxControl/*.pyc
+/muxControl/common/*.pyc
+/muxControl/Devices/*.pyc
+/muxControl/gui/*.pyc
+/muxControl/gui/wxExtras*.pyc
 /settings.xml
+/settings.json
+/*.log
+__main__.exe.log
+/dist/settings.json
+/dist/MuxControl.log
