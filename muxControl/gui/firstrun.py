@@ -33,18 +33,25 @@ class DeviceSelection(wxx.WizardPage):
 
 class SourceSelection(wxx.WizardPage):
 
-    def set_device_settings(self, args):
+    def get_source_selection(self):
 
-        self.device, self.host, self.port = args
+        for source in self.sourcesSizer:
+            print source
 
-    def __init__(self, *args, **kwargs):
-        wxx.WizardPage.__init__(self, *args, **kwargs)
+    def set_device_settings(self, device_settings, input_labels):
+
+        self.device, self.host, self.port = device_settings
+
         self.sourcesSizer = wx.BoxSizer(wx.VERTICAL)
-        for source in sources:
-            sourceSelect = wx.CheckBox(self, label = source)
+        for source in input_labels:
+            sourceSelect = wx.CheckBox(self, label = source[1])
             sourceSelect.SetValue(True)
             self.sourcesSizer.Add(sourceSelect)
         self.SetSizer(self.sourcesSizer)
+
+    def __init__(self, *args, **kwargs):
+        wxx.WizardPage.__init__(self, *args, **kwargs)
+
 
 
 class DeviceSettings(wxx.WizardPage):

@@ -27,17 +27,33 @@ def lostDev(dev = None):
 
 class FirstTimeDialog(wxx.Wizard):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, devices, *args, **kwargs):
         wxx.Wizard.__init__(self, None, *args, **kwargs)
+        self.devices = devices
         self.addPage(firstrun.DeviceSelection(self))
         self.addPage(firstrun.DeviceSettings(self))
         self.addPage(firstrun.SourceSelection(self))
         self.run()
 
     def onPageChanging(self, e):
+        self.on_page_changing(e)
+
+    def on_page_changing(self, e):
         page = e.GetPage()
-        if type(page) == firstrun.DeviceSelection:
+        if page == self.pages[0]:
             self.pages[1].set_device(page.get_device())
-        elif type(page) == firstrun.DeviceSettings:
-            print page.get_device_settings()
-            self.pages[2].set_device_settings(page.get_device_settings())
+        elif page == self.pages[1]:
+            self.device_settings = page.get_device_settings()
+            dev, dev_host, dev_port = self.device_settings
+            device = self.devices.find_device(dev.lower())
+            device.acquire()
+            device.set_host(str(dev_host))
+            device.set_port(str(dev_port))
+            device.set_enabled(True)
+            device.update()
+            device.release()
+            self.pages[2].set_device_settings((dev, dev_host, dev_port),
+                                                    device.getInputLabels())
+        elif page == self.pages[2]:
+            self.source_selection = self.pages[2].get_source_selection()
+            print self.source_selection

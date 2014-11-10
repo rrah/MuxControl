@@ -11,7 +11,12 @@ class DeviceError(Exception):
 
 class DevList(list):
 
-    def findDev(self, name):
+    def findDev(self, *args):
+
+        DeprecationWarning
+        return self.find_device(*args)
+
+    def find_device(self, name):
 
         """
         See if a device with the same name as entered is in the list.
