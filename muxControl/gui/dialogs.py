@@ -38,3 +38,6 @@ class FirstTimeDialog(wxx.Wizard):
         page = e.GetPage()
         if type(page) == firstrun.DeviceSelection:
             self.pages[1].set_device(page.get_device())
+        elif type(page) == firstrun.DeviceSettings:
+            print page.get_device_settings()
+            self.pages[2].set_device_settings(page.get_device_settings())

@@ -33,6 +33,10 @@ class DeviceSelection(wxx.WizardPage):
 
 class SourceSelection(wxx.WizardPage):
 
+    def set_device_settings(self, args):
+
+        self.device, self.host, self.port = args
+
     def __init__(self, *args, **kwargs):
         wxx.WizardPage.__init__(self, *args, **kwargs)
         self.sourcesSizer = wx.BoxSizer(wx.VERTICAL)
@@ -45,17 +49,22 @@ class SourceSelection(wxx.WizardPage):
 
 class DeviceSettings(wxx.WizardPage):
 
+    def get_device_settings(self):
+
+        return self.device, self.host_text.GetLabel(), self.port_text.GetLabel()
+
     def set_device(self, device):
 
         self.device = device
         host_label = wx.StaticText(self, label = 'Host:')
-        host_text = wx.TextCtrl(self)
+        self.host_text = wx.TextCtrl(self)
         port_label = wx.StaticText(self, label = 'Port:')
-        port_text = wx.TextCtrl(self)
-        self.sizer.AddMany([(host_label), (host_text), (port_label), (port_text)])
+        self.port_text = wx.TextCtrl(self)
+        self.sizer.AddMany([(host_label), (self.host_text),
+                            (port_label), (self.port_text)])
         if device == 'Hub':
-            host_text.SetLabel('192.168.10.241')
-            port_text.SetLabel('9990')
+            self.host_text.SetLabel('192.168.10.241')
+            self.port_text.SetLabel('9990')
         self.SetSizer(self.sizer)
 
     def __init__(self, *args, **kwargs):
