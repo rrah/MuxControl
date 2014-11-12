@@ -46,6 +46,7 @@ class FirstTimeDialog(wxx.Wizard):
             self.device_settings = page.get_device_settings()
             dev, dev_host, dev_port = self.device_settings
             device = self.devices.find_device(dev.lower())
+            print dev_host, dev_port
             device.acquire()
             device.set_host(str(dev_host))
             device.set_port(str(dev_port))

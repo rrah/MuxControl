@@ -57,18 +57,18 @@ def main():
     for dev in settings['devices']:
         dev = settings['devices'][dev]
         enabled = dev['enabled']
-        if dev is not 'hub':
-            dev = devTypeDict[dev['type']](None, None)
-        else:
-            dev = devTypeDict[dev['type']]('192.168.10.241', 9990)
+##        if dev is not 'hub':
+        dev = devTypeDict[dev['type']](None, None)
+##        else:
+##            dev = devTypeDict[dev['type']]('192.168.10.241', 9990)
         dev.setEnabled(False)
         devList.append(dev)
 
     devicethread.DeviceThread(devList)
     try:
-##        window = gui.dialogs.FirstTimeDialog(devList)
-##        window.Destroy()
-        window = gui.windows.BasicWindow(devList)
+        window = gui.dialogs.FirstTimeDialog(devList)
+        window.Destroy()
+##        window = gui.windows.BasicWindow(devList)
 ##        window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
     except:

@@ -35,30 +35,44 @@ class SourceSelection(wxx.WizardPage):
 
     def get_source_selection(self):
 
-        for source in self.sourcesSizer:
+        for source in self.source_list:
             print source
 
     def set_device_settings(self, device_settings, input_labels):
 
         self.device, self.host, self.port = device_settings
-
-        self.sourcesSizer = wx.BoxSizer(wx.VERTICAL)
+        self.source_list = []
+        self.sources_sizer = wx.BoxSizer(wx.VERTICAL)
         for source in input_labels:
             sourceSelect = wx.CheckBox(self, label = source[1])
             sourceSelect.SetValue(True)
-            self.sourcesSizer.Add(sourceSelect)
-        self.SetSizer(self.sourcesSizer)
+            self.sources_sizer.Add(sourceSelect)
+            self.source_list.append(source)
+        self.SetSizer(self.sources_sizer)
 
     def __init__(self, *args, **kwargs):
         wxx.WizardPage.__init__(self, *args, **kwargs)
 
+
+class SinkSelection(wxx.WizardPage):
+    
+    def set_device_settings(self, device, outputs):
+        
+        self.device = device
+        for i in xrange(8):
+            sink_mixer = wx.ComboBox(self, style = wx.CB_READONLY)
+            sink_mmonitor = wx.ComboBox(self, style = wx.CB_READONLY)
+        
+    
+    def __init__(self, *args, **kwargs):
+        wxx.WizardPage.__init__(self, *args, **kwargs)
 
 
 class DeviceSettings(wxx.WizardPage):
 
     def get_device_settings(self):
 
-        return self.device, self.host_text.GetLabel(), self.port_text.GetLabel()
+        return self.device, self.host_text.GetValue(), self.port_text.GetValue()
 
     def set_device(self, device):
 
@@ -70,8 +84,8 @@ class DeviceSettings(wxx.WizardPage):
         self.sizer.AddMany([(host_label), (self.host_text),
                             (port_label), (self.port_text)])
         if device == 'Hub':
-            self.host_text.SetLabel('192.168.10.241')
-            self.port_text.SetLabel('9990')
+            self.host_text.SetValue('192.168.10.241')
+            self.port_text.SetValue('9990')
         self.SetSizer(self.sizer)
 
     def __init__(self, *args, **kwargs):
