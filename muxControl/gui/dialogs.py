@@ -33,6 +33,7 @@ class FirstTimeDialog(wxx.Wizard):
         self.addPage(firstrun.DeviceSelection(self))
         self.addPage(firstrun.DeviceSettings(self))
         self.addPage(firstrun.SourceSelection(self))
+        self.addPage(firstrun.SinkSelection(self))
         self.run()
 
     def onPageChanging(self, e):
@@ -46,7 +47,6 @@ class FirstTimeDialog(wxx.Wizard):
             self.device_settings = page.get_device_settings()
             dev, dev_host, dev_port = self.device_settings
             device = self.devices.find_device(dev.lower())
-            print dev_host, dev_port
             device.acquire()
             device.set_host(str(dev_host))
             device.set_port(str(dev_port))
@@ -57,4 +57,8 @@ class FirstTimeDialog(wxx.Wizard):
                                                     device.getInputLabels())
         elif page == self.pages[2]:
             self.source_selection = self.pages[2].get_source_selection()
-            print self.source_selection
+            device = self.devices.find_device(self.device_settings[0].lower())
+            self.pages[3].set_device_settings(self.device_settings,
+                                                    device.get_output_labels())
+        elif page == self.pages[3]:
+            self.sink_selection = self.pages[3].get_sink_selection()

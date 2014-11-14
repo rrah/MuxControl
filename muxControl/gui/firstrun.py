@@ -35,8 +35,12 @@ class SourceSelection(wxx.WizardPage):
 
     def get_source_selection(self):
 
-        for source in self.source_list:
-            print source
+        return_list = []
+        for i in xrange(len(self.source_list)):
+            source = self.source_list[i]
+            if source.GetValue():
+                return_list.append((i, source.GetLabel()))
+        return return_list
 
     def set_device_settings(self, device_settings, input_labels):
 
@@ -44,10 +48,10 @@ class SourceSelection(wxx.WizardPage):
         self.source_list = []
         self.sources_sizer = wx.BoxSizer(wx.VERTICAL)
         for source in input_labels:
-            sourceSelect = wx.CheckBox(self, label = source[1])
-            sourceSelect.SetValue(True)
-            self.sources_sizer.Add(sourceSelect)
-            self.source_list.append(source)
+            source_select = wx.CheckBox(self, label = source[1])
+            source_select.SetValue(True)
+            self.sources_sizer.Add(source_select)
+            self.source_list.append(source_select)
         self.SetSizer(self.sources_sizer)
 
     def __init__(self, *args, **kwargs):
@@ -55,15 +59,35 @@ class SourceSelection(wxx.WizardPage):
 
 
 class SinkSelection(wxx.WizardPage):
-    
+
+    def get_sink_selection(self):
+
+        for i in xrange(len(self.sink_list)):
+            pass
+
     def set_device_settings(self, device, outputs):
-        
+
         self.device = device
-        for i in xrange(8):
-            sink_mixer = wx.ComboBox(self, style = wx.CB_READONLY)
-            sink_mmonitor = wx.ComboBox(self, style = wx.CB_READONLY)
-        
-    
+        choices = []
+        for output in outputs:
+            choices.append(output[1])
+        self.outputs_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sink_list = []
+        for i in xrange(4):
+            sink_label = wx.StaticText(self, label = 'Output {}'.format(i + 1))
+            sink_mixer = wx.ComboBox(self, style = wx.CB_READONLY,
+                                                            choices = choices)
+            sink_mixer.SetSelection(i)
+            sink_monitor = wx.ComboBox(self, style = wx.CB_READONLY,
+                                                            choices = choices)
+            sink_monitor.SetSelection(i + 4) # Cause that's our normal setup
+            sink_list.append(sink_mixer, sink_monitor)
+            output_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            output_sizer.AddMany([(sink_label), (sink_mixer), (sink_monitor)])
+            self.outputs_sizer.Add(output_sizer)
+        self.SetSizer(self.outputs_sizer)
+
+
     def __init__(self, *args, **kwargs):
         wxx.WizardPage.__init__(self, *args, **kwargs)
 
