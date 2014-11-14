@@ -62,8 +62,13 @@ class SinkSelection(wxx.WizardPage):
 
     def get_sink_selection(self):
 
-        for i in xrange(len(self.sink_list)):
-            pass
+        return_list = []
+        for sink in self.sink_list:
+            return_list.append({'num': self.sink_list.index(sink),
+                            'mixer': sink['mixer'].GetSelection(),
+                            'monitor': sink['monitor'].GetSelection()})
+        return return_list
+
 
     def set_device_settings(self, device, outputs):
 
@@ -81,7 +86,8 @@ class SinkSelection(wxx.WizardPage):
             sink_monitor = wx.ComboBox(self, style = wx.CB_READONLY,
                                                             choices = choices)
             sink_monitor.SetSelection(i + 4) # Cause that's our normal setup
-            sink_list.append(sink_mixer, sink_monitor)
+            self.sink_list.append({'num': i, 'mixer':sink_mixer,
+                                                    'monitor':sink_monitor})
             output_sizer = wx.BoxSizer(wx.HORIZONTAL)
             output_sizer.AddMany([(sink_label), (sink_mixer), (sink_monitor)])
             self.outputs_sizer.Add(output_sizer)

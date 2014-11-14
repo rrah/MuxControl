@@ -169,14 +169,13 @@ outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 
 class BasicWindow(wx.Frame):
 
-    def getSources(self):
-        dev = self.devList.findDev('hub')
+    def get_labels(self):
         sources = []
-        for i in dev.getInputLabels()[:8]:
-            sources.append(i[1])
+        for source in self.settings['inputs']:
+            sources.append(source[1])
         sinks = []
-        for i in dev.getOutputLabels()[:4]:
-            sinks.append(i[1])
+        for sink in self.settings['outputs']:
+            sinks.append(self.devList.find_device(self.settings['device'][0].lower()).get_output_labels()[sink['mixer']][1])
         return sources, sinks
 
     def onLink(self, e):
@@ -187,10 +186,11 @@ class BasicWindow(wx.Frame):
     def onUpdate(self, e):
         pass
 
-    def __init__(self, devList, *args, **kwargs):
+    def __init__(self, devList, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, **kwargs)
         self.devList = devList
-        self.sourceSelection = panels.SourceSelection(self, *self.getSources())
+        self.settings = settings
+        self.sourceSelection = panels.SourceSelection(self, *self.get_labels())
         self.Bind(EVT_UPDATE, self.onUpdate)
         self.Bind(EVT_DEVICE_LINK, self.onLink)
         self.Show()

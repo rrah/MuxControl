@@ -68,13 +68,13 @@ class SourceSelection(scroll.ScrolledPanel):
         self.outputSizer = wx.BoxSizer(wx.VERTICAL)
         outputNum = 0
         for output in outputs:
-            title = wx.StaticText(self, label = output)
+            title = wx.StaticText(self, label = str(output))
             self.outputSizer.Add(title)
             # Input sizer to hold the inputs, and then add the inputs
             inputSizer = wx.BoxSizer()
             inputNum = 0
             for source in inputs:
-                button = IOButton(self, label = source, input_ = inputNum,
+                button = IOButton(self, label = str(source), input_ = inputNum,
                                                             output = outputNum)
                 inputSizer.Add(button)
                 self.Bind(wx.EVT_BUTTON, self.onButton, button)

@@ -30,6 +30,7 @@ class FirstTimeDialog(wxx.Wizard):
     def __init__(self, devices, *args, **kwargs):
         wxx.Wizard.__init__(self, None, *args, **kwargs)
         self.devices = devices
+        self.settings = {}
         self.addPage(firstrun.DeviceSelection(self))
         self.addPage(firstrun.DeviceSettings(self))
         self.addPage(firstrun.SourceSelection(self))
@@ -44,8 +45,8 @@ class FirstTimeDialog(wxx.Wizard):
         if page == self.pages[0]:
             self.pages[1].set_device(page.get_device())
         elif page == self.pages[1]:
-            self.device_settings = page.get_device_settings()
-            dev, dev_host, dev_port = self.device_settings
+            self.settings['device'] = page.get_device_settings()
+            dev, dev_host, dev_port = self.settings['device']
             device = self.devices.find_device(dev.lower())
             device.acquire()
             device.set_host(str(dev_host))
@@ -56,9 +57,14 @@ class FirstTimeDialog(wxx.Wizard):
             self.pages[2].set_device_settings((dev, dev_host, dev_port),
                                                     device.getInputLabels())
         elif page == self.pages[2]:
-            self.source_selection = self.pages[2].get_source_selection()
-            device = self.devices.find_device(self.device_settings[0].lower())
-            self.pages[3].set_device_settings(self.device_settings,
+            self.settings['inputs'] = self.pages[2].get_source_selection()
+
+            device = self.devices.find_device(self.settings['device'][0].lower())
+            self.pages[3].set_device_settings(self.settings['device'],
                                                     device.get_output_labels())
         elif page == self.pages[3]:
-            self.sink_selection = self.pages[3].get_sink_selection()
+            self.settings['outputs'] = self.pages[3].get_sink_selection()
+
+    def get_panel_settings(self):
+
+        return self.settings
