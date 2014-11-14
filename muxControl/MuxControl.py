@@ -67,8 +67,10 @@ def main():
     devicethread.DeviceThread(devList)
     try:
         window = gui.dialogs.FirstTimeDialog(devList)
+        basic_panel_settings = window.get_panel_settings()
+        print basic_panel_settings
         window.Destroy()
-##        window = gui.windows.BasicWindow(devList)
+        window = gui.windows.BasicWindow(devList, basic_panel_settings)
 ##        window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
     except:
