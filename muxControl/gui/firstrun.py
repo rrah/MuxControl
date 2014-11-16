@@ -39,7 +39,8 @@ class SourceSelection(wxx.WizardPage):
         for i in xrange(len(self.source_list)):
             source = self.source_list[i]
             if source.GetValue():
-                return_list.append((i, source.GetLabel()))
+                return_list.append({'num':i, 'label':source.GetLabel(),
+                                    'enabled': source.GetValue()})
         return return_list
 
     def set_device_settings(self, device_settings, input_labels):
@@ -65,8 +66,10 @@ class SinkSelection(wxx.WizardPage):
         return_list = []
         for sink in self.sink_list:
             return_list.append({'num': self.sink_list.index(sink),
-                            'mixer': sink['mixer'].GetSelection(),
-                            'monitor': sink['monitor'].GetSelection()})
+                'mixer': sink['mixer'].GetSelection(),
+                'mixer_label': sink['mixer'].GetStringSelection(),
+                'monitor': sink['monitor'].GetSelection(),
+                'monitor_label': sink['monitor'].GetStringSelection()})
         return return_list
 
 

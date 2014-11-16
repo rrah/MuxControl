@@ -59,32 +59,35 @@ class SourceSelection(scroll.ScrolledPanel):
         wx.PostEvent(self.GetParent(), updateEvent())
 
     def onButton(self, e):
-        evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().GetMap(), dev = self.dev)
+        evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().get_map(), dev = self.dev)
         wx.PostEvent(self.GetParent(), evt)
 
     def __init__(self, parent, inputs = None, outputs = None,
                                                     *args, **kwargs):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.outputSizer = wx.BoxSizer(wx.VERTICAL)
-        outputNum = 0
         for output in outputs:
-            title = wx.StaticText(self, label = str(output))
+            title = wx.StaticText(self, 
+                                    label = str(output['mixer_label']))
             self.outputSizer.Add(title)
             # Input sizer to hold the inputs, and then add the inputs
             inputSizer = wx.BoxSizer()
-            inputNum = 0
             for source in inputs:
-                button = IOButton(self, label = str(source), input_ = inputNum,
-                                                            output = outputNum)
-                inputSizer.Add(button)
-                self.Bind(wx.EVT_BUTTON, self.onButton, button)
-                inputNum += 1
+                if source['enabled']:
+                    button = BasicIOButton(self, 
+                                            input_ = source['num'],
+                                            mixer = output['mixer'],
+                                            monitor = output['monitor'],
+                                            label = str(source['label']))
+                    inputSizer.Add(button)
+                    self.Bind(wx.EVT_BUTTON, self.onButton, button)
             inputSizer.Fit(self)
             self.outputSizer.Add(inputSizer)
-            outputNum += 1
         self.SetSizer(self.outputSizer)
         self.dev = 'hub'
         self.onUpdate(None)
+
+
 
 
 class IOButton(wx.Button):
@@ -125,6 +128,25 @@ class IOButton(wx.Button):
         self.button = button
         self.input_ = input_
         self.output = output
+        
+class BasicIOButton(IOButton):
+    
+    """
+    Extension of IOButton to get the extra properties"""
+    
+    def get_map(self):
+        
+        return_list = []
+        if self.mixer is not None:
+            return_list.append((self.input_, self.mixer))
+        if self.monitor is not None:
+            return_list.append((self.input_, self.monitor))
+        return return_list
+    
+    def __init__(self, parent, input_, mixer, monitor, *args, **kwargs):
+        self.mixer = mixer
+        self.monitor = monitor
+        IOButton.__init__(self, parent, input_ = input_, **kwargs)
 
 class DirectorPanel(wx.Panel):
 

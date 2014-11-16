@@ -168,20 +168,34 @@ sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 
 class BasicWindow(wx.Frame):
+    
+    """
+    Window with a set of input buttons for each mixer input.
+    Will hopefully make stuff easier to use in a broadcast"""
 
     def get_labels(self):
-        sources = []
+        
+        return self.settings['inputs'], self.settings['outputs']
+        
+        """sources = []
         for source in self.settings['inputs']:
-            sources.append(source[1])
+            sources.append(source['label'])
         sinks = []
         for sink in self.settings['outputs']:
             sinks.append(self.devList.find_device(self.settings['device'][0].lower()).get_output_labels()[sink['mixer']][1])
-        return sources, sinks
+        return sources, sinks"""
 
     def onLink(self, e):
+        
+        """
+        e = EVT_DEVICE_LINK
+        
+        Tell the device to do the linking"""
+        
         dev = self.devList.findDev(e.dev)
-        dev.setConnection(*e.map_)
-        dev.setConnection(e.map_[0], e.map_[1] + 4)
+        for link in e.map_:
+            print link
+            dev.setConnection(*link)
 
     def onUpdate(self, e):
         pass
