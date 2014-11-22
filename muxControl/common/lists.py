@@ -13,7 +13,7 @@ class DevList(list):
 
     def findDev(self, *args):
 
-        DeprecationWarning
+        raise DeprecationWarning
         return self.find_device(*args)
 
     def find_device(self, name):
@@ -23,7 +23,7 @@ class DevList(list):
         Case insensitive."""
 
         for dev in list(self):
-            if dev.getName().lower() == name.lower():
+            if dev.get_name().lower() == name.lower():
                 return dev
         raise DeviceError
 

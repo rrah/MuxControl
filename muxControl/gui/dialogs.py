@@ -47,7 +47,7 @@ class FirstTimeDialog(wxx.Wizard):
         elif page == self.pages[1]:
             self.settings['device'] = page.get_device_settings()
             dev, dev_host, dev_port = self.settings['device']
-            device = self.devices.find_device(dev.lower())
+            device = self.devices.find_device(dev.lower()[0:3])
             device.acquire()
             device.set_host(str(dev_host))
             device.set_port(str(dev_port))
@@ -55,11 +55,11 @@ class FirstTimeDialog(wxx.Wizard):
             device.update()
             device.release()
             self.pages[2].set_device_settings((dev, dev_host, dev_port),
-                                                    device.getInputLabels())
+                                                    device.get_input_labels())
         elif page == self.pages[2]:
             self.settings['inputs'] = self.pages[2].get_source_selection()
 
-            device = self.devices.find_device(self.settings['device'][0].lower())
+            device = self.devices.find_device(self.settings['device'][0].lower()[0:3])
             self.pages[3].set_device_settings(self.settings['device'],
                                                     device.get_output_labels())
         elif page == self.pages[3]:

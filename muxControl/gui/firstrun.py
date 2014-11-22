@@ -49,7 +49,9 @@ class SourceSelection(wxx.WizardPage):
         self.source_list = []
         self.sources_sizer = wx.BoxSizer(wx.VERTICAL)
         for source in input_labels:
-            source_select = wx.CheckBox(self, label = source[1])
+            if type(source) == list:
+                source = source[1]
+            source_select = wx.CheckBox(self, label = source)
             source_select.SetValue(True)
             self.sources_sizer.Add(source_select)
             self.source_list.append(source_select)
@@ -78,6 +80,8 @@ class SinkSelection(wxx.WizardPage):
         self.device = device
         choices = []
         for output in outputs:
+            if output == list:
+                output = output[1]
             choices.append(output[1])
         self.outputs_sizer = wx.BoxSizer(wx.VERTICAL)
         self.sink_list = []
@@ -119,6 +123,9 @@ class DeviceSettings(wxx.WizardPage):
         if device == 'Hub':
             self.host_text.SetValue('192.168.10.241')
             self.port_text.SetValue('9990')
+        elif device == 'Vikinx':
+            self.host_text.SetValue('ob1')
+            self.port_text.SetValue('2004')
         self.SetSizer(self.sizer)
 
     def __init__(self, *args, **kwargs):

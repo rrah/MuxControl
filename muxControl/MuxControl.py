@@ -14,6 +14,7 @@ import logging
 logging.basicConfig(filename = 'MuxControl.log',
                 format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                 datefmt='%m-%d %H:%M',level = logging.DEBUG)
+logging.captureWarnings(True)
 
 logging.info('Starting up')
 
@@ -61,7 +62,7 @@ def main():
         dev = devTypeDict[dev['type']](None, None)
 ##        else:
 ##            dev = devTypeDict[dev['type']]('192.168.10.241', 9990)
-        dev.setEnabled(False)
+        dev.set_enabled(False)
         devList.append(dev)
 
     devicethread.DeviceThread(devList)
