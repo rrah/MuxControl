@@ -43,11 +43,11 @@ class DevPanel(scroll.ScrolledPanel):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.dev = dev
         self.menuOptions = []
-        if dev.getName() == 'mux':
+        if dev.get_name() == 'mux':
             self.menuOptions = ['Inputs', 'Tally']
-        elif dev.getName() == 'vik':
+        elif dev.get_name() == 'vik':
             self.menuOptions = ['Inputs', 'Outputs', 'Tally']
-        elif dev.getName() == 'hub':
+        elif dev.get_name() == 'hub':
             self.menuOptions = ['Inputs', 'Outputs', 'Details', 'Tally']
 
 class SourceSelection(scroll.ScrolledPanel):
@@ -67,14 +67,14 @@ class SourceSelection(scroll.ScrolledPanel):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.outputSizer = wx.BoxSizer(wx.VERTICAL)
         for output in outputs:
-            title = wx.StaticText(self, 
+            title = wx.StaticText(self,
                                     label = str(output['mixer_label']))
             self.outputSizer.Add(title)
             # Input sizer to hold the inputs, and then add the inputs
             inputSizer = wx.BoxSizer()
             for source in inputs:
                 if source['enabled']:
-                    button = BasicIOButton(self, 
+                    button = BasicIOButton(self,
                                             input_ = source['num'],
                                             mixer = output['mixer'],
                                             monitor = output['monitor'],
@@ -128,21 +128,21 @@ class IOButton(wx.Button):
         self.button = button
         self.input_ = input_
         self.output = output
-        
+
 class BasicIOButton(IOButton):
-    
+
     """
     Extension of IOButton to get the extra properties"""
-    
+
     def get_map(self):
-        
+
         return_list = []
         if self.mixer is not None:
             return_list.append((self.input_, self.mixer))
         if self.monitor is not None:
             return_list.append((self.input_, self.monitor))
         return return_list
-    
+
     def __init__(self, parent, input_, mixer, monitor, *args, **kwargs):
         self.mixer = mixer
         self.monitor = monitor
@@ -161,6 +161,88 @@ class DirectorPanel(wx.Panel):
         self.clock.SetBackgroundColour(wx.NullColour)
 ##        EVT_LINK(self, EVT_TIME_UPDATE_ID, self.timeUpdate)
 ##        TimeThread(self)
+
+class SettingDevicePanel(wx.Panel):
+
+    def saveSettings(self):
+
+        for dev in devList:
+            devName = dev.getName()
+            host = self.host[devName].GetValue()
+            port = self.port[devName].GetValue()
+            enable = self.enable[devName].GetValue()
+            dev.setHost(host)
+            dev.setPort(port)
+            dev.setEnabled(enable)
+            settings['devices'][devName]['host'] = host
+            settings['devices'][devName]['port'] = port
+            settings['devices'][devName]['enabled'] = str(enable)
+
+    def __init__(self, *args, **kwargs):
+        wx.Panel.__init__(self, *args, **kwargs)
+        sizer = wx.GridSizer(cols = 2)
+        self.host = dict()
+        self.port = dict()
+        self.enable = dict()
+        for dev in devList:
+            devName = dev.getName()
+            title = wx.StaticText(self, label = devName)
+            self.enable[devName] = wx.CheckBox(self, label = 'Enabled')
+            host = wx.StaticText(self, label = 'Hostname')
+            self.host[devName] = wx.TextCtrl(self, size = (120, 27))
+            port = wx.StaticText(self, label = 'Port')
+            self.port[devName] = wx.TextCtrl(self, size = (120, 27))
+            self.enable[devName].SetValue(dev.isEnabled())
+            self.host[devName].SetValue(dev.getHost())
+            self.port[devName].SetValue(str(dev.getPort()))
+            sizer.AddMany([title, self.enable[devName], host,
+                            self.host[devName], port, self.port[devName]])
+        self.SetSizer(sizer)
+        sizer.Fit(self)
+
+class SettingPanelsPanel(wx.Panel):
+
+    def saveSettings(self):
+
+        global panelList
+        for panel in panelList:
+            for pageNo in range(self.notebook.GetPageCount()):
+                page = self.notebook.GetPage(pageNo)
+                if panel[0] == page:
+                    if self.toggleList[panelList.index(panel)].GetValue():
+                        break
+                    else:
+                        self.notebook.RemovePage(pageNo)
+                        for panelSetting in settings['panels']:
+                            panelSetting = settings['panels'][panelSetting]
+                            if panelSetting['name'] == panel[1]:
+                                panelSetting['enabled'] = 'False'
+                        break
+            else:
+                if self.toggleList[panelList.index(panel)].GetValue():
+                    self.notebook.AddPage(panel[0], panel[1])
+                    for panelSetting in settings['panels']:
+                        panelSetting = settings['panels'][panelSetting]
+                        if panelSetting['name'] == panel[1]:
+                            panelSetting['enabled'] = 'True'
+                else:
+                    pass
+
+
+    def __init__(self, *args, **kwargs):
+        wx.Panel.__init__(self, *args, **kwargs)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.notebook = self.GetParent().GetParent().GetParent()
+        global panelList
+        self.toggleList = []
+        for panel in panelList:
+            enable = wx.CheckBox(self, label = panel[1], name = panel[1])
+            self.toggleList.append(enable)
+            if panel[0] in self.notebook:
+                enable.SetValue(True)
+            sizer.Add(enable)
+        self.SetSizer(sizer)
+
 
 class ButtonPanel(DevPanel):
 
@@ -181,7 +263,7 @@ class ButtonPanel(DevPanel):
         """
         Update the connections for the mux"""
 
-        dev = self.GetDev().getName()
+        dev = self.GetDev().get_name()
         if dev == 'hub':
             self.updateLabels(self.dev.getInputLabels(), 'in')
             self.updateLabels(self.dev.getOutputLabels(), 'out')
@@ -204,7 +286,7 @@ class ButtonPanel(DevPanel):
 
         in_ = int(in_)
         out = int(out)
-        devName = self.dev.getName()
+        devName = self.dev.get_name()
         input_ = self.inputButtons[in_]
         output = self.outputButtons[out]
         print in_, out
@@ -242,7 +324,7 @@ class ButtonPanel(DevPanel):
         Makes the connection to the mux, and calls makeLinked to
         connect the buttons"""
 
-        devName = self.dev.getName()
+        devName = self.dev.get_name()
         # Zero-indexed for device control, not for human control
         self.dev.setConnection(in_ - 1, out - 1)
         self.dev.update()
@@ -285,15 +367,15 @@ class ButtonPanel(DevPanel):
             except socket.error:
                 button.SetBackgroundColour()
                 self.selected.SetBackgroundColour()
-                lostDev(self.dev.getName())
+                lostDev(self.dev.get_name())
             self.selected = None
 
     def updateLabels(self, block, type_):
         ammendList = []
 ##        inputSettings = settings['devices'][
-##                            self.GetDev().getName()]['labels']['input']
+##                            self.GetDev().get_name()]['labels']['input']
 ##        outputSettings = settings['devices'][
-##                            self.GetDev().getName()]['labels']['output']
+##                            self.GetDev().get_name()]['labels']['output']
         if type_ != 'in' and type_ != 'out':
             raise TypeError('type_ must be in or out')
         for label in block:
@@ -351,13 +433,13 @@ class ButtonPanel(DevPanel):
 
     def __init__(self, parent, settings, dev, in_ = 32, out = 4, *args, **kwargs):
         DevPanel.__init__(self, parent, dev, *args, **kwargs)
-        if dev.getName() == 'mux':
+        if dev.get_name() == 'mux':
             inRows = 6
             outCols = 2
-        elif dev.getName() == 'hub':
+        elif dev.get_name() == 'hub':
             inRows = 4
             outCols = 4
-        elif dev.getName() == 'vik':
+        elif dev.get_name() == 'vik':
             inRows = 4
             outCols = 4
         else:
@@ -388,7 +470,7 @@ class ButtonPanel(DevPanel):
         self.SetSizer(self.sizer)
         self.sizer.Fit(self)
         self.SetAutoLayout(1)
-        self.loadLabels(settings['devices'][dev.getName()]['labels'])
+        self.loadLabels(settings['devices'][dev.get_name()]['labels'])
 ##        EVT_LINK(self, EVT_UPDATE_ID, self.onUpdate)
         self.SetupScrolling()
         self.onUpdate(None)
@@ -400,7 +482,7 @@ class TransmissionPanel(DevPanel):
 
     def lostDev(self):
 
-        lostDev(self.dev.getName())
+        lostDev(self.dev.get_name())
 
     def update(self):
 

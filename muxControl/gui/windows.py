@@ -5,6 +5,7 @@ import logging
 from events import *
 
 import panels
+import dialogs
 
 class MainWindow(wx.Frame):
 
@@ -34,7 +35,7 @@ class MainWindow(wx.Frame):
                 option.Enable(False)
 
     def onConnectionSettings(self, e):
-        settings = SettingDialog(self.mainBook)
+        settings = dialogs.SettingDialog(self.mainBook)
         settings.ShowModal()
 
     def onExit(self, e):
@@ -131,23 +132,23 @@ class MainBook(wx.aui.AuiNotebook):
                         wx.aui.AUI_NB_TAB_MOVE | wx.aui.AUI_NB_SCROLL_BUTTONS))
         self.tabs = [(panels.DirectorPanel(self), 'Director Panel'),
                     (panels.ButtonPanel(self, settings, name = 'HubPanel',
-                                dev = devList.findDev('hub'),
+                                dev = devList.find_device('hub'),
                                 in_ = 16, out = 16),
                     'Hub Control'),
                     (panels.TransmissionPanel(self,
                                             name = 'TransmissionPanel',
-                                            dev = devList.findDev('trans')),
+                                            dev = devList.find_device('trans')),
                     'Transmission Light'),
-                    (panels.TarantulaPanel(self, devList.findDev('tarantula'),
-                                            devList.findDev('trans'),
+                    (panels.TarantulaPanel(self, devList.find_device('tarantula'),
+                                            devList.find_device('trans'),
                                             name = 'TarantulaPanel'),
                     'Tarantula Control'),
                     (panels.GfxPanel(parent = self, name = 'GfxPanel',
-                                        dev = devList.findDev('CasparCG')),
+                                        dev = devList.find_device('CasparCG')),
                     'Graphics'),
                     (panels.ButtonPanel(self, settings,
                                         name = 'VikPanel',
-                                        dev = devList.findDev('vik'),
+                                        dev = devList.find_device('vik'),
                                         in_ = 16, out = 16),
                     'V1616 Control'),
                     ]
@@ -168,15 +169,15 @@ sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 
 class BasicWindow(wx.Frame):
-    
+
     """
     Window with a set of input buttons for each mixer input.
     Will hopefully make stuff easier to use in a broadcast"""
 
     def get_labels(self):
-        
+
         return self.settings['inputs'], self.settings['outputs']
-        
+
         """sources = []
         for source in self.settings['inputs']:
             sources.append(source['label'])
@@ -186,13 +187,13 @@ class BasicWindow(wx.Frame):
         return sources, sinks"""
 
     def onLink(self, e):
-        
+
         """
         e = EVT_DEVICE_LINK
-        
+
         Tell the device to do the linking"""
-        
-        dev = self.devList.findDev(e.dev)
+
+        dev = self.devList.find_device(e.dev)
         for link in e.map_:
             print link
             dev.setConnection(*link)
