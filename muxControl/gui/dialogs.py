@@ -9,6 +9,16 @@ import panels
 
 import socket
 
+class Not_Implimented(wx.MessageDialog):
+
+    def __init__(self):
+        msg = '''Oops! Looks like that isn't implimented yet.
+Check the \'About\' to see where to find out more information'''
+        wx.MessageDialog.__init__(self, None, message = msg, style = wx.OK,
+                                caption = 'Feature not implimented')
+        self.ShowModal()
+        self.Destroy()
+
 class LostDevDialog(wx.MessageDialog):
 
     def __init__(self, parent, dev, *args, **kwargs):
@@ -40,6 +50,8 @@ class First_Time_Dialog(wxx.Wizard):
         self.add_page(firstrun.Source_Selection(self))
         self.add_page(firstrun.Sink_Selection(self))
         self.SetPageSize((400, 400))
+        self.icon = wx.Icon('muxcontrol.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(self.icon)
         self.run()
 
     def onPageChanging(self, e):

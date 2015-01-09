@@ -12,7 +12,9 @@ if __name__ == '__main__':
         import muxControl.MuxControl
         muxControl.MuxControl.main()
     except SystemExit as e:
-        if e.code == 1:
+        if e.code == 0:
+            logging.info('Normal exit. All is good.')
+        elif e.code == 1:
             logging.info('First time dialog cancelled. Exiting')
         else:
             raise e

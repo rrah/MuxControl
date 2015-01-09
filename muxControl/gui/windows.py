@@ -176,16 +176,10 @@ class Basic_Window(wx.Frame):
 
     def get_labels(self):
 
+        """
+        Pull the current labels for the buttons"""
+
         return self.settings['inputs'], self.settings['outputs']
-
-        """sources = []
-        for source in self.settings['inputs']:
-            sources.append(source['label'])
-        sinks = []
-        for sink in self.settings['outputs']:
-            sinks.append(self.devList.find_device(self.settings['device'][0].lower()).get_output_labels()[sink['mixer']][1])
-        return sources, sinks"""
-
 
     def on_link(self, e):
 
@@ -201,11 +195,32 @@ class Basic_Window(wx.Frame):
 
     def on_update(self, e):
 
+        """
+        e = EVT_DEVICE_UPDATE
+        Get the device to update and force the
+        source_selection panel to update. """
+
         dev = self.devList.find_device(e.dev)
         dev.acquire()
         dev.update()
         dev.release()
         self.source_selection.update_buttons(map_ = dev.get_map())
+
+    def on_connection_settings(self, e):
+
+        dialogs.Not_Implimented()
+
+    def on_label_change(self, e):
+
+        dialogs.Not_Implimented()
+
+    def on_exit(self, e):
+
+        """
+        Save the settings and quit."""
+
+        self.settings.save_settings()
+        sys.exit(0)
 
     def __init__(self, devList, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
@@ -214,8 +229,44 @@ class Basic_Window(wx.Frame):
         self.settings = settings
         self.source_selection = panels.Source_Selection(self,
                                                             *self.get_labels())
+
+        # File menu
+        file_menu = wx.Menu()
+        menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit', ' Quit the program')
+
+        # Settings for the buttons
+        self.button_menu = wx.Menu()
+        input_labels = self.button_menu.Append(-1, '&Inputs',
+                                        ' Change the input labels')
+        output_labels = self.button_menu.Append(-1, '&Outputs',
+                                        ' Change the output labels')
+        details = self.button_menu.Append(-1, '&Details',
+                                                ' View the device information')
+
+        # Other settings
+        connection_menu = wx.Menu()
+        settings_menu = connection_menu.Append(-1, '&Settings',
+                                        ' Change the connection settings')
+
+        # Set up the menu bars
+        menu_bar = wx.MenuBar()
+        menu_bar.Append(file_menu, '&File')
+        menu_bar.Append(self.button_menu, '&Buttons')
+        menu_bar.Append(connection_menu, '&Connection')
+        self.SetMenuBar(menu_bar)
+        self.CreateStatusBar()
+
+        # Window icon
         self.icon = wx.Icon('muxcontrol.ico', wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
+
+        # Bind all the events
         self.Bind(EVT_DEVICE_UPDATE, self.on_update)
         self.Bind(EVT_DEVICE_LINK, self.on_link)
+        self.Bind(wx.EVT_MENU, self.on_exit, menu_exit)
+        self.Bind(wx.EVT_MENU, self.on_label_change, input_labels)
+        self.Bind(wx.EVT_MENU, self.on_label_change, output_labels)
+        self.Bind(wx.EVT_MENU, self.on_connection_settings, settings_menu)
+
+        # And lets get showing
         self.Show()
