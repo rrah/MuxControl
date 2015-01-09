@@ -64,6 +64,11 @@ class First_Time_Dialog(wxx.Wizard):
                     device.update()
                     device.release()
                 except socket.timeout:
+                    msg = '''Timeout while trying to connect to the device.
+Check the details and that the device is plugged in and on, and try again.'''
+                    dlg = wx.MessageDialog(parent = None, message = msg,
+                                                                style = wx.OK)
+                    dlg.ShowModal()
                     e.Veto()
                 page_next.set_device_settings((dev, dev_host, dev_port),
                                                     device.get_input_labels())
@@ -85,8 +90,9 @@ class First_Time_Dialog(wxx.Wizard):
 
     def on_cancel(self, e):
 
-        dlg = wx.MessageDialog(parent = None, style = wx.YES_NO,
-                                    message = 'You sure you want to cancel?')
+        msg = '''You sure you want to cancel?
+None of the settings will be saved.'''
+        dlg = wx.MessageDialog(parent = None, style = wx.YES_NO, message = msg)
         ret = dlg.ShowModal()
         if ret == wx.ID_YES:
             self.cancelled = True

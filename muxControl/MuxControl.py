@@ -64,14 +64,20 @@ def main(first_run = False):
     # Let's load the GUI
     try:
         if settings['first_run']:
+            # Need to get some first run information
             logging.debug('Starting first run dialog')
             window = gui.dialogs.First_Time_Dialog(devList)
             if window.cancelled:
                 exit(1)
             basic_panel_settings = window.get_panel_settings()
             settings['basic_panel'] = basic_panel_settings
+            settings['first_run'] = False
             settings.save_settings()
+            logging.debug('First run settings saved')
             window.Destroy()
+
+        # Start a control gui
+        logging.info('Starting basic panel')
         basic_panel_settings = settings['basic_panel']
         window = gui.windows.Basic_Window(devList, basic_panel_settings)
         #window = gui.windows.MainWindow(devList, settings)

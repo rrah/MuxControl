@@ -18,6 +18,9 @@ devices = ['Hub', 'Vikinx', 'Mux']
 
 class Device_Selection(wxx.Wizard_Page):
 
+    """
+    Panel to select the device to use for the rest of the wizard"""
+
     def get_device(self):
         return self.device
 
@@ -32,6 +35,9 @@ class Device_Selection(wxx.Wizard_Page):
 
 
 class Source_Selection(wxx.Wizard_Page):
+
+    """
+    Select which sources want to be controlled by the basic panel"""
 
     def get_source_selection(self):
 
@@ -48,6 +54,9 @@ class Source_Selection(wxx.Wizard_Page):
         self.device, self.host, self.port = device_settings
         self.source_list = []
         self.sources_sizer = wx.BoxSizer(wx.VERTICAL)
+        msg = '''Select what inputs you want to use.'''
+        self.top_text = wx.StaticText(self, label = msg)
+        self.sources_sizer.Add(self.top_text)
         for source in input_labels:
             if type(source) == list:
                 source = source[1]
@@ -64,6 +73,9 @@ class Source_Selection(wxx.Wizard_Page):
 
 
 class Sink_Selection(wxx.Wizard_Page):
+
+    """
+    Select what sinks want to be controlled by the basic panel"""
 
     def get_sink_selection(self):
 
@@ -111,11 +123,23 @@ class Sink_Selection(wxx.Wizard_Page):
 
 class Device_Settings(wxx.Wizard_Page):
 
+    """
+    Set the device settings so the device can actually be communicated with.
+    Provides no checking or sanity, all that is done by the wizard"""
+
     def get_device_settings(self):
+
+        """
+        Hands the values over. Again, does no checking of values
+        or sanitization"""
 
         return self.device, self.host_text.GetValue(), self.port_text.GetValue()
 
     def set_device(self, device):
+
+        """
+        To be called when the device (from a previous page) has been selected.
+        Loads in default values for the device"""
 
         if not self.set:
             self.device = device
