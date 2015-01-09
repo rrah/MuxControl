@@ -51,11 +51,8 @@ def main(first_run = False):
     for dev in settings['devices']:
         dev = settings['devices'][dev]
         enabled = dev['enabled']
-##        if dev is not 'hub':
-        dev = devTypeDict[dev['type']](None, None)
-##        else:
-##            dev = devTypeDict[dev['type']]('192.168.10.241', 9990)
-        dev.set_enabled(False)
+        dev = devTypeDict[dev['type']](dev['host'], dev['port'])
+        dev.set_enabled(False) # Yeah, lets just ignore this for now
         devList.append(dev)
 
     # Fire off the thread to keep devices updated
@@ -71,6 +68,9 @@ def main(first_run = False):
                 exit(1)
             basic_panel_settings = window.get_panel_settings()
             settings['basic_panel'] = basic_panel_settings
+            device_settings = basic_panel_settings['device']
+            settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
+            settings['devices'][device_settings[0].lower()]['port'] = device_settings[2]
             #settings['first_run'] = False
             settings.save_settings()
             logging.debug('First run settings saved')
