@@ -16,22 +16,22 @@ sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 devices = ['Hub', 'Vikinx', 'Mux']
 
-class DeviceSelection(wxx.WizardPage):
+class Device_Selection(wxx.Wizard_Page):
 
     def get_device(self):
         return self.device
 
-    def onRadioSelect(self, e):
+    def on_radio_select(self, e):
         self.device = e.GetEventObject().GetStringSelection()
 
     def __init__(self, *args, **kwargs):
-        wxx.WizardPage.__init__(self, *args, **kwargs)
-        devSelect = wx.RadioBox(self, choices = devices, majorDimension = 1)
-        self.device = devSelect.GetStringSelection()
-        self.Bind(wx.EVT_RADIOBOX, self.onRadioSelect, devSelect)
+        wxx.Wizard_Page.__init__(self, *args, **kwargs)
+        dev_select = wx.RadioBox(self, choices = devices, majorDimension = 1)
+        self.device = dev_select.GetStringSelection()
+        self.Bind(wx.EVT_RADIOBOX, self.on_radio_select, dev_select)
 
 
-class SourceSelection(wxx.WizardPage):
+class Source_Selection(wxx.Wizard_Page):
 
     def get_source_selection(self):
 
@@ -56,12 +56,14 @@ class SourceSelection(wxx.WizardPage):
             self.sources_sizer.Add(source_select)
             self.source_list.append(source_select)
         self.SetSizer(self.sources_sizer)
+        self.set = True
 
     def __init__(self, *args, **kwargs):
-        wxx.WizardPage.__init__(self, *args, **kwargs)
+        wxx.Wizard_Page.__init__(self, *args, **kwargs)
+        self.set = False
 
 
-class SinkSelection(wxx.WizardPage):
+class Sink_Selection(wxx.Wizard_Page):
 
     def get_sink_selection(self):
 
@@ -99,13 +101,15 @@ class SinkSelection(wxx.WizardPage):
             output_sizer.AddMany([(sink_label), (sink_mixer), (sink_monitor)])
             self.outputs_sizer.Add(output_sizer)
         self.SetSizer(self.outputs_sizer)
+        self.set = True
 
 
     def __init__(self, *args, **kwargs):
-        wxx.WizardPage.__init__(self, *args, **kwargs)
+        wxx.Wizard_Page.__init__(self, *args, **kwargs)
+        self.set = False
 
 
-class DeviceSettings(wxx.WizardPage):
+class Device_Settings(wxx.Wizard_Page):
 
     def get_device_settings(self):
 
@@ -113,13 +117,15 @@ class DeviceSettings(wxx.WizardPage):
 
     def set_device(self, device):
 
-        self.device = device
-        host_label = wx.StaticText(self, label = 'Host:')
-        self.host_text = wx.TextCtrl(self)
-        port_label = wx.StaticText(self, label = 'Port:')
-        self.port_text = wx.TextCtrl(self)
-        self.sizer.AddMany([(host_label), (self.host_text),
-                            (port_label), (self.port_text)])
+        if not self.set:
+            self.device = device
+            host_label = wx.StaticText(self, label = 'Host:')
+            self.host_text = wx.TextCtrl(self)
+            port_label = wx.StaticText(self, label = 'Port:')
+            self.port_text = wx.TextCtrl(self)
+            self.sizer.AddMany([(host_label), (self.host_text),
+                                (port_label), (self.port_text)])
+            self.set = True
         if device == 'Hub':
             self.host_text.SetValue('192.168.10.241')
             self.port_text.SetValue('9990')
@@ -129,5 +135,6 @@ class DeviceSettings(wxx.WizardPage):
         self.SetSizer(self.sizer)
 
     def __init__(self, *args, **kwargs):
-        wxx.WizardPage.__init__(self, *args, **kwargs)
+        wxx.Wizard_Page.__init__(self, *args, **kwargs)
         self.sizer = wx.GridSizer(cols = 2)
+        self.set = False

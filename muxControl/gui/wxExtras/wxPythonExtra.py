@@ -20,7 +20,7 @@ class Notebook(wx.Notebook):
         else:
             raise IndexError
 
-class WizardPage(wiz.PyWizardPage):
+class Wizard_Page(wiz.PyWizardPage):
 
     def __init__(self, *args, **kwargs):
         wiz.PyWizardPage.__init__(self, *args, **kwargs)
@@ -49,9 +49,9 @@ class Wizard(wiz.Wizard):
         self.pages = []
         self.Bind(wiz.EVT_WIZARD_PAGE_CHANGED, self.onPageChanged)
         self.Bind(wiz.EVT_WIZARD_PAGE_CHANGING, self.onPageChanging)
-        self.Bind(wiz.EVT_WIZARD_CANCEL, self.onCancel)
+        self.Bind(wiz.EVT_WIZARD_CANCEL, self.on_cancel)
 
-    def addPage(self, page):
+    def add_page(self, page):
         '''Add a wizard page to the list.'''
         if self.pages:
             previous_page = self.pages[-1]

@@ -168,7 +168,7 @@ class MainBook(wx.aui.AuiNotebook):
 sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 
-class BasicWindow(wx.Frame):
+class Basic_Window(wx.Frame):
 
     """
     Window with a set of input buttons for each mixer input.

@@ -12,3 +12,4 @@
 __main__.exe.log
 /dist/settings.json
 /dist/MuxControl.log
+*.pyc

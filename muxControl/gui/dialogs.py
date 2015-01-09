@@ -7,6 +7,8 @@ import logging
 
 import panels
 
+import socket
+
 class LostDevDialog(wx.MessageDialog):
 
     def __init__(self, parent, dev, *args, **kwargs):
@@ -23,20 +25,19 @@ def lostDev(dev = None):
     logging.error('Can\'t find {}'.format(dev.getName()))
     if dlg.ShowModal() == wx.ID_YES:
         dev.setEnabled(False)
-##        settings['devices'][dev]['enabled'] = "False"
-##      writeSettings()
 
 
-class FirstTimeDialog(wxx.Wizard):
+class First_Time_Dialog(wxx.Wizard):
 
     def __init__(self, devices, *args, **kwargs):
         wxx.Wizard.__init__(self, None, *args, **kwargs)
         self.devices = devices
         self.settings = {}
-        self.addPage(firstrun.DeviceSelection(self))
-        self.addPage(firstrun.DeviceSettings(self))
-        self.addPage(firstrun.SourceSelection(self))
-        self.addPage(firstrun.SinkSelection(self))
+        self.cancelled = False
+        self.add_page(firstrun.Device_Selection(self))
+        self.add_page(firstrun.Device_Settings(self))
+        self.add_page(firstrun.Source_Selection(self))
+        self.add_page(firstrun.Sink_Selection(self))
         self.run()
 
     def onPageChanging(self, e):
@@ -44,32 +45,55 @@ class FirstTimeDialog(wxx.Wizard):
 
     def on_page_changing(self, e):
         page = e.GetPage()
-        if page == self.pages[0]:
-            self.pages[1].set_device(page.get_device())
-        elif page == self.pages[1]:
-            self.settings['device'] = page.get_device_settings()
-            dev, dev_host, dev_port = self.settings['device']
-            device = self.devices.find_device(dev.lower()[0:3])
-            device.acquire()
-            device.set_host(str(dev_host))
-            device.set_port(str(dev_port))
-            device.set_enabled(True)
-            device.update()
-            device.release()
-            self.pages[2].set_device_settings((dev, dev_host, dev_port),
-                                                    device.get_input_labels())
-        elif page == self.pages[2]:
-            self.settings['inputs'] = self.pages[2].get_source_selection()
+        if e.GetDirection():
+            # Only do this if going forwards
 
-            device = self.devices.find_device(self.settings['device'][0].lower()[0:3])
-            self.pages[3].set_device_settings(self.settings['device'],
+            if page == self.pages[0]: # Device selection page
+                self.pages[1].set_device(page.get_device())
+
+            elif page == self.pages[1]: # Device settings page
+                page_next = self.pages[2]
+                self.settings['device'] = page.get_device_settings()
+                dev, dev_host, dev_port = self.settings['device']
+                device = self.devices.find_device(dev.lower()[0:3])
+                try:
+                    device.acquire()
+                    device.set_host(str(dev_host))
+                    device.set_port(str(dev_port))
+                    device.set_enabled(True)
+                    device.update()
+                    device.release()
+                except socket.timeout:
+                    e.Veto()
+                page_next.set_device_settings((dev, dev_host, dev_port),
+                                                    device.get_input_labels())
+
+            elif page == self.pages[2]: # input settings page
+                self.settings['inputs'] = self.pages[2].get_source_selection()
+
+                device = self.devices.find_device(
+                                        self.settings['device'][0].lower()[0:3])
+                self.pages[3].set_device_settings(self.settings['device'],
                                                     device.get_output_labels())
-        elif page == self.pages[3]:
-            self.settings['outputs'] = self.pages[3].get_sink_selection()
+
+            elif page == self.pages[3]: # output settings page
+                self.settings['outputs'] = self.pages[3].get_sink_selection()
 
     def get_panel_settings(self):
 
         return self.settings
+
+    def on_cancel(self, e):
+
+        dlg = wx.MessageDialog(parent = None, style = wx.YES_NO,
+                                    message = 'You sure you want to cancel?')
+        ret = dlg.ShowModal()
+        if ret == wx.ID_YES:
+            self.cancelled = True
+        else:
+            e.Veto()
+        dlg.Destroy()
+
 
 class SettingDialog(wx.Dialog):
 

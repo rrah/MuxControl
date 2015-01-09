@@ -11,11 +11,6 @@
 
 import logging
 
-logging.basicConfig(filename = 'MuxControl.log',
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt='%m-%d %H:%M',level = logging.DEBUG)
-logging.captureWarnings(True)
-
 logging.info('Starting up')
 
 import json
@@ -41,11 +36,9 @@ import devicethread
 
 from common.lists import settings, DevList
 
-def main():
+def main(first_run = False):
 
     app = wx.App(False)
-
-    logging.debug('Starting main window')
 
     # Set up the list of devices
     logging.debug('Loading devices')
@@ -65,16 +58,26 @@ def main():
         dev.set_enabled(False)
         devList.append(dev)
 
+    # Fire off the thread to keep devices updated
     devicethread.DeviceThread(devList)
+
+    # Let's load the GUI
     try:
-        #window = gui.dialogs.FirstTimeDialog(devList)
-        #basic_panel_settings = window.get_panel_settings()
-        #window.Destroy()
-        #window = gui.windows.BasicWindow(devList, basic_panel_settings)
-        window = gui.windows.MainWindow(devList, settings)
+        if settings['first_run']:
+            logging.debug('Starting first run dialog')
+            window = gui.dialogs.First_Time_Dialog(devList)
+            if window.cancelled:
+                exit(1)
+            basic_panel_settings = window.get_panel_settings()
+            settings['basic_panel'] = basic_panel_settings
+            settings.save_settings()
+            window.Destroy()
+        basic_panel_settings = settings['basic_panel']
+        window = gui.windows.Basic_Window(devList, basic_panel_settings)
+        #window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
+    except SystemExit:
+        raise
     except:
         logging.exception('Something went wrong')
-        raise
     logging.info('Exiting')
-    logging.shutdown()
