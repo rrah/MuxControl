@@ -19,18 +19,23 @@ from time import sleep
 
 class DeviceThread(threading.Thread):
 
-    def run():
+    def run(self):
         logging.info('Starting devicethread')
         while True:
-            for device in self.devices:
-                if device.is_enabled() and device.aquire(False):
-                    device.update()
-                    device.release()
+            try:
+                for device in self.devices:
+                    if device.is_enabled() and device.aquire(False):
+                        device.update()
+                        device.release()
+            except:
+                logging.exception('Something bad in the device thread')
             sleep(3)
 
     def __init__(self, devices, *args, **kwargs):
         self.devices = devices
         threading.Thread.__init__(self, *args, **kwargs)
+        self.daemon = True
+        self.start()
 
 def main():
     pass
