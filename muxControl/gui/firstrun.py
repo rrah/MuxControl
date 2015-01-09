@@ -97,7 +97,22 @@ class Sink_Selection(wxx.Wizard_Page):
             if output == list:
                 output = output[1]
             choices.append(output[1])
-        self.outputs_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+
+        msg = '''Select the output for each mixer input and monitor'''
+        self.top_text = wx.StaticText(self, label = msg)
+        self.sizer.Add(self.top_text)
+
+        self.outputs_sizer = wx.FlexGridSizer(cols = 3, hgap = 4, vgap = 4)
+
+        # Column headers
+        sink_head = wx.StaticText(self, label = 'Mixer input')
+        mixer_head = wx.StaticText(self, label = 'Output to mixer')
+        monitor_head = wx.StaticText(self, label = 'Output to monitor')
+        head_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.outputs_sizer.AddMany([(sink_head), (mixer_head), (monitor_head)])
+        #self.outputs_sizer.Add(head_sizer)
+
         self.sink_list = []
         for i in xrange(4):
             sink_label = wx.StaticText(self, label = 'Output {}'.format(i + 1))
@@ -110,9 +125,10 @@ class Sink_Selection(wxx.Wizard_Page):
             self.sink_list.append({'num': i, 'mixer':sink_mixer,
                                                     'monitor':sink_monitor})
             output_sizer = wx.BoxSizer(wx.HORIZONTAL)
-            output_sizer.AddMany([(sink_label), (sink_mixer), (sink_monitor)])
-            self.outputs_sizer.Add(output_sizer)
-        self.SetSizer(self.outputs_sizer)
+            self.outputs_sizer.AddMany([(sink_label), (sink_mixer), (sink_monitor)])
+            #self.outputs_sizer.Add(output_sizer)
+        self.sizer.Add(self.outputs_sizer)
+        self.SetSizer(self.sizer)
         self.set = True
 
 
@@ -141,24 +157,36 @@ class Device_Settings(wxx.Wizard_Page):
         To be called when the device (from a previous page) has been selected.
         Loads in default values for the device"""
 
+        # Check if most of the stuff has been made before
         if not self.set:
+            # Text at the top of the page
+            msg = '''Enter connection settings for the device.'''
+            self.top_text = wx.StaticText(self, label = msg)
+            self.sizer.Add(self.top_text)
+
+            # And the device settings
             self.device = device
             host_label = wx.StaticText(self, label = 'Host:')
             self.host_text = wx.TextCtrl(self)
             port_label = wx.StaticText(self, label = 'Port:')
             self.port_text = wx.TextCtrl(self)
-            self.sizer.AddMany([(host_label), (self.host_text),
+            self.grid_sizer.AddMany([(host_label), (self.host_text),
                                 (port_label), (self.port_text)])
+            self.sizer.Add(self.grid_sizer)
             self.set = True
+
+        # Enter default settings
         if device == 'Hub':
             self.host_text.SetValue('192.168.10.241')
             self.port_text.SetValue('9990')
         elif device == 'Vikinx':
             self.host_text.SetValue('ob1')
             self.port_text.SetValue('2004')
+
         self.SetSizer(self.sizer)
 
     def __init__(self, *args, **kwargs):
         wxx.Wizard_Page.__init__(self, *args, **kwargs)
-        self.sizer = wx.GridSizer(cols = 2)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.grid_sizer = wx.GridSizer(cols = 2)
         self.set = False

@@ -71,7 +71,7 @@ def main(first_run = False):
                 exit(1)
             basic_panel_settings = window.get_panel_settings()
             settings['basic_panel'] = basic_panel_settings
-            settings['first_run'] = False
+            #settings['first_run'] = False
             settings.save_settings()
             logging.debug('First run settings saved')
             window.Destroy()

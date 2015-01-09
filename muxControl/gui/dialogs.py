@@ -38,6 +38,7 @@ class First_Time_Dialog(wxx.Wizard):
         self.add_page(firstrun.Device_Settings(self))
         self.add_page(firstrun.Source_Selection(self))
         self.add_page(firstrun.Sink_Selection(self))
+        self.SetPageSize((400, 400))
         self.run()
 
     def onPageChanging(self, e):
