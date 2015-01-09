@@ -186,7 +186,8 @@ class Basic_Window(wx.Frame):
             sinks.append(self.devList.find_device(self.settings['device'][0].lower()).get_output_labels()[sink['mixer']][1])
         return sources, sinks"""
 
-    def onLink(self, e):
+
+    def on_link(self, e):
 
         """
         e = EVT_DEVICE_LINK
@@ -195,17 +196,22 @@ class Basic_Window(wx.Frame):
 
         dev = self.devList.find_device(e.dev)
         for link in e.map_:
-            print link
             dev.setConnection(*link)
+        self.source_selection.update_buttons(map_ = e.map_, reverse = True)
 
-    def onUpdate(self, e):
-        pass
+    def on_update(self, e):
+
+        dev = self.devList.find_device(e.dev)
+        dev.acquire()
+        dev.update()
+        dev.release()
+        self.source_selection.update_buttons(map_ = dev.get_map())
 
     def __init__(self, devList, settings, *args, **kwargs):
-        wx.Frame.__init__(self, None, *args, **kwargs)
+        wx.Frame.__init__(self, None, *args, size = (800, 600), **kwargs)
         self.devList = devList
         self.settings = settings
-        self.sourceSelection = panels.SourceSelection(self, *self.get_labels())
-        self.Bind(EVT_UPDATE, self.onUpdate)
-        self.Bind(EVT_DEVICE_LINK, self.onLink)
+        self.source_selection = panels.Source_Selection(self, *self.get_labels())
+        self.Bind(EVT_DEVICE_UPDATE, self.on_update)
+        self.Bind(EVT_DEVICE_LINK, self.on_link)
         self.Show()

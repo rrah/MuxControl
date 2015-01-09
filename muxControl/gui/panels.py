@@ -12,6 +12,8 @@ import wx
 import wx.gizmos as giz
 import wx.lib.scrolledpanel as scroll
 
+import objects
+
 import datetime as dt
 
 from events import *
@@ -50,13 +52,31 @@ class DevPanel(scroll.ScrolledPanel):
         elif dev.get_name() == 'hub':
             self.menuOptions = ['Inputs', 'Outputs', 'Details', 'Tally']
 
-class SourceSelection(scroll.ScrolledPanel):
+class Source_Selection(scroll.ScrolledPanel):
 
     """
     Panel for selecting the sources for input to DaVE"""
 
-    def onUpdate(self, e):
-        wx.PostEvent(self.GetParent(), updateEvent())
+    def update_buttons(self, map_ = None, link = None, reverse = False):
+
+        """
+        Update the buttons.
+        list of tuples map_: a map of connections, of format (output, input)
+        bool reverese: Treat the map as (input, output)"""
+
+        if map_ is not None:
+            for connection in map_:
+                if reverse:
+                    connection = (connection[1], connection[0])
+                try:
+                    self.inputs[int(connection[0])].set_selected(connection[1])
+                except IndexError:
+                    break
+
+
+    def on_update(self, e):
+        evt = mxEVT_DEVICE_UPDATE(dev = self.dev)
+        wx.PostEvent(self.GetParent(), evt)
 
     def onButton(self, e):
         evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().get_map(), dev = self.dev)
@@ -66,87 +86,31 @@ class SourceSelection(scroll.ScrolledPanel):
                                                     *args, **kwargs):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.outputSizer = wx.BoxSizer(wx.VERTICAL)
+        self.inputs = []
         for output in outputs:
             title = wx.StaticText(self,
                                     label = str(output['mixer_label']))
             self.outputSizer.Add(title)
             # Input sizer to hold the inputs, and then add the inputs
             inputSizer = wx.BoxSizer()
+            button_list = objects.Basic_Button_List()
             for source in inputs:
                 if source['enabled']:
-                    button = BasicIOButton(self,
+                    button = objects.Basic_IO_Button(self,
                                             input_ = source['num'],
                                             mixer = output['mixer'],
                                             monitor = output['monitor'],
                                             label = str(source['label']))
                     inputSizer.Add(button)
                     self.Bind(wx.EVT_BUTTON, self.onButton, button)
-            inputSizer.Fit(self)
+                    button_list[source['num']] = button
+            self.inputs.append(button_list)
             self.outputSizer.Add(inputSizer)
         self.SetSizer(self.outputSizer)
         self.dev = 'hub'
-        self.onUpdate(None)
+        self.on_update(None)
+        self.SetupScrolling()
 
-
-
-
-class IOButton(wx.Button):
-
-    """
-    Basically wx.Button, but with a change to SetBackgroundColour to
-    allow no arguments to change it to NullColour and to keep the button
-    the same colour as the one it's connected to"""
-
-    oldColour = wx.NullColour
-    connected = None
-
-    def GetMap(self):
-        return self.input_, self.output
-
-    def GetButton(self):
-        return self.button
-
-    def SetBackgroundColour(self, colour = None):
-        if colour == None:
-            if type(self.connected) is list:
-                if len(self.connected):
-                    colour = colourDict[int(self.connected[0].GetButton()[-2:])]
-                    wx.Button.SetBackgroundColour(self, colour)
-                else:
-                    wx.Button.SetBackgroundColour(self, wx.NullColour)
-            elif self.connected is not None:
-                colour = colourDict[int(self.GetButton()[-2:])]
-                wx.Button.SetBackgroundColour(self, colour)
-            else:
-                wx.Button.SetBackgroundColour(self, wx.NullColour)
-        else:
-            wx.Button.SetBackgroundColour(self, colour)
-
-    def __init__(self, parent, size = (80, 80), button = None,
-                    input_ = None, output = None, *args, **kwargs):
-        wx.Button.__init__(self, parent, size = size, *args, **kwargs)
-        self.button = button
-        self.input_ = input_
-        self.output = output
-
-class BasicIOButton(IOButton):
-
-    """
-    Extension of IOButton to get the extra properties"""
-
-    def get_map(self):
-
-        return_list = []
-        if self.mixer is not None:
-            return_list.append((self.input_, self.mixer))
-        if self.monitor is not None:
-            return_list.append((self.input_, self.monitor))
-        return return_list
-
-    def __init__(self, parent, input_, mixer, monitor, *args, **kwargs):
-        self.mixer = mixer
-        self.monitor = monitor
-        IOButton.__init__(self, parent, input_ = input_, **kwargs)
 
 class DirectorPanel(wx.Panel):
 
