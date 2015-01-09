@@ -69,7 +69,7 @@ def main(first_run = False):
             device_settings = basic_panel_settings['device']
             settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
             settings['devices'][device_settings[0].lower()]['port'] = device_settings[2]
-            #settings['first_run'] = False
+            settings['first_run'] = False
             settings.save_settings()
             logging.debug('First run settings saved')
             window.Destroy()
