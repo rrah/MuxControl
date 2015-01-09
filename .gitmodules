@@ -1,6 +1,3 @@
-[submodule "Devices"]
-	path = Devices
-	url = https://github.com/rrah/Devices
 [submodule "muxControl/Devices"]
 	path = muxControl/Devices
 	url = git@github.com:rrah/Devices.git
