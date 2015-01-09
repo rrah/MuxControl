@@ -1,6 +1,6 @@
 {
-	"__root__": "True",
-	"first_run": "True",
+	"__root__": true,
+	"first_run": true,
     "devices": {
       "mux": {
         "enabled": "False",

@@ -30,7 +30,8 @@ def lostDev(dev = None):
 class First_Time_Dialog(wxx.Wizard):
 
     def __init__(self, devices, *args, **kwargs):
-        wxx.Wizard.__init__(self, None, *args, **kwargs)
+        wxx.Wizard.__init__(self, None, *args, title = 'MuxControl Setup',
+                                                                    **kwargs)
         self.devices = devices
         self.settings = {}
         self.cancelled = False

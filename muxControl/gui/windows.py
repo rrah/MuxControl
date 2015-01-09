@@ -208,10 +208,14 @@ class Basic_Window(wx.Frame):
         self.source_selection.update_buttons(map_ = dev.get_map())
 
     def __init__(self, devList, settings, *args, **kwargs):
-        wx.Frame.__init__(self, None, *args, size = (800, 600), **kwargs)
+        wx.Frame.__init__(self, None, *args, size = (800, 600),
+                                                title = 'MuxControl', **kwargs)
         self.devList = devList
         self.settings = settings
-        self.source_selection = panels.Source_Selection(self, *self.get_labels())
+        self.source_selection = panels.Source_Selection(self,
+                                                            *self.get_labels())
+        self.icon = wx.Icon('muxcontrol.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(self.icon)
         self.Bind(EVT_DEVICE_UPDATE, self.on_update)
         self.Bind(EVT_DEVICE_LINK, self.on_link)
         self.Show()
