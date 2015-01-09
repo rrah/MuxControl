@@ -1,4 +1,5 @@
 import logging
+import sys
 
 if __name__ == '__main__':
 
@@ -21,4 +22,4 @@ if __name__ == '__main__':
         logging.info('Exiting')
 
     logging.shutdown()
-    exit(0)
+    sys.exit(0)

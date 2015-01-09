@@ -14,8 +14,8 @@ import logging
 logging.info('Starting up')
 
 import json
-
 import datetime as dt
+import sys
 
 # The device communication modules
 import socket
@@ -31,9 +31,7 @@ import Devices.vikinx as vik
 import wx
 import gui.windows
 import gui.dialogs
-
 import devicethread
-
 from common.lists import settings, DevList
 
 def main(first_run = False):
@@ -65,7 +63,7 @@ def main(first_run = False):
             logging.debug('Starting first run dialog')
             window = gui.dialogs.First_Time_Dialog(devList)
             if window.cancelled:
-                exit(1)
+                sys.exit(1)
             basic_panel_settings = window.get_panel_settings()
             settings['basic_panel'] = basic_panel_settings
             device_settings = basic_panel_settings['device']
