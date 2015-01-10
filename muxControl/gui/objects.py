@@ -78,6 +78,14 @@ class Basic_Button_List(dict):
 
     selected = None
 
+    def set_labels(self, labels):
+
+        for label in labels:
+            try:
+                self[int(label[0])].SetLabel(label[1])
+            except KeyError:
+                pass
+
     def set_selected(self, new_selection):
 
         if self.selected is not None:

@@ -46,6 +46,7 @@ def main(first_run = False):
                 'Tarantula': tara.Tarantula, 'Tally': yvp.Tally,
                 'CasparCG': ccg.Casparcg, 'V1616': vik.Vikinx}
 
+    settings.acquire()
     for dev in settings['devices']:
         dev = settings['devices'][dev]
         enabled = dev['enabled']
@@ -53,6 +54,7 @@ def main(first_run = False):
         dev.set_enabled(False) # Yeah, lets just ignore this for now
         devList.append(dev)
 
+    settings.release()
     # Fire off the thread to keep devices updated
     devicethread.DeviceThread(devList)
 
@@ -65,19 +67,21 @@ def main(first_run = False):
             if window.cancelled:
                 sys.exit(1)
             basic_panel_settings = window.get_panel_settings()
+            settings.acquire()
             settings['basic_panel'] = basic_panel_settings
             device_settings = basic_panel_settings['device']
             settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
             settings['devices'][device_settings[0].lower()]['port'] = device_settings[2]
             settings['first_run'] = False
             settings.save_settings()
+            settings.release()
             logging.debug('First run settings saved')
             window.Destroy()
 
         # Start a control gui
         logging.info('Starting basic panel')
         basic_panel_settings = settings['basic_panel']
-        window = gui.windows.Basic_Window(devList, basic_panel_settings)
+        window = gui.windows.Basic_Window(devList, settings)
         #window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
     except SystemExit:

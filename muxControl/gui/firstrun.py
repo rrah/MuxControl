@@ -45,8 +45,7 @@ class Source_Selection(wxx.Wizard_Page):
         for i in xrange(len(self.source_list)):
             source = self.source_list[i]
             if source.GetValue():
-                return_list.append({'num':i, 'label':source.GetLabel(),
-                                    'enabled': source.GetValue()})
+                return_list.append(i)
         return return_list
 
     def set_device_settings(self, device_settings, input_labels):

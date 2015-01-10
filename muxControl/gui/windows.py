@@ -1,6 +1,7 @@
 import wx
 import wx.aui
 import logging
+import sys
 
 from events import *
 
@@ -179,7 +180,16 @@ class Basic_Window(wx.Frame):
         """
         Pull the current labels for the buttons"""
 
-        return self.settings['inputs'], self.settings['outputs']
+        basic_settings = self.settings['basic_panel']
+        device = basic_settings['device'][0].lower()
+
+        # Get the information for the inputs
+        inputs = []
+        for input_ in self.settings['devices'][device]['labels']['input']:
+            if int(input_['num']) in basic_settings['inputs']:
+                inputs.append(input_)
+
+        return inputs, basic_settings['outputs']
 
     def on_link(self, e):
 
@@ -188,7 +198,7 @@ class Basic_Window(wx.Frame):
 
         Tell the device to do the linking"""
 
-        dev = self.devList.find_device(e.dev)
+        dev = self.dev_list.find_device(e.dev)
         for link in e.map_:
             dev.setConnection(*link)
         self.source_selection.update_buttons(map_ = e.map_, reverse = True)
@@ -200,11 +210,17 @@ class Basic_Window(wx.Frame):
         Get the device to update and force the
         source_selection panel to update. """
 
-        dev = self.devList.find_device(e.dev)
+        dev = self.dev_list.find_device(e.dev)
         dev.acquire()
         dev.update()
         dev.release()
-        self.source_selection.update_buttons(map_ = dev.get_map())
+        input_labels = dev.get_input_labels()
+        output_labels = dev.get_output_labels()
+        self.source_selection.update_buttons(map_ = dev.get_map(),
+                                            input_labels = input_labels)
+        self.settings.parse_labels(device = dev.get_name(),
+                                    input_labels = input_labels,
+                                    output_labels = output_labels)
 
     def on_connection_settings(self, e):
 
@@ -222,10 +238,10 @@ class Basic_Window(wx.Frame):
         self.settings.save_settings()
         sys.exit(0)
 
-    def __init__(self, devList, settings, *args, **kwargs):
+    def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
                                                 title = 'MuxControl', **kwargs)
-        self.devList = devList
+        self.dev_list = dev_list
         self.settings = settings
         self.source_selection = panels.Source_Selection(self,
                                                             *self.get_labels())

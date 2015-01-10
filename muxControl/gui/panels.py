@@ -57,7 +57,8 @@ class Source_Selection(scroll.ScrolledPanel):
     """
     Panel for selecting the sources for input to DaVE"""
 
-    def update_buttons(self, map_ = None, link = None, reverse = False):
+    def update_buttons(self, map_ = None, link = None, reverse = False,
+                                                        input_labels = None):
 
         """
         Update the buttons.
@@ -72,7 +73,9 @@ class Source_Selection(scroll.ScrolledPanel):
                     self.inputs[int(connection[0])].set_selected(connection[1])
                 except IndexError:
                     break
-
+        if input_labels is not None:
+            for input_block in self.inputs:
+                input_block.set_labels(input_labels)
 
     def on_update(self, e):
         evt = mxEVT_DEVICE_UPDATE(dev = self.dev)
