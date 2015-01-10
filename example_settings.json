@@ -11,184 +11,184 @@
           "input": [
             {
               "num": "1",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "2",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "3",
-              "name": "Camera 1",
+              "label": "Camera 1",
               "enabled": "True"
             },
             {
               "num": "4",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "5",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "6",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "7",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "8",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "9",
-              "name": "Camera 2",
+              "label": "Camera 2",
               "enabled": "True"
             },
             {
               "num": "10",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "11",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "12",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "13",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "14",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "15",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "16",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "17",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "18",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "19",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "20",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "21",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "22",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "23",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "24",
-              "name": "Camera 3",
+              "label": "Camera 3",
               "enabled": "True"
             },
             {
               "num": "25",
-              "name": "Camera 4",
+              "label": "Camera 4",
               "enabled": "True"
             },
             {
               "num": "26",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "27",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "28",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "29",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "30",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "31",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "32",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             }
           ],
           "output": [
             {
               "num": "1",
-              "name": "DaVE 1",
+              "label": "DaVE 1",
               "enabled": "True"
             },
             {
               "num": "2",
-              "name": "DaVE 2",
+              "label": "DaVE 2",
               "enabled": "True"
             },
             {
               "num": "3",
-              "name": "DaVE 3",
+              "label": "DaVE 3",
               "enabled": "True"
             },
             {
               "num": "4",
-              "name": "DaVE 4",
+              "label": "DaVE 4",
               "enabled": "True"
             }
           ]
@@ -214,165 +214,165 @@
         "labels": {
           "input": [
             {
-              "num": "1",
-              "name": "Patch 81",
+              "num": 0,
+              "label": "Patch 81",
               "enabled": "True"
             },
             {
-              "num": "2",
-              "name": "Patch 82",
+              "num": 1,
+              "label": "Patch 82",
               "enabled": "True"
             },
             {
-              "num": "3",
-              "name": "Patch 83",
+              "num": 2,
+              "label": "Patch 83",
               "enabled": "True"
             },
             {
-              "num": "4",
-              "name": "Patch 91",
+              "num": 3,
+              "label": "Patch 91",
               "enabled": "True"
             },
             {
-              "num": "5",
-              "name": "Patch 92",
+              "num": 4,
+              "label": "Patch 92",
               "enabled": "True"
             },
             {
-              "num": "6",
-              "name": "Patch 93",
+              "num": 5,
+              "label": "Patch 93",
               "enabled": "True"
             },
             {
-              "num": "7",
-              "name": "Strmre",
+              "num": 6,
+              "label": "Strmre",
               "enabled": "True"
             },
             {
-              "num": "8",
-              "name": "Vidsrv",
+              "num": 7,
+              "label": "Vidsrv",
               "enabled": "True"
             },
             {
-              "num": "9",
-              "name": "Program",
+              "num": 8,
+              "label": "Program",
               "enabled": "True"
             },
             {
-              "num": "10",
-              "name": "Preview",
+              "num": 9,
+              "label": "Preview",
               "enabled": "True"
             },
             {
-              "num": "11",
-              "name": "Multiview",
+              "num": 10,
+              "label": "Multiview",
               "enabled": "True"
             },
             {
-              "num": "12",
-              "name": "Aux 1",
+              "num": 11,
+              "label": "Aux 1",
               "enabled": "True"
             },
             {
-              "num": "13",
-              "name": "Aux 2",
+              "num": 12,
+              "label": "Aux 2",
               "enabled": "True"
             },
             {
-              "num": "14",
-              "name": "Aux 3",
+              "num": 13,
+              "label": "Aux 3",
               "enabled": "True"
             },
             {
-              "num": "15",
-              "name": "Unused",
+              "num": 14,
+              "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "16",
-              "name": "PiVT",
+              "num": 15,
+              "label": "PiVT",
               "enabled": "True"
             }
           ],
           "output": [
             {
               "num": "1",
-              "name": "ATEM Input 1",
+              "label": "ATEM Input 1",
               "enabled": "True"
             },
             {
               "num": "2",
-              "name": "ATEM Input 2",
+              "label": "ATEM Input 2",
               "enabled": "True"
             },
             {
               "num": "3",
-              "name": "ATEM Input 3",
+              "label": "ATEM Input 3",
               "enabled": "True"
             },
             {
               "num": "4",
-              "name": "ATEM Input 4",
+              "label": "ATEM Input 4",
               "enabled": "True"
             },
             {
               "num": "5",
-              "name": "ATEM Monitor 1",
+              "label": "ATEM Monitor 1",
               "enabled": "True"
             },
             {
               "num": "6",
-              "name": "ATEM Monitor 2",
+              "label": "ATEM Monitor 2",
               "enabled": "True"
             },
             {
               "num": "7",
-              "name": "ATEM Monitor 3",
+              "label": "ATEM Monitor 3",
               "enabled": "True"
             },
             {
               "num": "8",
-              "name": "ATEM Monitor 4",
+              "label": "ATEM Monitor 4",
               "enabled": "True"
             },
             {
               "num": "9",
-              "name": "Program Monitor",
+              "label": "Program Monitor",
               "enabled": "True"
             },
             {
               "num": "10",
-              "name": "Program Monitor 2",
+              "label": "Program Monitor 2",
               "enabled": "True"
             },
             {
               "num": "11",
-              "name": "Vidsrv",
+              "label": "Vidsrv",
               "enabled": "True"
             },
             {
               "num": "12",
-              "name": "Vision Mixer",
+              "label": "Vision Mixer",
               "enabled": "True"
             },
             {
               "num": "13",
-              "name": "Graphics Monitor",
+              "label": "Graphics Monitor",
               "enabled": "True"
             },
             {
               "num": "14",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "15",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "16",
-              "name": "Stream",
+              "label": "Stream",
               "enabled": "True"
             }
           ]
@@ -393,164 +393,164 @@
           "input": [
             {
               "num": "1",
-              "name": "Cam 1",
+              "label": "Cam 1",
               "enabled": "True"
             },
             {
               "num": "2",
-              "name": "Cam 2",
+              "label": "Cam 2",
               "enabled": "True"
             },
             {
               "num": "3",
-              "name": "Cam 3",
+              "label": "Cam 3",
               "enabled": "True"
             },
             {
               "num": "4",
-              "name": "Cam 4",
+              "label": "Cam 4",
               "enabled": "True"
             },
             {
               "num": "5",
-              "name": "Cam 5",
+              "label": "Cam 5",
               "enabled": "True"
             },
             {
               "num": "6",
-              "name": "Cam 6",
+              "label": "Cam 6",
               "enabled": "True"
             },
             {
               "num": "7",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "8",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "9",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "10",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "11",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "12",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "13",
-              "name": "Multiview",
+              "label": "Multiview",
               "enabled": "True"
             },
             {
               "num": "14",
-              "name": "Preview",
+              "label": "Preview",
               "enabled": "True"
             },
             {
               "num": "15",
-              "name": "Program",
+              "label": "Program",
               "enabled": "True"
             },
             {
               "num": "16",
-              "name": "GFX",
+              "label": "GFX",
               "enabled": "True"
             }
           ],
           "output": [
             {
               "num": "1",
-              "name": "DaVE 1",
+              "label": "DaVE 1",
               "enabled": "True"
             },
             {
               "num": "2",
-              "name": "DaVE 2",
+              "label": "DaVE 2",
               "enabled": "True"
             },
             {
               "num": "3",
-              "name": "DaVE 3",
+              "label": "DaVE 3",
               "enabled": "True"
             },
             {
               "num": "4",
-              "name": "DaVE 4",
+              "label": "DaVE 4",
               "enabled": "True"
             },
             {
               "num": "5",
-              "name": "Multi 1",
+              "label": "Multi 1",
               "enabled": "True"
             },
             {
               "num": "6",
-              "name": "Multi 2",
+              "label": "Multi 2",
               "enabled": "True"
             },
             {
               "num": "7",
-              "name": "Multi 3",
+              "label": "Multi 3",
               "enabled": "True"
             },
             {
               "num": "8",
-              "name": "Multi 4",
+              "label": "Multi 4",
               "enabled": "True"
             },
             {
               "num": "9",
-              "name": "Program Monitor",
+              "label": "Program Monitor",
               "enabled": "True"
             },
             {
               "num": "10",
-              "name": "Program Monitor 2",
+              "label": "Program Monitor 2",
               "enabled": "True"
             },
             {
               "num": "11",
-              "name": "Multiview Monitor",
+              "label": "Multiview Monitor",
               "enabled": "True"
             },
             {
               "num": "12",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "13",
-              "name": "Unused",
+              "label": "Unused",
               "enabled": "False"
             },
             {
               "num": "14",
-              "name": "Corio",
+              "label": "Corio",
               "enabled": "True"
             },
             {
               "num": "15",
-              "name": "Recording",
+              "label": "Recording",
               "enabled": "True"
             },
             {
               "num": "16",
-              "name": "Stream",
+              "label": "Stream",
               "enabled": "True"
             }
           ]
@@ -566,35 +566,35 @@
     "panels": {
       "getstarted": {
         "enabled": "False",
-        "name": "Get Started"
+        "label": "Get Started"
       },
       "directorpanel": {
         "enabled": "False",
-        "name": "Director Panel"
+        "label": "Director Panel"
       },
       "hub": {
         "enabled": "True",
-        "name": "Hub Control"
+        "label": "Hub Control"
       },
       "mux": {
         "enabled": "False",
-        "name": "Mux Control"
+        "label": "Mux Control"
       },
       "trans": {
         "enabled": "False",
-        "name": "Transmission Light"
+        "label": "Transmission Light"
       },
       "tarantula": {
         "enabled": "True",
-        "name": "Tarantula Control"
+        "label": "Tarantula Control"
       },
       "vik": {
         "enabled": "True",
-        "name": "V1616 Control"
+        "label": "V1616 Control"
       },
       "caspar": {
         "enabled": "False",
-        "name": "Graphics"
+        "label": "Graphics"
       }
     }
 }
