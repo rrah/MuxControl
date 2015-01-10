@@ -26,6 +26,9 @@ class DeviceThread(threading.Thread):
                 for device in self.devices:
                     update = False
                     if device.is_enabled():
+                        old = (set(map(tuple, device.get_map())),
+                                set(map(tuple, device.get_input_labels())),
+                                set(map(tuple, device.get_output_labels())))
                         with device:
                             device.update()
                             logging.debug(
@@ -33,7 +36,14 @@ class DeviceThread(threading.Thread):
                                                             device.get_name()))
                             update = True
                         if self.update_hook is not None and update:
-                            self.update_hook(device)
+                            new = (set(map(tuple, device.get_map())),
+                                set(map(tuple, device.get_input_labels())),
+                                set(map(tuple, device.get_output_labels())))
+                            if ((not new[0] == old[0]) or
+                                                    (not new[1] == old[1]) or
+                                                    (not new[2] == old[2])):
+                                logging.debug('There\'s been a change, updating window')
+                                self.update_hook(device)
             except:
                 logging.exception('Something bad in the device thread')
             sleep(3)
