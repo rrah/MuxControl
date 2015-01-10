@@ -175,6 +175,16 @@ class Basic_Window(wx.Frame):
     Window with a set of input buttons for each mixer input.
     Will hopefully make stuff easier to use in a broadcast"""
 
+    def on_triggered_update(self, dev):
+
+        input_labels = dev.get_input_labels()
+        output_labels = dev.get_output_labels()
+        self.source_selection.update_buttons(map_ = dev.get_map(),
+                                            input_labels = input_labels)
+        self.settings.parse_labels(device = dev.get_name(),
+                                    input_labels = input_labels,
+                                    output_labels = output_labels)
+
     def get_labels(self):
 
         """
@@ -211,9 +221,8 @@ class Basic_Window(wx.Frame):
         source_selection panel to update. """
 
         dev = self.dev_list.find_device(e.dev)
-        dev.acquire()
-        dev.update()
-        dev.release()
+        with dev:
+            dev.update()
         input_labels = dev.get_input_labels()
         output_labels = dev.get_output_labels()
         self.source_selection.update_buttons(map_ = dev.get_map(),

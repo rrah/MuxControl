@@ -24,15 +24,23 @@ class DeviceThread(threading.Thread):
         while True:
             try:
                 for device in self.devices:
-                    if device.is_enabled() and device.aquire(False):
-                        device.update()
-                        device.release()
+                    update = False
+                    if device.is_enabled():
+                        with device:
+                            device.update()
+                            logging.debug(
+                                        'Device {} has been updated'.format(
+                                                            device.get_name()))
+                            update = True
+                        if self.update_hook is not None and update:
+                            self.update_hook(device)
             except:
                 logging.exception('Something bad in the device thread')
             sleep(3)
 
-    def __init__(self, devices, *args, **kwargs):
+    def __init__(self, devices, update_hook = None, *args, **kwargs):
         self.devices = devices
+        self.update_hook = update_hook
         threading.Thread.__init__(self, *args, **kwargs)
         self.daemon = True
         self.start()
