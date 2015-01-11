@@ -9,8 +9,11 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
+import logging
+
 import wx
 import wxExtras.wxPythonExtra as wxx
+from wx import PyDeadObjectError
 
 sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
@@ -39,6 +42,8 @@ class Source_Selection(wxx.Wizard_Page):
     """
     Select which sources want to be controlled by the basic panel"""
 
+    source_list = []
+
     def get_source_selection(self):
 
         return_list = []
@@ -48,19 +53,41 @@ class Source_Selection(wxx.Wizard_Page):
                 return_list.append(i)
         return return_list
 
-    def set_device_settings(self, device_settings, input_labels):
+    def set_device_settings(self, settings, input_labels):
 
-        self.device, self.host, self.port = device_settings
-        self.source_list = []
+        self.device, self.host, self.port = settings['device']
         self.sources_sizer = wx.BoxSizer(wx.VERTICAL)
         msg = '''Select what inputs you want to use.'''
         self.top_text = wx.StaticText(self, label = msg)
+
+        # Remove all the current boxes since the last time this page
+        # was visited
+        dead_objects = []
+        for source in self.source_list:
+            try:
+                source.Destroy()
+            except PyDeadObjectError:
+                dead_objects.append(source)
+                #self.source_list.remove(source)
+                logging.debug('Removing dead object from list')
+        for source in dead_objects:
+            self.source_list.remove(source)
+        del dead_objects
+
+        # Add the labels
         self.sources_sizer.Add(self.top_text)
         for source in input_labels:
             if type(source) == list:
+                index = source[0]
                 source = source[1]
             source_select = wx.CheckBox(self, label = source)
-            source_select.SetValue(True)
+            try:
+                if int(index) in settings['current']['inputs']:
+                    source_select.SetValue(True)
+                else:
+                    source_select.SetValue(False)
+            except KeyError:
+                source_select.SetValue(True)
             self.sources_sizer.Add(source_select)
             self.source_list.append(source_select)
         self.SetSizer(self.sources_sizer)
@@ -150,7 +177,7 @@ class Device_Settings(wxx.Wizard_Page):
 
         return self.device, self.host_text.GetValue(), self.port_text.GetValue()
 
-    def set_device(self, device):
+    def set_device(self, device, settings = None):
 
         """
         To be called when the device (from a previous page) has been selected.
@@ -175,12 +202,16 @@ class Device_Settings(wxx.Wizard_Page):
             self.set = True
 
         # Enter default settings
-        if device == 'Hub':
-            self.host_text.SetValue('192.168.10.241')
-            self.port_text.SetValue('9990')
-        elif device == 'Vikinx':
-            self.host_text.SetValue('ob1')
-            self.port_text.SetValue('2004')
+        try:
+            self.host_text.SetValue(settings['current']['device'][1])
+            self.port_text.SetValue(settings['current']['device'][2])
+        except KeyError:
+            if device == 'Hub':
+                self.host_text.SetValue('192.168.10.241')
+                self.port_text.SetValue('9990')
+            elif device == 'Vikinx':
+                self.host_text.SetValue('ob1')
+                self.port_text.SetValue('2004')
 
         self.SetSizer(self.sizer)
 

@@ -71,7 +71,7 @@ class Source_Selection(scroll.ScrolledPanel):
                     connection = (connection[1], connection[0])
                 try:
                     self.inputs[int(connection[0])].set_selected(connection[1])
-                except IndexError:
+                except (KeyError, IndexError):
                     break
         if input_labels is not None:
             for input_block in self.inputs:

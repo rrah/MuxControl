@@ -209,8 +209,10 @@ class Basic_Window(wx.Frame):
         Tell the device to do the linking"""
 
         dev = self.dev_list.find_device(e.dev)
+
         for link in e.map_:
-            dev.setConnection(*link)
+            with dev:
+                dev.setConnection(*link)
         self.source_selection.update_buttons(map_ = e.map_, reverse = True)
 
     def on_update(self, e):
@@ -233,11 +235,47 @@ class Basic_Window(wx.Frame):
 
     def on_connection_settings(self, e):
 
-        dialogs.Not_Implimented()
+        #dialogs.Not_Implimented()
+        settings = self.settings
+        logging.debug('Starting settings wizard')
+        window = dialogs.First_Time_Dialog(self.dev_list,
+                                current_settings = self.settings['basic_panel'])
+        if window.cancelled:
+            logging.debug('Settings wizard cancelled. No change to settings')
+            return
+        basic_panel_settings = window.get_panel_settings()
+        with settings:
+            # Disable the current device
+            settings['devices'][settings['basic_panel']['device'][0].lower()]['enabled'] = False
+            current_device = self.dev_list.find_device(settings['basic_panel']['device'][0].lower())
+            current_device.set_enabled(False)
 
-    def on_label_change(self, e):
+            # Enable the new device and settings
+            settings['basic_panel'] = basic_panel_settings
+            device_settings = basic_panel_settings['device']
+            settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
+            settings['devices'][device_settings[0].lower()]['port'] = int(device_settings[2])
+            settings['first_run'] = False
+            settings.save_settings()
 
-        dialogs.Not_Implimented()
+        # And activate the new device
+        new_device_name = settings['basic_panel']['device'][0].lower()
+        new_device = self.dev_list.find_device(new_device_name)
+        with new_device:
+            device_settings = settings['devices'][new_device_name]
+            new_device.set_host(device_settings['host'])
+            new_device.set_port(device_settings['port'])
+            new_device.set_enabled(True)
+
+        # Clean up
+        window.Destroy()
+        del window
+        logging.debug('Destroyed settings wizard')
+        self.source_selection.Destroy()
+        self.source_selection = panels.Source_Selection(self,
+                                *self.get_labels(), size = self.GetClientSize())
+        self.source_selection.Show()
+        self.Layout()
 
     def on_exit(self, e):
 
@@ -257,29 +295,14 @@ class Basic_Window(wx.Frame):
 
         # File menu
         file_menu = wx.Menu()
-        menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit', ' Quit the program')
-
-        # Settings for the buttons
-        self.button_menu = wx.Menu()
-        input_labels = self.button_menu.Append(-1, '&Inputs',
-                                        ' Change the input labels')
-        output_labels = self.button_menu.Append(-1, '&Outputs',
-                                        ' Change the output labels')
-        details = self.button_menu.Append(-1, '&Details',
-                                                ' View the device information')
-
-        # Other settings
-        connection_menu = wx.Menu()
-        settings_menu = connection_menu.Append(-1, '&Settings',
+        settings_menu = file_menu.Append(-1, '&Settings',
                                         ' Change the connection settings')
+        menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit', ' Quit the program')
 
         # Set up the menu bars
         menu_bar = wx.MenuBar()
         menu_bar.Append(file_menu, '&File')
-        menu_bar.Append(self.button_menu, '&Buttons')
-        menu_bar.Append(connection_menu, '&Connection')
         self.SetMenuBar(menu_bar)
-        self.CreateStatusBar()
 
         # Window icon
         self.icon = wx.Icon('muxcontrol.ico', wx.BITMAP_TYPE_ICO)
@@ -289,8 +312,6 @@ class Basic_Window(wx.Frame):
         self.Bind(EVT_DEVICE_UPDATE, self.on_update)
         self.Bind(EVT_DEVICE_LINK, self.on_link)
         self.Bind(wx.EVT_MENU, self.on_exit, menu_exit)
-        self.Bind(wx.EVT_MENU, self.on_label_change, input_labels)
-        self.Bind(wx.EVT_MENU, self.on_label_change, output_labels)
         self.Bind(wx.EVT_MENU, self.on_connection_settings, settings_menu)
 
         # And lets get showing

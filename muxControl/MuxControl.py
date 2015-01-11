@@ -11,7 +11,7 @@
 
 import logging
 
-logging.info('Starting up')
+logging.info('Starting up v2.02')
 
 import json
 import datetime as dt
@@ -41,6 +41,7 @@ def main():
         window.on_triggered_update(device)
 
     app = wx.App(False)
+    window = None
 
     # Set up the list of devices
     logging.debug('Loading devices')

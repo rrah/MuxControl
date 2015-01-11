@@ -39,11 +39,13 @@ def lostDev(dev = None):
 
 class First_Time_Dialog(wxx.Wizard):
 
-    def __init__(self, devices, *args, **kwargs):
+    def __init__(self, devices, current_settings = None, *args, **kwargs):
         wxx.Wizard.__init__(self, None, *args, title = 'MuxControl Setup',
                                                                     **kwargs)
         self.devices = devices
         self.settings = {}
+        if current_settings is not None:
+            self.settings['current'] = current_settings
         self.cancelled = False
         self.add_page(firstrun.Device_Selection(self))
         self.add_page(firstrun.Device_Settings(self))
@@ -63,20 +65,22 @@ class First_Time_Dialog(wxx.Wizard):
             # Only do this if going forwards
 
             if page == self.pages[0]: # Device selection page
-                self.pages[1].set_device(page.get_device())
+                self.pages[1].set_device(page.get_device(),
+                                                    settings = self.settings)
 
             elif page == self.pages[1]: # Device settings page
-                page_next = self.pages[2]
                 self.settings['device'] = page.get_device_settings()
                 dev, dev_host, dev_port = self.settings['device']
                 device = self.devices.find_device(dev.lower()[0:3])
+                # Save the old settings in case of a cancel
+                self.settings['current_device'] = (device.get_host(),
+                                        device.get_port(), device.is_enabled())
                 try:
-                    device.acquire()
-                    device.set_host(str(dev_host))
-                    device.set_port(str(dev_port))
-                    device.set_enabled(True)
-                    device.update()
-                    device.release()
+                    with device:
+                        device.set_host(str(dev_host))
+                        device.set_port(str(dev_port))
+                        device.set_enabled(True)
+                        device.update()
                 except socket.timeout:
                     msg = '''Timeout while trying to connect to the device.
 Check the details and that the device is plugged in and on, and try again.'''
@@ -84,7 +88,7 @@ Check the details and that the device is plugged in and on, and try again.'''
                                                                 style = wx.OK)
                     dlg.ShowModal()
                     e.Veto()
-                page_next.set_device_settings((dev, dev_host, dev_port),
+                self.pages[2].set_device_settings(self.settings,
                                                     device.get_input_labels())
 
             elif page == self.pages[2]: # input settings page
@@ -110,6 +114,17 @@ None of the settings will be saved.'''
         ret = dlg.ShowModal()
         if ret == wx.ID_YES:
             self.cancelled = True
+            try:
+                device = self.devices.find_device(self.settings['device'][0])
+                old = self.settings['current_device']
+                with device:
+                    device.set_host = old[0]
+                    device.set_port = old[1]
+                    device.set_enabled = old[2]
+            except KeyError:
+                # There isn't the relevant keys in the settings, so didn't
+                # get that far in the wizard
+                pass
         else:
             e.Veto()
         dlg.Destroy()

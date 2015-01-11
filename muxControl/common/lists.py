@@ -115,6 +115,6 @@ except IOError as e:
         # Can't find settings, probably first run
         import shutil
         shutil.copyfile('example_settings.json', file_location)
-        settings = json.load(open(file_location))
+        settings = json.load(open(file_location), object_hook = settings_decoder)
     else:
         raise e
