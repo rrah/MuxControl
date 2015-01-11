@@ -305,7 +305,7 @@ class Basic_Window(wx.Frame):
         self.SetMenuBar(menu_bar)
 
         # Window icon
-        self.icon = wx.Icon('muxcontrol.ico', wx.BITMAP_TYPE_ICO)
+        self.icon = wx.Icon('images/muxcontrol.ico', wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
         # Bind all the events

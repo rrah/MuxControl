@@ -52,7 +52,7 @@ class First_Time_Dialog(wxx.Wizard):
         self.add_page(firstrun.Source_Selection(self))
         self.add_page(firstrun.Sink_Selection(self))
         self.SetPageSize((400, 400))
-        self.icon = wx.Icon('muxcontrol.ico', wx.BITMAP_TYPE_ICO)
+        self.icon = wx.Icon('images/muxcontrol.ico', wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
         self.run()
 

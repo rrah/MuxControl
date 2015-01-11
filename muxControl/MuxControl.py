@@ -11,7 +11,9 @@
 
 import logging
 
-logging.info('Starting up v2.02')
+from common.version import *
+
+logging.info('Starting up v{}'.format(version))
 
 import json
 import datetime as dt
@@ -42,6 +44,13 @@ def main():
 
     app = wx.App(False)
     window = None
+
+    bitmap = wx.Bitmap('images/splash.png')
+    splash = wx.SplashScreen(bitmap, wx.SPLASH_CENTER_ON_SCREEN|wx.SPLASH_TIMEOUT, 10000, None)
+    ver_text = 'MuxControl {}'.format(version)
+    if version_text is not None:
+        ver_text += version_text
+    splash.version = wx.StaticText(splash, label = ver_text)
 
     # Set up the list of devices
     logging.debug('Loading devices')
