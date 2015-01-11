@@ -210,9 +210,13 @@ class Basic_Window(wx.Frame):
 
         dev = self.dev_list.find_device(e.dev)
 
-        for link in e.map_:
-            with dev:
-                dev.setConnection(*link)
+        #for link in e.map_:
+        with dev:
+            try:
+                dev.set_map(e.map_)
+                logging.debug('Made link {}'.format(e.map_))
+            except:
+                logging.exception('Issue making link {}'.format(e.map_))
         self.source_selection.update_buttons(map_ = e.map_, reverse = True)
 
     def on_update(self, e):
