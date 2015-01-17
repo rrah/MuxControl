@@ -9,5 +9,5 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
-version = 2.05
-version_text = ' (pre-alpha)'
+version = 2.06
+version_text = ' (alpha)'

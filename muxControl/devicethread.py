@@ -15,7 +15,17 @@ import logging
 
 import Devices
 
+import socket
+
 from time import sleep
+
+def bad_things():
+
+    """
+    For any exception that isn't otherwise caught.
+    Basically does the logging so I don't have to copypasta"""
+
+    logging.exception('Something bad in the device thread')
 
 class DeviceThread(threading.Thread):
 
@@ -44,8 +54,15 @@ class DeviceThread(threading.Thread):
                                                     (not new[2] == old[2])):
                                 logging.debug('There\'s been a change, updating window')
                                 self.update_hook(device)
+            except socket.timeout as e:
+                logging.error('Timed out connecting to {}'.format(device.get_name()))
+            except socket.error as e:
+                if e.errno == 10061:
+                    logging.error('{} refused connection'.format(device.get_name()))
+                else:
+                    bad_things()
             except:
-                logging.exception('Something bad in the device thread')
+                bad_things()
             sleep(3)
 
     def __init__(self, devices, update_hook = None, *args, **kwargs):

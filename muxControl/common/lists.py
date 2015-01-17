@@ -39,8 +39,11 @@ class DevList(list):
         See if a device with the same name as entered is in the list.
         Case insensitive."""
 
+        name = name.lower()
         for dev in list(self):
-            if dev.get_name().lower() == name.lower():
+            if dev.get_name().lower() == name:
+                return dev
+            elif dev.get_full_name().lower() == name:
                 return dev
         raise DeviceError
 

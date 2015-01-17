@@ -66,7 +66,7 @@ def main():
             enabled = dev['enabled']
             dev = devTypeDict[dev['type']](dev['host'], dev['port'])
             with dev:
-                if type(enabled) == bool and enabled:
+                if type(enabled) == bool and enabled and not settings['first_run']:
                     dev.set_enabled(True)
                 else:
                     dev.set_enabled(False)
@@ -89,6 +89,7 @@ def main():
                 device_settings = basic_panel_settings['device']
                 settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
                 settings['devices'][device_settings[0].lower()]['port'] = device_settings[2]
+                settings['devices'][device_settings[0].lower()]['enabled'] = True
                 settings['first_run'] = False
                 settings.save_settings()
             logging.debug('First run settings saved')

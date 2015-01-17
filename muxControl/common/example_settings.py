@@ -205,22 +205,22 @@ example = """
         }
       },
       "trans": {
-        "enabled": "False",
+        "enabled": false,
         "type": "Transmission Light",
         "host": "trans.ystv",
-        "port": "2000"
+        "port": 2000
       },
       "tarantula": {
-        "enabled": "False",
+        "enabled": false,
         "type": "Tarantula",
         "host": "tarantula.ystv",
-        "port": "9815"
+        "port": 9815
       },
       "hub": {
         "enabled": true,
         "type": "Videohub",
         "host": "192.168.1.1",
-        "port": "9990",
+        "port": 9990,
         "labels": {
           "input": [
             {
@@ -389,95 +389,95 @@ example = """
         }
       },
       "tally": {
-        "enabled": "False",
+        "enabled": false,
         "type": "Tally",
         "host": "tally.ystv",
         "port": "2000"
       },
       "vik": {
-        "enabled": "False",
+        "enabled": false,
         "type": "V1616",
         "host": "192.168.1.2",
         "port": "2001",
         "labels": {
           "input": [
             {
-              "num": "1",
+              "num": 0,
               "label": "Cam 1",
               "enabled": "True"
             },
             {
-              "num": "2",
+              "num": 1,
               "label": "Cam 2",
               "enabled": "True"
             },
             {
-              "num": "3",
+              "num": 2,
               "label": "Cam 3",
               "enabled": "True"
             },
             {
-              "num": "4",
+              "num": 3,
               "label": "Cam 4",
               "enabled": "True"
             },
             {
-              "num": "5",
+              "num": 4,
               "label": "Cam 5",
               "enabled": "True"
             },
             {
-              "num": "6",
+              "num": 5,
               "label": "Cam 6",
               "enabled": "True"
             },
             {
-              "num": "7",
+              "num": 6,
               "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "8",
+              "num": 7,
               "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "9",
+              "num": 8,
               "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "10",
+              "num": 9,
               "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "11",
+              "num": 10,
               "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "12",
+              "num": 11,
               "label": "Unused",
               "enabled": "False"
             },
             {
-              "num": "13",
+              "num": 12,
               "label": "Multiview",
               "enabled": "True"
             },
             {
-              "num": "14",
+              "num": 13,
               "label": "Preview",
               "enabled": "True"
             },
             {
-              "num": "15",
+              "num": 14,
               "label": "Program",
               "enabled": "True"
             },
             {
-              "num": "16",
+              "num": 15,
               "label": "GFX",
               "enabled": "True"
             }

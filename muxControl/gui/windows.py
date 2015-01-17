@@ -177,6 +177,8 @@ class Basic_Window(wx.Frame):
 
     def on_triggered_update(self, dev):
 
+        if dev.get_name() != self.source_selection.dev.lower():
+            return
         input_labels = dev.get_input_labels()
         output_labels = dev.get_output_labels()
         self.source_selection.update_buttons(map_ = dev.get_map(),
@@ -252,13 +254,16 @@ class Basic_Window(wx.Frame):
             # Disable the current device
             settings['devices'][settings['basic_panel']['device'][0].lower()]['enabled'] = False
             current_device = self.dev_list.find_device(settings['basic_panel']['device'][0].lower())
-            current_device.set_enabled(False)
+            with current_device:
+                current_device.set_enabled(False)
+
 
             # Enable the new device and settings
             settings['basic_panel'] = basic_panel_settings
             device_settings = basic_panel_settings['device']
             settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
             settings['devices'][device_settings[0].lower()]['port'] = int(device_settings[2])
+            settings['devices'][device_settings[0].lower()]['enabled'] = True
             settings['first_run'] = False
             settings.save_settings()
 
@@ -277,7 +282,9 @@ class Basic_Window(wx.Frame):
         logging.debug('Destroyed settings wizard')
         self.source_selection.Destroy()
         self.source_selection = panels.Source_Selection(self,
-                                *self.get_labels(), size = self.GetClientSize())
+                                *self.get_labels(),
+                                device = self.settings['basic_panel']['device'][0],
+                                size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
 
@@ -295,7 +302,8 @@ class Basic_Window(wx.Frame):
         self.dev_list = dev_list
         self.settings = settings
         self.source_selection = panels.Source_Selection(self,
-                                                            *self.get_labels())
+                                            *self.get_labels(),
+                                device = self.settings['basic_panel']['device'][0])
 
         # File menu
         file_menu = wx.Menu()

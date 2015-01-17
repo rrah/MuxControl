@@ -85,7 +85,7 @@ class Source_Selection(scroll.ScrolledPanel):
         evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().get_map(), dev = self.dev)
         wx.PostEvent(self.GetParent(), evt)
 
-    def __init__(self, parent, inputs = None, outputs = None,
+    def __init__(self, parent, inputs = None, outputs = None, device = None,
                                                     *args, **kwargs):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.outputSizer = wx.BoxSizer(wx.VERTICAL)
@@ -110,7 +110,11 @@ class Source_Selection(scroll.ScrolledPanel):
             self.inputs.append(button_list)
             self.outputSizer.Add(inputSizer)
         self.SetSizer(self.outputSizer)
-        self.dev = 'hub'
+        if device is not None:
+            self.dev = device
+        else:
+            # Failover for now
+            self.dev = 'hub'
         self.on_update(None)
         self.SetupScrolling()
 

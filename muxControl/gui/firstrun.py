@@ -17,7 +17,7 @@ from wx import PyDeadObjectError
 
 sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
-devices = ['Hub', 'Vikinx', 'Mux']
+devices = ['Hub', 'Vik', 'Mux']
 
 class Device_Selection(wxx.Wizard_Page):
 
@@ -76,18 +76,24 @@ class Source_Selection(wxx.Wizard_Page):
 
         # Add the labels
         self.sources_sizer.Add(self.top_text)
+        index = -1
         for source in input_labels:
-            if type(source) == list:
+            if type(source) in (list, tuple):
                 index = source[0]
                 source = source[1]
+            else:
+                index += 1
             source_select = wx.CheckBox(self, label = source)
-            try:
-                if int(index) in settings['current']['inputs']:
+            if settings['current_device'][3] == settings['device'][0][0:3].lower():
+                try:
+                    if int(index) in settings['current']['inputs']:
+                        source_select.SetValue(True)
+                    else:
+                        source_select.SetValue(False)
+                except KeyError:
                     source_select.SetValue(True)
-                else:
-                    source_select.SetValue(False)
-            except KeyError:
-                source_select.SetValue(True)
+            else:
+                source_select.SetValue(False)
             self.sources_sizer.Add(source_select)
             self.source_list.append(source_select)
         self.SetSizer(self.sources_sizer)
@@ -120,9 +126,11 @@ class Sink_Selection(wxx.Wizard_Page):
         self.device = device
         choices = []
         for output in outputs:
-            if output == list:
+            if type(output) in (list, tuple):
                 output = output[1]
-            choices.append(output[1])
+                choices.append(output)
+            elif type(output) == str:
+                choices.append(output)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         msg = '''Select the output for each mixer input and monitor'''
@@ -135,7 +143,7 @@ class Sink_Selection(wxx.Wizard_Page):
         sink_head = wx.StaticText(self, label = 'Mixer input')
         mixer_head = wx.StaticText(self, label = 'Output to mixer')
         monitor_head = wx.StaticText(self, label = 'Output to monitor')
-        head_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        #head_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.outputs_sizer.AddMany([(sink_head), (mixer_head), (monitor_head)])
         #self.outputs_sizer.Add(head_sizer)
 
@@ -209,7 +217,7 @@ class Device_Settings(wxx.Wizard_Page):
             if device == 'Hub':
                 self.host_text.SetValue('192.168.10.241')
                 self.port_text.SetValue('9990')
-            elif device == 'Vikinx':
+            elif device == 'Vik':
                 self.host_text.SetValue('ob1')
                 self.port_text.SetValue('2004')
 
