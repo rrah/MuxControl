@@ -217,7 +217,7 @@ example = """
         "port": 9815
       },
       "hub": {
-        "enabled": true,
+        "enabled": false,
         "type": "Videohub",
         "host": "192.168.1.1",
         "port": 9990,

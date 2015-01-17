@@ -229,8 +229,9 @@ class Basic_Window(wx.Frame):
         source_selection panel to update. """
 
         dev = self.dev_list.find_device(e.dev)
-        with dev:
+        if dev.acquire(False):
             dev.update()
+            dev.release()
         input_labels = dev.get_input_labels()
         output_labels = dev.get_output_labels()
         self.source_selection.update_buttons(map_ = dev.get_map(),
