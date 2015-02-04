@@ -6,6 +6,7 @@ import firstrun
 import logging
 
 import panels
+from font import *
 
 import socket
 
@@ -42,6 +43,7 @@ class First_Time_Dialog(wxx.Wizard):
     def __init__(self, devices, current_settings = None, *args, **kwargs):
         wxx.Wizard.__init__(self, None, *args, title = 'MuxControl Setup',
                                                                     **kwargs)
+        self.SetFont(FONT)
         self.devices = devices
         self.settings = {}
         if current_settings is not None:

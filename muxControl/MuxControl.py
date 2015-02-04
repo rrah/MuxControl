@@ -31,8 +31,6 @@ import Devices.vikinx as vik
 
 # The gui stuff
 import wx
-import gui.windows
-import gui.dialogs
 import devicethread
 from common.lists import settings, DevList
 
@@ -44,6 +42,9 @@ def main():
 
     app = wx.App(False)
     window = None
+    
+    import gui.windows
+    import gui.dialogs
 
     bitmap = wx.Bitmap('images/splash.png')
     splash = wx.SplashScreen(bitmap, wx.SPLASH_CENTER_ON_SCREEN|wx.SPLASH_TIMEOUT, 10000, None)
