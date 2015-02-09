@@ -42,7 +42,7 @@ def main():
 
     app = wx.App(False)
     window = None
-    
+
     import gui.windows
     import gui.dialogs
 
@@ -100,7 +100,6 @@ def main():
         logging.info('Starting basic panel')
         basic_panel_settings = settings['basic_panel']
         window = gui.windows.Basic_Window(devList, settings)
-        #window = gui.windows.MainWindow(devList, settings)
         app.MainLoop()
     except SystemExit:
         raise

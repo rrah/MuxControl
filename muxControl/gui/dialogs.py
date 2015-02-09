@@ -1,3 +1,14 @@
+#-------------------------------------------------------------------------------
+# Name:        dialogs
+# Purpose:      All the dialogs for MuxControl
+#
+# Author:      Robert Walker
+#
+# Created:
+# Copyright:   (c) Robert Walker 2015
+# Licence:     GPL3
+#-------------------------------------------------------------------------------
+
 import wx
 import wxExtras.wxPythonExtra as wxx
 
@@ -10,6 +21,7 @@ from font import *
 
 import socket
 
+
 class Not_Implimented(wx.MessageDialog):
 
     def __init__(self):
@@ -20,22 +32,18 @@ Check the \'About\' to see where to find out more information'''
         self.ShowModal()
         self.Destroy()
 
-class LostDevDialog(wx.MessageDialog):
 
-    def __init__(self, parent, dev, *args, **kwargs):
-        msg = 'Can\'t find the \'{}\'\r\nShall I disable it?'.format(dev)
-        wx.MessageDialog.__init__(self, parent, message = msg,
-                                    style = wx.YES_NO, *args, **kwargs)
+class About_Dialog(wx.AboutDialogInfo):
 
-def lostDev(dev = None):
-
-    """
-    Notify the user that a device has gone missing."""
-
-    dlg = LostDevDialog(None, dev)
-    logging.error('Can\'t find {}'.format(dev.getName()))
-    if dlg.ShowModal() == wx.ID_YES:
-        dev.setEnabled(False)
+    def __init__(self):
+        wx.AboutDialogInfo.__init__(self)
+        self.Name = 'MuxControl'
+        self.Copyright = "(C) 2014-15 Robert Walker"
+        self.Description = "Program to control different devices around YSTV"
+        self.WebSite = ("https://github.com/rrah/MuxControl")
+        self.AddDeveloper("Robert Walker")
+        self.Licence = "GNU v3"
+        wx.AboutBox(self)
 
 
 class First_Time_Dialog(wxx.Wizard):
@@ -145,33 +153,3 @@ None of the settings will be saved.'''
         else:
             e.Veto()
         dlg.Destroy()
-
-
-class SettingDialog(wx.Dialog):
-
-    """
-    Dialog for changing settings for connects etc. Currently only does
-    mux settings"""
-
-    def onOK(self, e):
-
-        for page in self.notebook:
-            page.saveSettings()
-        with open('settings.json', 'w') as outfile:
-            json.dump(settings, outfile)
-        ##settings.write('settings.xml')
-        self.Destroy()
-
-    def __init__(self, *args, **kwargs):
-        wx.Dialog.__init__(self, title = 'Connection Settings', *args, **kwargs)
-        sizer = wx.GridBagSizer()
-        self.notebook = wxx.Notebook(self)
-        self.notebook.AddPage(panels.SettingDevicePanel(self.notebook), 'Devices')
-        self.notebook.AddPage(panels.SettingPanelsPanel(self.notebook), 'Tabs')
-        self.OK = wx.Button(self, wx.ID_OK, 'OK')
-        self.Cancel = wx.Button(self, wx.ID_CANCEL, 'Cancel')
-        sizer.AddMany([(self.notebook, (1, 1), (1, 2)),
-                        (self.OK, (2, 1)), (self.Cancel, (2, 2))])
-        self.Bind(wx.EVT_BUTTON, self.onOK, self.OK)
-        self.SetSizer(sizer)
-        sizer.Fit(self)
