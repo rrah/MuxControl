@@ -212,7 +212,6 @@ class Basic_Window(wx.Frame):
 
         dev = self.dev_list.find_device(e.dev)
 
-        #for link in e.map_:
         with dev:
             try:
                 dev.set_map(e.map_)
@@ -229,9 +228,9 @@ class Basic_Window(wx.Frame):
         source_selection panel to update. """
 
         dev = self.dev_list.find_device(e.dev)
-        if dev.acquire(False):
-            dev.update()
-            dev.release()
+        ##if dev.acquire(False):
+            ##dev.update()
+            ##dev.release()
         input_labels = dev.get_input_labels()
         output_labels = dev.get_output_labels()
         self.source_selection.update_buttons(map_ = dev.get_map(),
@@ -242,7 +241,6 @@ class Basic_Window(wx.Frame):
 
     def on_connection_settings(self, e):
 
-        #dialogs.Not_Implimented()
         settings = self.settings
         logging.debug('Starting settings wizard')
         window = dialogs.First_Time_Dialog(self.dev_list,
@@ -297,6 +295,45 @@ class Basic_Window(wx.Frame):
         self.settings.save_settings()
         sys.exit(0)
 
+    def on_view_change_basic(self, e):
+
+        """
+        If the current panel is basic, stay. Otherwise
+        change to advanced."""
+
+        if type(self.source_selection) == panels.Source_Selection:
+            return
+        try:
+            self.source_selection.Destroy()
+        except wx.PyDeadObjectError:
+            # Already destroyed
+            pass
+        self.source_selection = panels.Source_Selection(self,
+                                        *self.get_labels(),
+                            device = self.settings['basic_panel']['device'][0],
+                            size = self.GetClientSize())
+        self.source_selection.Show()
+        self.Layout()
+
+    def on_view_change_advanced(self, e):
+
+        """
+        If the current panel is basic, stay. Otherwise
+        change to advanced."""
+
+        if type(self.source_selection) == panels.Button_Panel:
+            return
+        try:
+            self.source_selection.Destroy()
+        except wx.PyDeadObjectError:
+            # Already destroyed
+            pass
+        self.source_selection = panels.Button_Panel(self, self.settings,
+                                self.settings['basic_panel']['device'][0],
+                                size = self.GetClientSize())
+        self.source_selection.Show()
+        self.Layout()
+
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
                                                 title = 'MuxControl', **kwargs)
@@ -312,9 +349,14 @@ class Basic_Window(wx.Frame):
                                         ' Change the connection settings')
         menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit', ' Quit the program')
 
+        view_menu = wx.Menu()
+        view_menu_basic = view_menu.Append(-1, '&Basic', 'Basic control')
+        view_menu_advanced = view_menu.Append(-1, '&Advanced', 'Advanced control')
+
         # Set up the menu bars
         menu_bar = wx.MenuBar()
         menu_bar.Append(file_menu, '&File')
+        menu_bar.Append(view_menu, '&View')
         self.SetMenuBar(menu_bar)
 
         # Window icon
@@ -326,6 +368,8 @@ class Basic_Window(wx.Frame):
         self.Bind(EVT_DEVICE_LINK, self.on_link)
         self.Bind(wx.EVT_MENU, self.on_exit, menu_exit)
         self.Bind(wx.EVT_MENU, self.on_connection_settings, settings_menu)
+        self.Bind(wx.EVT_MENU, self.on_view_change_basic, view_menu_basic)
+        self.Bind(wx.EVT_MENU, self.on_view_change_advanced, view_menu_advanced)
 
         # And lets get showing
         self.Show()

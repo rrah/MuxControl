@@ -20,6 +20,8 @@ from events import *
 
 import socket
 
+from math import ceil, sqrt
+
 sources = ['cam 1', 'cam 2', 'cam 3', 'cam 4']
 outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
 colourDict = {1: (255, 0, 0), 2: (255, 85, 0), 3:(255, 170, 0),
@@ -29,28 +31,18 @@ colourDict = {1: (255, 0, 0), 2: (255, 85, 0), 3:(255, 170, 0),
             13:(0, 0, 255), 14:(85, 0, 255), 15:(170, 0, 255),
             16:(255, 0, 255), 17:(255, 0, 170), 18:(255, 0, 85)}
 
-class DevPanel(scroll.ScrolledPanel):
+class Device_Panel(scroll.ScrolledPanel):
 
     """
     Base class to add device-specific information to the panel
     for deciding things like menu options."""
 
-    def GetDev(self):
+    def get_dev(self):
         return self.dev
-
-    def GetMenuOptions(self):
-        return self.menuOptions
 
     def __init__(self, parent, dev = None, *args, **kwargs):
         scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.dev = dev
-        self.menuOptions = []
-        if dev.get_name() == 'mux':
-            self.menuOptions = ['Inputs', 'Tally']
-        elif dev.get_name() == 'vik':
-            self.menuOptions = ['Inputs', 'Outputs', 'Tally']
-        elif dev.get_name() == 'hub':
-            self.menuOptions = ['Inputs', 'Outputs', 'Details', 'Tally']
 
 class Source_Selection(scroll.ScrolledPanel):
 
@@ -215,39 +207,41 @@ class SettingPanelsPanel(wx.Panel):
         self.SetSizer(sizer)
 
 
-class ButtonPanel(DevPanel):
+class Button_Panel(Device_Panel):
 
     """
     The pannel with all the buttons on it."""
 
     selected = None
 
-    def onHubUpdate(self, e):
+
+
+    def update_buttons(self, map_ = None, link = None, reverse = False,
+                                                        input_labels = None):
 
         """
-        Update the labels and connections for the hub"""
+        Update the buttons.
+        list of tuples map_: a map of connections, of format (output, input)
+        list of tuples input_labels: labels formated as (input, label)
+        bool reverese: Treat the map as (input, output)"""
 
 
+        if map_ is not None:
+            for connection in map_:
+                if not reverse:
+                    connection = (connection[1], connection[0])
+                self.make_linked(*connection)
+        if input_labels is not None:
+            for label in input_labels:
+                self.inputButtons[int(label[0])].SetLabel(str(label[1]))
+                self.inputButtons[int(label[0])].SetName(str(label[1]))
 
-    def onUpdate(self, e):
 
-        """
-        Update the connections for the mux"""
+    def on_update(self, e):
+        evt = mxEVT_DEVICE_UPDATE(dev = self.dev)
+        wx.PostEvent(self.GetParent(), evt)
 
-        dev = self.GetDev().get_name()
-        if dev == 'hub':
-            self.updateLabels(self.dev.getInputLabels(), 'in')
-            self.updateLabels(self.dev.getOutputLabels(), 'out')
-            for connection in self.dev.getConnections():
-                self.makeLinked(connection[1], connection[0])
-
-        elif dev == 'mux' or dev == 'vik':
-            for link in self.GetDev().getMap():
-                # I am so sorry for this conditional
-                if dev == 'vik' and link[0] <= 15 and link[1] <= 15 and link[0] >= 0 and link[1] >= 0:
-                    self.makeLinked(link[0], link[1])
-
-    def makeLinked(self, in_, out):
+    def make_linked(self, in_, out):
 
         """
         Links two buttons without telling the mux to connect the
@@ -257,10 +251,9 @@ class ButtonPanel(DevPanel):
 
         in_ = int(in_)
         out = int(out)
-        devName = self.dev.get_name()
+        devName = self.dev.lower()
         input_ = self.inputButtons[in_]
         output = self.outputButtons[out]
-        print in_, out
         if input_.IsEnabled() and output.IsEnabled():
             inLabel = input_.GetName()
             outLabel = output.GetName()
@@ -292,13 +285,11 @@ class ButtonPanel(DevPanel):
     def makeConnection(self, in_, out):
 
         """
-        Makes the connection to the mux, and calls makeLinked to
-        connect the buttons"""
+        Tells the parent to link the things"""
 
-        devName = self.dev.get_name()
-        # Zero-indexed for device control, not for human control
-        self.dev.setConnection(in_ - 1, out - 1)
-        self.dev.update()
+        map_ = (in_, out)
+        evt = mxEVT_DEVICE_LINK(map_ = [map_], dev = self.dev)
+        wx.PostEvent(self.GetParent(), evt)
 
     def select(self, e):
 
@@ -343,32 +334,18 @@ class ButtonPanel(DevPanel):
 
     def updateLabels(self, block, type_):
         ammendList = []
-##        inputSettings = settings['devices'][
-##                            self.GetDev().get_name()]['labels']['input']
-##        outputSettings = settings['devices'][
-##                            self.GetDev().get_name()]['labels']['output']
         if type_ != 'in' and type_ != 'out':
             raise TypeError('type_ must be in or out')
         for label in block:
             i = int(label[0])
             if type_ == 'in':
                 button = self.inputButtons[i]
-##                buttonSettings = inputSettings
             elif type_ == 'out':
                 button = self.outputButtons[i]
-##                buttonSettings = outputSettings
             if label[1] != button.GetName():
-                if label[1] == 'Unused':
-                    button.SetLabel('')
-                    button.SetName('Unused')
-                    button.Disable()
-                else:
-                    button.SetLabel(str(label[1]))
-                    button.SetName(str(label[1]))
-                    button.Enable()
-##                buttonSettings[i]['name'] = label[1]
-##                buttonSettings[i]['enabled'] = str(button.IsEnabled())
-##        writeSettings()
+                button.SetLabel(str(label[1]))
+                button.SetName(str(label[1]))
+                button.Enable()
 
     def loadLabels(self, buttonLabels):
 
@@ -386,43 +363,26 @@ class ButtonPanel(DevPanel):
                 else:
                     button = self.outputButtons[int(
                                 buttonLabel['num']) - 1]
-                name = str(buttonLabel['name'])
+                name = str(buttonLabel['label'])
                 if  name != '' and name != 'Unused':
                     button.SetLabel(name)
                     button.SetName(name)
-                elif name == '' or name == 'Unused':
-                    button.SetLabel('')
-                    button.SetName('')
-                    buttonLabel['enabled'] = 'False'
                 else:
                     button.SetLabel('')
                     button.SetName('')
-                if buttonLabel['enabled'] == 'True':
-                    button.Enable()
-                else:
-                    button.Disable()
 
-    def __init__(self, parent, settings, dev, in_ = 32, out = 4, *args, **kwargs):
-        DevPanel.__init__(self, parent, dev, *args, **kwargs)
-        if dev.get_name() == 'mux':
-            inRows = 6
-            outCols = 2
-        elif dev.get_name() == 'hub':
-            inRows = 4
-            outCols = 4
-        elif dev.get_name() == 'vik':
-            inRows = 4
-            outCols = 4
-        else:
-            raise TypeError('Unsupported device')
+    def __init__(self, parent, settings, dev, in_ = 16, out = 16, *args, **kwargs):
+        Device_Panel.__init__(self, parent, dev, *args, **kwargs)
+        inRows = int(ceil(sqrt(in_)))
+        outCols = int(ceil(sqrt(out)))
         self.sizer = wx.FlexGridSizer(cols = 2, hgap = 50)
         self.inputButtons = []
         self.outputButtons = []
         # Create input buttons
         self.inputSizer = wx.FlexGridSizer(rows = inRows, hgap = 10, vgap = 10)
         for i in range(in_):
-            button = IOButton(self, label = 'Input {}'.format(i + 1),
-                        size = (120, 120), button = 'in {}'.format(i + 1))
+            button = objects.IO_Button(self, label = 'Input {}'.format(i),
+                        size = (120, 120), button = 'in {}'.format(i))
             self.inputButtons.append(button)
             self.inputSizer.Add(button, 1, wx.ALIGN_CENTER|wx.EXPAND)
             self.Bind(wx.EVT_BUTTON, self.select, button)
@@ -431,8 +391,8 @@ class ButtonPanel(DevPanel):
         # Create output button
         self.outputSizer = wx.FlexGridSizer(cols = outCols, hgap = 10, vgap = 10)
         for i in range(out):
-            button = IOButton(self, label = 'Output {}\n'.format(i + 1),
-                        size = (120, 120), button = 'out {}'.format(i + 1))
+            button = objects.IO_Button(self, label = 'Output {}\n'.format(i),
+                        size = (120, 120), button = 'out {}'.format(i))
             self.outputButtons.append(button)
             self.outputSizer.Add(button, 1, wx.ALIGN_CENTER|wx.EXPAND)
             self.Bind(wx.EVT_BUTTON, self.select, button)
@@ -441,13 +401,12 @@ class ButtonPanel(DevPanel):
         self.SetSizer(self.sizer)
         self.sizer.Fit(self)
         self.SetAutoLayout(1)
-        self.loadLabels(settings['devices'][dev.get_name()]['labels'])
-##        EVT_LINK(self, EVT_UPDATE_ID, self.onUpdate)
+        self.loadLabels(settings['devices'][dev.lower()]['labels'])
         self.SetupScrolling()
-        self.onUpdate(None)
+        self.on_update(None)
 
 
-class TransmissionPanel(DevPanel):
+class TransmissionPanel(Device_Panel):
 
     menuOptions = []
 
@@ -531,7 +490,7 @@ class TransmissionPanel(DevPanel):
         self.SetAutoLayout(1)
 
 
-class TarantulaPanel(DevPanel):
+class TarantulaPanel(Device_Panel):
 
     def onLostConnection(self, e):
         dlg = wx.MessageDialog(self, message = 'Lost connection to Tarantula',
@@ -620,7 +579,7 @@ class TarantulaPanel(DevPanel):
         EVT_LINK(self, EVT_UPDATE_ID, self.update)
         EVT_LINK(self, EVT_LOST_CONNECTION_ID, self.onLostConnection)
 
-class GfxPanel(DevPanel):
+class GfxPanel(Device_Panel):
 
     def play(self, e):
 

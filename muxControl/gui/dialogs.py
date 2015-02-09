@@ -91,6 +91,12 @@ Check the details and that the device is plugged in and on, and try again.'''
                 except socket.timeout:
                     msg = '''Timeout while trying to connect to the device.
 Check the details and that the device is plugged in and on, and try again.'''
+                except socket.error as e:
+                    if e.errno == 10061:
+                        msg = '''Host refused connection.
+Check the details and try again.'''
+                    else:
+                        msg = '''Unknown error (Errno {}) occurred.'''
 
                 # See if there was an error, otherwise set up the next page
                 if msg is not None:

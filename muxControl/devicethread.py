@@ -63,7 +63,7 @@ class DeviceThread(threading.Thread):
                     bad_things()
             except:
                 bad_things()
-            sleep(3)
+            sleep(1)
 
     def __init__(self, devices, update_hook = None, *args, **kwargs):
         self.devices = devices
