@@ -334,6 +334,14 @@ class Basic_Window(wx.Frame):
         self.view_menu_basic.Enable(enable = True)
         self.view_menu_advanced.Enable(enable = False)
 
+    def on_about(self, e):
+
+        """
+        Display the help dialog with some information about MuxControl"""
+
+
+        dialogs.About_Dialog()
+
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
                                                 title = 'MuxControl', **kwargs)
@@ -345,19 +353,26 @@ class Basic_Window(wx.Frame):
 
         # File menu
         file_menu = wx.Menu()
-        settings_menu = file_menu.Append(-1, '&Settings',
-                                        ' Change the connection settings')
-        menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit', ' Quit the program')
+        settings_menu = file_menu.Append(-1, '&Settings')
+        menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit')
 
+        # View Menu
         view_menu = wx.Menu()
-        self.view_menu_basic = view_menu.Append(-1, '&Basic', 'Basic control')
+        self.view_menu_basic = view_menu.Append(-1, '&Basic')
         self.view_menu_basic.Enable(enable = False)
-        self.view_menu_advanced = view_menu.Append(-1, '&Advanced', 'Advanced control')
+        self.view_menu_advanced = view_menu.Append(-1, '&Advanced')
+
+
+        # Help menu
+        help_menu = wx.Menu()
+        help_menu_about = help_menu.Append(-1, '&About')
+
 
         # Set up the menu bars
         menu_bar = wx.MenuBar()
         menu_bar.Append(file_menu, '&File')
         menu_bar.Append(view_menu, '&View')
+        menu_bar.Append(help_menu,'&Help')
         self.SetMenuBar(menu_bar)
 
         # Window icon
@@ -371,6 +386,7 @@ class Basic_Window(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_connection_settings, settings_menu)
         self.Bind(wx.EVT_MENU, self.on_view_change_basic, self.view_menu_basic)
         self.Bind(wx.EVT_MENU, self.on_view_change_advanced, self.view_menu_advanced)
+        self.Bind(wx.EVT_MENU, self.on_about, help_menu_about)
 
         # And lets get showing
         self.Show()

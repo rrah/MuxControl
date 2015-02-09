@@ -38,6 +38,19 @@ def lostDev(dev = None):
         dev.setEnabled(False)
 
 
+class About_Dialog(wx.AboutDialogInfo):
+
+    def __init__(self):
+        wx.AboutDialogInfo.__init__(self)
+        self.Name = 'MuxControl'
+        self.Copyright = "(C) 2014-15 Robert Walker"
+        self.Description = "Program to control different devices around YSTV"
+        self.WebSite = ("https://github.com/rrah/MuxControl")
+        self.AddDeveloper("Robert Walker")
+        self.Licence = "GNU v3"
+        wx.AboutBox(self)
+
+
 class First_Time_Dialog(wxx.Wizard):
 
     def __init__(self, devices, current_settings = None, *args, **kwargs):
