@@ -166,9 +166,6 @@ class MainBook(wx.aui.AuiNotebook):
         self.RemovePage(0)
 
 
-sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
-outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
-
 class Basic_Window(wx.Frame):
 
     """
@@ -228,9 +225,6 @@ class Basic_Window(wx.Frame):
         source_selection panel to update. """
 
         dev = self.dev_list.find_device(e.dev)
-        ##if dev.acquire(False):
-            ##dev.update()
-            ##dev.release()
         input_labels = dev.get_input_labels()
         output_labels = dev.get_output_labels()
         self.source_selection.update_buttons(map_ = dev.get_map(),
@@ -315,6 +309,9 @@ class Basic_Window(wx.Frame):
         self.source_selection.Show()
         self.Layout()
 
+        self.view_menu_basic.Enable(enable = False)
+        self.view_menu_advanced.Enable(enable = True)
+
     def on_view_change_advanced(self, e):
 
         """
@@ -334,6 +331,9 @@ class Basic_Window(wx.Frame):
         self.source_selection.Show()
         self.Layout()
 
+        self.view_menu_basic.Enable(enable = True)
+        self.view_menu_advanced.Enable(enable = False)
+
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
                                                 title = 'MuxControl', **kwargs)
@@ -350,8 +350,9 @@ class Basic_Window(wx.Frame):
         menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit', ' Quit the program')
 
         view_menu = wx.Menu()
-        view_menu_basic = view_menu.Append(-1, '&Basic', 'Basic control')
-        view_menu_advanced = view_menu.Append(-1, '&Advanced', 'Advanced control')
+        self.view_menu_basic = view_menu.Append(-1, '&Basic', 'Basic control')
+        self.view_menu_basic.Enable(enable = False)
+        self.view_menu_advanced = view_menu.Append(-1, '&Advanced', 'Advanced control')
 
         # Set up the menu bars
         menu_bar = wx.MenuBar()
@@ -368,8 +369,8 @@ class Basic_Window(wx.Frame):
         self.Bind(EVT_DEVICE_LINK, self.on_link)
         self.Bind(wx.EVT_MENU, self.on_exit, menu_exit)
         self.Bind(wx.EVT_MENU, self.on_connection_settings, settings_menu)
-        self.Bind(wx.EVT_MENU, self.on_view_change_basic, view_menu_basic)
-        self.Bind(wx.EVT_MENU, self.on_view_change_advanced, view_menu_advanced)
+        self.Bind(wx.EVT_MENU, self.on_view_change_basic, self.view_menu_basic)
+        self.Bind(wx.EVT_MENU, self.on_view_change_advanced, self.view_menu_advanced)
 
         # And lets get showing
         self.Show()
