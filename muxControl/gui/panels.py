@@ -372,12 +372,14 @@ class Button_Panel(Device_Panel):
                     button.SetName('')
 
     def __init__(self, parent, settings, dev, in_ = 16, out = 16, *args, **kwargs):
+
         Device_Panel.__init__(self, parent, dev, *args, **kwargs)
         inRows = int(ceil(sqrt(in_)))
         outCols = int(ceil(sqrt(out)))
         self.sizer = wx.FlexGridSizer(cols = 2, hgap = 50)
         self.inputButtons = []
         self.outputButtons = []
+
         # Create input buttons
         self.inputSizer = wx.FlexGridSizer(rows = inRows, hgap = 10, vgap = 10)
         for i in range(in_):
@@ -386,8 +388,8 @@ class Button_Panel(Device_Panel):
             self.inputButtons.append(button)
             self.inputSizer.Add(button, 1, wx.ALIGN_CENTER|wx.EXPAND)
             self.Bind(wx.EVT_BUTTON, self.select, button)
-        self.inputSizer.Fit(self)
         self.sizer.Add(self.inputSizer, 1, wx.EXPAND)
+
         # Create output button
         self.outputSizer = wx.FlexGridSizer(cols = outCols, hgap = 10, vgap = 10)
         for i in range(out):
@@ -396,14 +398,16 @@ class Button_Panel(Device_Panel):
             self.outputButtons.append(button)
             self.outputSizer.Add(button, 1, wx.ALIGN_CENTER|wx.EXPAND)
             self.Bind(wx.EVT_BUTTON, self.select, button)
-        self.outputSizer.Fit(self)
         self.sizer.Add(self.outputSizer, 1, wx.EXPAND)
+
+        # Final bits of layout
         self.SetSizer(self.sizer)
-        self.sizer.Fit(self)
-        self.SetAutoLayout(1)
-        self.loadLabels(settings['devices'][dev.lower()]['labels'])
         self.SetupScrolling()
+
+        # Lets get the right information in here
+        self.loadLabels(settings['devices'][dev.lower()]['labels'])
         self.on_update(None)
+
 
 
 class TransmissionPanel(Device_Panel):
