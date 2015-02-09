@@ -9,7 +9,7 @@
 
 import wx
 
-colourDict = {0: (255, 0, 0), 1: (255, 85, 0), 2:(255, 170, 0),
+COLOUR_DICT = {0: (255, 0, 0), 1: (255, 85, 0), 2:(255, 170, 0),
             3:(255, 255, 0), 4:(170, 255, 0), 5:(85, 255, 0),
             6:(0, 255, 0), 7:(0, 255, 85), 8:(0, 255, 170),
             9:(0, 255, 255), 10:(0, 170, 255), 11:(0, 85, 255),
@@ -37,12 +37,12 @@ class IO_Button(wx.Button):
         if colour == None:
             if type(self.connected) is list:
                 if len(self.connected):
-                    colour = colourDict[int(self.connected[0].GetButton()[-2:])]
+                    colour = COLOUR_DICT[int(self.connected[0].GetButton()[-2:])]
                     wx.Button.SetBackgroundColour(self, colour)
                 else:
                     wx.Button.SetBackgroundColour(self, wx.NullColour)
             elif self.connected is not None:
-                colour = colourDict[int(self.GetButton()[-2:])]
+                colour = COLOUR_DICT[int(self.GetButton()[-2:])]
                 wx.Button.SetBackgroundColour(self, colour)
             else:
                 wx.Button.SetBackgroundColour(self, wx.NullColour)
