@@ -195,9 +195,15 @@ class Basic_Window(wx.Frame):
 
         dialogs.About_Dialog()
 
+    def get_all_labels(self):
+
+        labels = self.settings['devices'][self.settings[
+                                'basic_panel']['device'][0].lower()]['labels']
+        return labels['input'], labels['output']
+
     def on_file_menu_labels(self, e):
 
-        pass
+        dlg = dialogs.Change_Labels_Dialog(self, *self.get_all_labels())
 
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),

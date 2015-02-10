@@ -100,6 +100,8 @@ class Source_Selection(scroll.ScrolledPanel):
             # Failover for now
             self.dev = 'hub'
         self.on_update(None)
+
+        # Sort out layout and scrolling
         self.SetupScrolling()
 
 
