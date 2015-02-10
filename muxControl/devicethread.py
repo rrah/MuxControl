@@ -61,6 +61,8 @@ class DeviceThread(threading.Thread):
                     logging.error('{} refused connection'.format(device.get_name()))
                 else:
                     bad_things()
+            except EOFError:
+                logging.error('Connection to {} closed'.format(device.get_name()))
             except:
                 bad_things()
             sleep(1)

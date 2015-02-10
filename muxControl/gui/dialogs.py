@@ -33,6 +33,13 @@ Check the \'About\' to see where to find out more information'''
         self.Destroy()
 
 
+class Change_Labels_Dialog(wx.Frame):
+
+    def __init__(self):
+
+        pass
+
+
 class About_Dialog(wx.AboutDialogInfo):
 
     def __init__(self):

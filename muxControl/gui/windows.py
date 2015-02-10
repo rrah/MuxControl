@@ -193,8 +193,11 @@ class Basic_Window(wx.Frame):
         """
         Display the help dialog with some information about MuxControl"""
 
-
         dialogs.About_Dialog()
+
+    def on_file_menu_labels(self, e):
+
+        pass
 
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
@@ -208,6 +211,7 @@ class Basic_Window(wx.Frame):
         # File menu
         file_menu = wx.Menu()
         settings_menu = file_menu.Append(-1, '&Settings')
+        file_menu_labels = file_menu.Append(-1, '&Labels')
         menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit')
 
         # View Menu
@@ -238,6 +242,7 @@ class Basic_Window(wx.Frame):
         self.Bind(EVT_DEVICE_LINK, self.on_link)
         self.Bind(wx.EVT_MENU, self.on_exit, menu_exit)
         self.Bind(wx.EVT_MENU, self.on_connection_settings, settings_menu)
+        self.Bind(wx.EVT_MENU, self.on_file_menu_labels, file_menu_labels)
         self.Bind(wx.EVT_MENU, self.on_view_change_basic, self.view_menu_basic)
         self.Bind(wx.EVT_MENU, self.on_view_change_advanced, self.view_menu_advanced)
         self.Bind(wx.EVT_MENU, self.on_about, help_menu_about)
