@@ -100,6 +100,8 @@ class Source_Selection(scroll.ScrolledPanel):
             # Failover for now
             self.dev = 'hub'
         self.on_update(None)
+
+        # Sort out layout and scrolling
         self.SetupScrolling()
 
 
@@ -255,10 +257,10 @@ class Button_Panel(Device_Panel):
                 button = None
                 if buttonType == 'input':
                     button = self.inputButtons[int(
-                                buttonLabel['num']) - 1]
+                                buttonLabel['num'])]
                 else:
                     button = self.outputButtons[int(
-                                buttonLabel['num']) - 1]
+                                buttonLabel['num'])]
                 name = str(buttonLabel['label'])
                 if  name != '' and name != 'Unused':
                     button.SetLabel(name)
