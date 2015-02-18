@@ -203,7 +203,28 @@ class Basic_Window(wx.Frame):
 
     def on_file_menu_labels(self, e):
 
-        dlg = dialogs.Change_Labels_Dialog(self, *self.get_all_labels())
+        self.dlg = dialogs.Change_Labels_Dialog(self, *self.get_all_labels())
+        self.Bind(wx.EVT_BUTTON, self.get_new_labels, self.dlg.ok)
+        
+    def get_new_labels(self, e):
+        
+        
+        # Pull the new labels
+        new_input_labels, new_output_labels = self.dlg.get_labels()
+        
+        # Get the device
+        dev = self.dev_list.find_device(self.settings['basic_panel']['device'][0])
+        
+        # Grab lock and set labels
+        with dev:
+            print new_output_labels
+            if new_input_labels != []:
+                dev.set_input_labels(new_input_labels)
+            if new_output_labels != []:
+                dev.set_output_labels(new_output_labels)
+        
+        # Clear up the window
+        self.dlg.Destroy()
 
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),

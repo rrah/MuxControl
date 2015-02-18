@@ -35,7 +35,31 @@ Check the \'About\' to see where to find out more information'''
 
 
 class Change_Labels_Dialog(wx.Frame):
-
+    
+    def get_labels(self):
+        
+        input_labels_new = []
+        i = -1
+        for input_ in self.label_entry_list_inputs:
+            i += 1
+            value = input_.GetValue()
+            if value != self.input_labels[i]['label']:
+                input_labels_new.append((i, value))
+            
+        output_labels_new = []
+        i = -1
+        for output in self.label_entry_list_outputs:
+            i += 1
+            value = output.GetValue()
+            if value != self.output_labels[i]['label']:
+                output_labels_new.append((i, value))
+                        
+        return input_labels_new, output_labels_new
+    
+    def on_cancel(self, e):
+        
+        self.Destroy()
+    
     def __init__(self, parent, input_labels, output_labels):
 
         # Make frame/panel and other bits
@@ -44,6 +68,8 @@ class Change_Labels_Dialog(wx.Frame):
         self.SetFont(FONT)
         self.icon = wx.Icon('images/muxcontrol.ico', wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
+        self.input_labels = input_labels
+        self.output_labels = output_labels
 
         # Sizer and first text
         self.panel.sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -62,7 +88,7 @@ class Change_Labels_Dialog(wx.Frame):
                         border = 5)
 
         # Boxes for the input labels
-        label_entry_list_inputs = []
+        self.label_entry_list_inputs = []
         for label in input_labels:
             sizer = wx.BoxSizer(wx.HORIZONTAL)
             add_to_sizer(sizer,
@@ -70,11 +96,11 @@ class Change_Labels_Dialog(wx.Frame):
                                                 label = str(label['num'] + 1)))
             label_entry = wx.TextCtrl(self.panel, value = label['label'])
             add_to_sizer(sizer, label_entry)
-            label_entry_list_inputs.append(label_entry)
+            self.label_entry_list_inputs.append(label_entry)
             self.panel.input_sizer.Add(sizer)
 
         # And again for outputs
-        label_entry_list_outputs = []
+        self.label_entry_list_outputs = []
         for label in output_labels:
             sizer = wx.BoxSizer(wx.HORIZONTAL)
             add_to_sizer(sizer,
@@ -82,9 +108,16 @@ class Change_Labels_Dialog(wx.Frame):
                                                 label = str(label['num'] + 1)))
             label_entry = wx.TextCtrl(self.panel, value = label['label'])
             add_to_sizer(sizer, label_entry)
-            label_entry_list_outputs.append(label_entry)
+            self.label_entry_list_outputs.append(label_entry)
             self.panel.output_sizer.Add(sizer)
-
+            
+        # ok/cancel buttons
+        self.ok = wx.Button(self.panel, id = wx.ID_OK)
+        self.cancel = wx.Button(self.panel, id = wx.ID_CANCEL)
+        self.panel.input_sizer.Add(self.ok, flag = wx.ALIGN_CENTER)
+        self.panel.output_sizer.Add(self.cancel, flag = wx.ALIGN_CENTER)
+        self.Bind(wx.EVT_BUTTON, self.on_cancel, self.cancel)
+        
         # Set panel layout and show
         self.panel.SetSizer(self.panel.sizer)
         self.panel.sizer.SetSizeHints(self)
