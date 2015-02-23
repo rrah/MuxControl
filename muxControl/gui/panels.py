@@ -14,8 +14,6 @@ import wx.lib.scrolledpanel as scroll
 
 import objects
 
-import datetime as dt
-
 from events import *
 
 import socket
@@ -65,7 +63,7 @@ class Source_Selection(scroll.ScrolledPanel):
         evt = mxEVT_DEVICE_UPDATE(dev = self.dev)
         wx.PostEvent(self.GetParent(), evt)
 
-    def onButton(self, e):
+    def on_button(self, e):
         evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().get_map(), dev = self.dev)
         wx.PostEvent(self.GetParent(), evt)
 
@@ -89,7 +87,7 @@ class Source_Selection(scroll.ScrolledPanel):
                                             monitor = output['monitor'],
                                             label = str(source['label']))
                     inputSizer.Add(button)
-                    self.Bind(wx.EVT_BUTTON, self.onButton, button)
+                    self.Bind(wx.EVT_BUTTON, self.on_button, button)
                     button_list[source['num']] = button
             self.inputs.append(button_list)
             self.outputSizer.Add(inputSizer)
@@ -227,11 +225,10 @@ class Button_Panel(Device_Panel):
             except socket.error:
                 button.SetBackgroundColour()
                 self.selected.SetBackgroundColour()
-                lostDev(self.dev.get_name())
+                raise Exception('Lost device')
             self.selected = None
 
     def updateLabels(self, block, type_):
-        ammendList = []
         if type_ != 'in' and type_ != 'out':
             raise TypeError('type_ must be in or out')
         for label in block:

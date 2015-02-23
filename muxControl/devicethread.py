@@ -13,8 +13,6 @@ import threading
 
 import logging
 
-import Devices
-
 import socket
 
 from time import sleep
@@ -36,22 +34,16 @@ class DeviceThread(threading.Thread):
                 for device in self.devices:
                     update = False
                     if device.is_enabled():
-                        old = (set(map(tuple, device.get_map())),
-                                set(map(tuple, device.get_input_labels())),
-                                set(map(tuple, device.get_output_labels())))
+                        old = (device.get_map(), device.get_input_labels(), device.get_output_labels())
                         with device:
                             device.update()
                             logging.debug(
-                                        'Device {} has been updated'.format(
+                                        'Device {} checked for updates'.format(
                                                             device.get_name()))
                             update = True
                         if self.update_hook is not None and update:
-                            new = (set(map(tuple, device.get_map())),
-                                set(map(tuple, device.get_input_labels())),
-                                set(map(tuple, device.get_output_labels())))
-                            if ((not new[0] == old[0]) or
-                                                    (not new[1] == old[1]) or
-                                                    (not new[2] == old[2])):
+                            new = (device.get_map(), device.get_input_labels(), device.get_output_labels())
+                            if cmp(old, new):
                                 logging.debug('There\'s been a change, updating window')
                                 self.update_hook(device)
             except socket.timeout as e:

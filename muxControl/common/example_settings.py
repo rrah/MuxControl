@@ -22,12 +22,12 @@ example = """
             {
               "num": 0,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 1,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 2,
@@ -37,27 +37,27 @@ example = """
             {
               "num": 3,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 4,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 5,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 6,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 7,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 8,
@@ -67,72 +67,72 @@ example = """
             {
               "num": 9,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 10,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 11,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 12,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 13,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 14,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 15,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 16,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 17,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 18,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 19,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 20,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 21,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 22,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 23,
@@ -147,37 +147,37 @@ example = """
             {
               "num": 25,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 26,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 27,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 28,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 29,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 30,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 31,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             }
           ],
           "output": [
@@ -296,7 +296,7 @@ example = """
             {
               "num": 14,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 15,
@@ -373,12 +373,12 @@ example = """
             {
               "num": 13,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 14,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 15,
@@ -434,32 +434,32 @@ example = """
             {
               "num": 6,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 7,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 8,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 9,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 10,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 11,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 12,
@@ -541,12 +541,12 @@ example = """
             {
               "num": 11,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 12,
               "label": "Unused",
-              "enabled": false
+              "enabled": true
             },
             {
               "num": 13,
