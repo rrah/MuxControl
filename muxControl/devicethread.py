@@ -34,7 +34,7 @@ class DeviceThread(threading.Thread):
                 for device in self.devices:
                     update = False
                     if device.is_enabled():
-                        old = (device.get_map(), device.get_input_labels(), device.get_output_labels())
+                        old = {'map_':device.get_map(), 'input_labels':device.get_input_labels(), 'output_labels':device.get_output_labels()}
                         with device:
                             device.update()
                             logging.debug(
@@ -42,10 +42,14 @@ class DeviceThread(threading.Thread):
                                                             device.get_name()))
                             update = True
                         if self.update_hook is not None and update:
-                            new = (device.get_map(), device.get_input_labels(), device.get_output_labels())
-                            if cmp(old, new):
+                            new = {'map_':device.get_map(), 'input_labels':device.get_input_labels(), 'output_labels':device.get_output_labels()}
+                            args = {}
+                            for thing in ['map_', 'input_labels', 'output_labels']:
+                                if cmp(old[thing], new[thing]) != 0:
+                                    args[thing] = new[thing]
+                            if args != {}:
                                 logging.debug('There\'s been a change, updating window')
-                                self.update_hook(device)
+                                self.update_hook(device, **args)
             except socket.timeout as e:
                 logging.error('Timed out connecting to {}'.format(device.get_name()))
             except socket.error as e:

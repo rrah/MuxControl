@@ -309,3 +309,73 @@ class Button_Panel(Device_Panel):
         # Lets get the right information in here
         self.loadLabels(settings['devices'][dev.lower()]['labels'])
         self.on_update(None)
+        
+class Combobox_Panel(scroll.ScrolledPanel):
+    
+    def update_buttons(self, map_ = None, link = None, reverse = False, input_labels = None, output_labels = None):
+        
+                
+        if input_labels is not None:
+            for input_combo in self.input_combos:
+                selection = input_combo.GetSelection()
+                input_combo.Clear()
+                input_combo.AppendItems([input_label[1] for input_label in input_labels])
+                input_combo.SetSelection(selection)
+                
+        if map_ is not None:
+            for link in map_:
+                self.input_combos[link[0]].SetSelection(link[1])
+    
+    def on_update(self, e):
+        
+        evt = mxEVT_DEVICE_UPDATE(dev = self.dev)
+        wx.PostEvent(self.GetParent(), evt)
+        
+    def on_selection(self, e):
+        
+        combobox = e.GetEventObject()
+        self.make_connection(combobox.GetSelection(), self.input_combos.index(combobox))
+    
+    def make_connection(self, in_, out):
+
+        """
+        Tells the parent to link the things"""
+
+        map_ = (in_, out)
+        evt = mxEVT_DEVICE_LINK(map_ = [map_], dev = self.dev)
+        wx.PostEvent(self.GetParent(), evt)
+    
+    def __init__(self, parent, inputs = None, outputs = None, device = None, *args, **kwargs):
+        
+        scroll.ScrolledPanel.__init__(self, parent, *args, **kwargs)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.input_combos = []
+        self.output_texts = []
+        
+        self.dev = device
+        
+        def add_to_sizer(sizer, element):
+            """
+            Adds the element to the sizer with appropriate options"""
+            sizer.Add(element, flag = wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL,
+                        border = 5)
+        
+        # Create the comboboxes
+        for output in outputs:
+            output_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            input_combo = wx.ComboBox(self, choices = [input_['label'] for input_ in inputs], 
+                                      size = (120, 30), style = wx.CB_READONLY)
+            self.input_combos.append(input_combo)
+            add_to_sizer(output_sizer, input_combo)
+            output_text = wx.StaticText(self, label = output['label'], size = (120, 30))
+            add_to_sizer(output_sizer, output_text)
+            self.output_texts.append(output_text)
+            
+            self.sizer.Add(output_sizer)
+            
+        self.Bind(wx.EVT_COMBOBOX, self.on_selection)
+        
+        self.on_update(None)
+        
+        self.SetSizer(self.sizer)
+        self.SetupScrolling()
