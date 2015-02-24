@@ -403,82 +403,82 @@ example = """
           "input": [
             {
               "num": 0,
-              "label": "Cam 1",
+              "label": "Cam 1 Prime",
               "enabled": true
             },
             {
               "num": 1,
-              "label": "Cam 2",
+              "label": "Cam 1 Sec",
               "enabled": true
             },
             {
               "num": 2,
-              "label": "Cam 3",
+              "label": "Cam 2 Prime",
               "enabled": true
             },
             {
               "num": 3,
-              "label": "Cam 4",
+              "label": "Cam 2 Sec",
               "enabled": true
             },
             {
               "num": 4,
-              "label": "Cam 5",
+              "label": "Cam 3 Prime",
               "enabled": true
             },
             {
               "num": 5,
-              "label": "Cam 6",
+              "label": "Cam 3 Sec",
               "enabled": true
             },
             {
               "num": 6,
-              "label": "Unused",
+              "label": "Cam 4 Prime",
               "enabled": true
             },
             {
               "num": 7,
-              "label": "Unused",
+              "label": "Cam 4 Sec",
               "enabled": true
             },
             {
               "num": 8,
-              "label": "Unused",
+              "label": "Cam 5 Prime",
               "enabled": true
             },
             {
               "num": 9,
-              "label": "Unused",
+              "label": "Cam 5 Sec",
               "enabled": true
             },
             {
               "num": 10,
-              "label": "Unused",
+              "label": "Cam 6 Prime",
               "enabled": true
             },
             {
               "num": 11,
-              "label": "Unused",
+              "label": "Cam 6 Sec",
               "enabled": true
             },
             {
               "num": 12,
-              "label": "Multiview",
+              "label": "VT",
               "enabled": true
             },
             {
               "num": 13,
-              "label": "Preview",
+              "label": "DaVE Prog",
               "enabled": true
             },
             {
               "num": 14,
-              "label": "Program",
+              "label": "GFX Prog",
               "enabled": true
             },
             {
               "num": 15,
-              "label": "GFX",
+              "label": "Multiview",
               "enabled": true
             }
           ],
