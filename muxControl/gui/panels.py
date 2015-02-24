@@ -113,7 +113,7 @@ class Button_Panel(Device_Panel):
 
 
     def update_buttons(self, map_ = None, link = None, reverse = False,
-                                                        input_labels = None):
+                                                        input_labels = None, output_labels = None):
 
         """
         Update the buttons.
@@ -122,15 +122,22 @@ class Button_Panel(Device_Panel):
         bool reverese: Treat the map as (input, output)"""
 
 
+        
+        if input_labels is not None:
+            for label in input_labels:
+                self.inputButtons[int(label[0])].SetLabel(str(label[1]))
+                self.inputButtons[int(label[0])].SetName(str(label[1]))
+        if output_labels is not None:
+            for label in output_labels:
+                self.outputButtons[int(label[0])].SetLabel(str(label[1]))
+                self.outputButtons[int(label[0])].SetName(str(label[1]))
+        
+        # Do linking last so labels update correctly
         if map_ is not None:
             for connection in map_:
                 if not reverse:
                     connection = (connection[1], connection[0])
                 self.make_linked(*connection)
-        if input_labels is not None:
-            for label in input_labels:
-                self.inputButtons[int(label[0])].SetLabel(str(label[1]))
-                self.inputButtons[int(label[0])].SetName(str(label[1]))
 
 
     def on_update(self, e):

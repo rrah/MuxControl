@@ -62,6 +62,7 @@ class Settings_Dict(dict):
     def parse_labels(self, device = None, input_labels = None,
                                             output_labels = None, **kwargs):
         if device is None: return
+        print input_labels, output_labels
         self.acquire()
         settings_labels = self['devices'][device.lower()]['labels']
         for input_ in input_labels:
@@ -86,7 +87,7 @@ class Settings_Dict(dict):
 
         self.acquire()
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, type_, value, traceback):
 
         self.release()
 
@@ -95,7 +96,7 @@ class Settings_Dict(dict):
             self[key] = dict_[key]
 
     def save_settings(self):
-         with open(file_location, 'w') as settings_file:
+        with open(file_location, 'w') as settings_file:
             json.dump(self, settings_file)
 
 

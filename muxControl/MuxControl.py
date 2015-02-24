@@ -9,6 +9,8 @@
 # Licence:
 #-------------------------------------------------------------------------------
 
+from __future__ import print_function
+
 import logging
 
 from common.version import *
@@ -33,6 +35,7 @@ import Devices.vikinx as vik
 import wx
 import devicethread
 from common.lists import settings, DevList
+
 
 def main():
 
@@ -65,7 +68,12 @@ def main():
         for dev in settings['devices']:
             dev = settings['devices'][dev]
             enabled = dev['enabled']
-            dev = devTypeDict[dev['type']](dev['host'], dev['port'])
+            args = {}
+            if dev['type'] == 'V1616':
+                args['default_labels'] = {}
+                for type_, label_list in {'inputs':dev['labels']['input'], 'outputs':dev['labels']['output']}.iteritems():
+                    args['default_labels'][type_] = [(label['num'], label['label']) for label in label_list]
+            dev = devTypeDict[dev['type']](dev['host'], dev['port'], **args)
             with dev:
                 if type(enabled) == bool and enabled and not settings['first_run']:
                     dev.set_enabled(True)
