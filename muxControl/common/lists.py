@@ -61,16 +61,19 @@ class Settings_Dict(dict):
 
     def parse_labels(self, device = None, input_labels = None,
                                             output_labels = None, **kwargs):
+        
         if device is None: return
-        print input_labels, output_labels
+        if input_labels is None and output_labels is None: return
         self.acquire()
         settings_labels = self['devices'][device.lower()]['labels']
-        for input_ in input_labels:
-            current = settings_labels['input'][int(input_[0])]
-            current['label'] = input_[1]
-        for output in output_labels:
-            current = settings_labels['output'][int(output[0])]
-            current['label'] = output[1]
+        if input_labels is not None:
+            for input_ in input_labels:
+                current = settings_labels['input'][int(input_[0])]
+                current['label'] = input_[1]
+        if output_labels is not None:
+            for output in output_labels:
+                current = settings_labels['output'][int(output[0])]
+                current['label'] = output[1]
         self.save_settings()
         self.release()
 

@@ -9,8 +9,6 @@
 # Licence:
 #-------------------------------------------------------------------------------
 
-from __future__ import print_function
-
 import logging
 
 from common.version import *
@@ -36,12 +34,11 @@ import wx
 import devicethread
 from common.lists import settings, DevList
 
-
 def main():
 
-    def update_hook(device):
+    def update_hook(*args, **kwargs):
 
-        window.on_triggered_update(device)
+        window.on_triggered_update(*args, **kwargs)
 
     app = wx.App(False)
     window = None

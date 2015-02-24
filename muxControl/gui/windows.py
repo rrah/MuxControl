@@ -26,17 +26,24 @@ class Basic_Window(wx.Frame):
     Window with a set of input buttons for each mixer input.
     Will hopefully make stuff easier to use in a broadcast"""
 
-    def on_triggered_update(self, dev):
+    def on_triggered_update(self, dev, **kwargs):
 
+        # Check this is actually for the correct panel/device
         if dev.get_name() != self.source_selection.dev.lower():
             return
-        input_labels = dev.get_input_labels()
-        output_labels = dev.get_output_labels()
-        self.source_selection.update_buttons(map_ = dev.get_map(),
-                                            input_labels = input_labels)
-        self.settings.parse_labels(device = dev.get_name(),
-                                    input_labels = input_labels,
-                                    output_labels = output_labels)
+        
+#         kwargs = {}
+#         for thing, changed in updates:
+#             if not changed:
+#                 continue
+#             if thing == 'map_':
+#                 kwargs['map_'] = dev.get_map()
+#             elif thing == 'inputs':
+#                 kwargs['input_labels'] = dev.get_input_labels()
+#             elif thing == 'outputs':
+#                 kwargs['output_labels'] = dev.get_output_labels()
+        self.source_selection.update_buttons(**kwargs)
+        self.settings.parse_labels(device = dev.get_name(), **kwargs)
 
     def get_labels(self):
 
@@ -163,8 +170,7 @@ class Basic_Window(wx.Frame):
         self.source_selection.Show()
         self.Layout()
 
-        self.view_menu_basic.Enable(enable = False)
-        self.view_menu_advanced.Enable(enable = True)
+        self.enable_view_options(self.view_menu_basic)
 
     def on_view_change_advanced(self, e):
 
@@ -184,9 +190,24 @@ class Basic_Window(wx.Frame):
                                 size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
-
-        self.view_menu_basic.Enable(enable = True)
-        self.view_menu_advanced.Enable(enable = False)
+        
+        self.enable_view_options(self.view_menu_advanced)
+        
+    def on_view_change_combo(self, e):
+        
+        if type(self.source_selection) == panels.Combobox_Panel:
+            return
+        try:
+            self.source_selection.Destroy()
+        except wx.PyDeadObjectError:
+            pass
+        self.source_selection = panels.Combobox_Panel(self, *self.get_all_labels(),
+                                    device = self.settings['basic_panel']['device'][0],
+                                    size = self.GetClientSize())
+        self.source_selection.Show()
+        self.Layout()
+        
+        self.enable_view_options(self.view_menu_combo)
 
     def on_about(self, e):
 
@@ -224,6 +245,14 @@ class Basic_Window(wx.Frame):
         
         # Clear up the window
         self.dlg.Destroy()
+        
+    def enable_view_options(self, disabled = None):
+        
+        for view_option in self.view_menu.GetMenuItems():
+            if view_option.GetId() == disabled.GetId():
+                view_option.Enable(enable = False)
+            else:
+                view_option.Enable(enable = True)
 
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
@@ -241,10 +270,11 @@ class Basic_Window(wx.Frame):
         menu_exit = file_menu.Append(wx.ID_EXIT, '&Exit')
 
         # View Menu
-        view_menu = wx.Menu()
-        self.view_menu_basic = view_menu.Append(-1, '&Basic')
-        self.view_menu_basic.Enable(enable = False)
-        self.view_menu_advanced = view_menu.Append(-1, '&Advanced')
+        self.view_menu = wx.Menu()
+        self.view_menu_basic = self.view_menu.Append(-1, '&Basic')
+        self.view_menu_advanced = self.view_menu.Append(-1, '&Advanced')
+        self.view_menu_combo = self.view_menu.Append(-1, '&Dropdown')
+        self.enable_view_options(self.view_menu_basic)
 
 
         # Help menu
@@ -255,7 +285,7 @@ class Basic_Window(wx.Frame):
         # Set up the menu bars
         menu_bar = wx.MenuBar()
         menu_bar.Append(file_menu, '&File')
-        menu_bar.Append(view_menu, '&View')
+        menu_bar.Append(self.view_menu, '&View')
         menu_bar.Append(help_menu,'&Help')
         self.SetMenuBar(menu_bar)
 
@@ -271,6 +301,7 @@ class Basic_Window(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_file_menu_labels, file_menu_labels)
         self.Bind(wx.EVT_MENU, self.on_view_change_basic, self.view_menu_basic)
         self.Bind(wx.EVT_MENU, self.on_view_change_advanced, self.view_menu_advanced)
+        self.Bind(wx.EVT_MENU, self.on_view_change_combo, self.view_menu_combo)
         self.Bind(wx.EVT_MENU, self.on_about, help_menu_about)
 
         # And lets get showing
