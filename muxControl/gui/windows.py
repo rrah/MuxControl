@@ -217,7 +217,6 @@ class Basic_Window(wx.Frame):
         
         # Grab lock and set labels
         with dev:
-            print new_output_labels
             if new_input_labels != []:
                 dev.set_input_labels(new_input_labels)
             if new_output_labels != []:

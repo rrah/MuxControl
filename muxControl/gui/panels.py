@@ -14,8 +14,6 @@ import wx.lib.scrolledpanel as scroll
 
 import objects
 
-import datetime as dt
-
 from events import *
 
 import socket
@@ -65,7 +63,7 @@ class Source_Selection(scroll.ScrolledPanel):
         evt = mxEVT_DEVICE_UPDATE(dev = self.dev)
         wx.PostEvent(self.GetParent(), evt)
 
-    def onButton(self, e):
+    def on_button(self, e):
         evt = mxEVT_DEVICE_LINK(map_ = e.GetEventObject().get_map(), dev = self.dev)
         wx.PostEvent(self.GetParent(), evt)
 
@@ -89,7 +87,7 @@ class Source_Selection(scroll.ScrolledPanel):
                                             monitor = output['monitor'],
                                             label = str(source['label']))
                     inputSizer.Add(button)
-                    self.Bind(wx.EVT_BUTTON, self.onButton, button)
+                    self.Bind(wx.EVT_BUTTON, self.on_button, button)
                     button_list[source['num']] = button
             self.inputs.append(button_list)
             self.outputSizer.Add(inputSizer)
@@ -115,7 +113,7 @@ class Button_Panel(Device_Panel):
 
 
     def update_buttons(self, map_ = None, link = None, reverse = False,
-                                                        input_labels = None):
+                                                        input_labels = None, output_labels = None):
 
         """
         Update the buttons.
@@ -124,15 +122,22 @@ class Button_Panel(Device_Panel):
         bool reverese: Treat the map as (input, output)"""
 
 
+        
+        if input_labels is not None:
+            for label in input_labels:
+                self.inputButtons[int(label[0])].SetLabel(str(label[1]))
+                self.inputButtons[int(label[0])].SetName(str(label[1]))
+        if output_labels is not None:
+            for label in output_labels:
+                self.outputButtons[int(label[0])].SetLabel(str(label[1]))
+                self.outputButtons[int(label[0])].SetName(str(label[1]))
+        
+        # Do linking last so labels update correctly
         if map_ is not None:
             for connection in map_:
                 if not reverse:
                     connection = (connection[1], connection[0])
                 self.make_linked(*connection)
-        if input_labels is not None:
-            for label in input_labels:
-                self.inputButtons[int(label[0])].SetLabel(str(label[1]))
-                self.inputButtons[int(label[0])].SetName(str(label[1]))
 
 
     def on_update(self, e):
@@ -227,11 +232,10 @@ class Button_Panel(Device_Panel):
             except socket.error:
                 button.SetBackgroundColour()
                 self.selected.SetBackgroundColour()
-                lostDev(self.dev.get_name())
+                raise Exception('Lost device')
             self.selected = None
 
     def updateLabels(self, block, type_):
-        ammendList = []
         if type_ != 'in' and type_ != 'out':
             raise TypeError('type_ must be in or out')
         for label in block:
