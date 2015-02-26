@@ -4,9 +4,7 @@
 #
 # Author:      Robert Walker
 #
-# Created:
-# Copyright:   (c) Robert Walker 2013
-# Licence:
+# Copyright:   (c) Robert Walker 2013 - 15
 #-------------------------------------------------------------------------------
 
 import logging
@@ -15,16 +13,12 @@ from common.version import *
 
 logging.info('Starting up v{}'.format(version))
 
-import json
-import datetime as dt
 import sys
 
 # The device communication modules
-import socket
 import Devices.yvp as yvp
 import Devices.videohub as vh
 import Devices.tarantulaTel as tara
-import Devices.telnet as tel
 import Devices.transLight as trl
 import Devices.casparcg as ccg
 import Devices.vikinx as vik
@@ -57,7 +51,7 @@ def main():
     logging.debug('Loading devices')
     devList = DevList()
     devTypeDict = {'Transmission Light': trl.TransmissionLight,
-                'Mux': yvp.Mux, 'Videohub': vh.Videohub,
+                'Videohub': vh.Videohub,
                 'Tarantula': tara.Tarantula, 'Tally': yvp.Tally,
                 'CasparCG': ccg.Casparcg, 'V1616': vik.Vikinx}
 
@@ -65,11 +59,15 @@ def main():
         for dev in settings['devices']:
             dev = settings['devices'][dev]
             enabled = dev['enabled']
+            
+            # Anything extra any of the devices need
             args = {}
             if dev['type'] == 'V1616':
                 args['default_labels'] = {}
                 for type_, label_list in {'inputs':dev['labels']['input'], 'outputs':dev['labels']['output']}.iteritems():
                     args['default_labels'][type_] = [(label['num'], label['label']) for label in label_list]
+                    
+            # Create the device object
             dev = devTypeDict[dev['type']](dev['host'], dev['port'], **args)
             with dev:
                 if type(enabled) == bool and enabled and not settings['first_run']:
