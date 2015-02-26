@@ -1,3 +1,4 @@
+
 MuxControl
 ==========
 
@@ -8,10 +9,8 @@ GUI for controlling various devices around YSTV
 - BMD Micro Videohub
 
 
-
-
 *** Note for *NIX ***
-Only supported for wxpython3.0 and later.
+Only supported for wxpython2.9 and later.
 
 *** Known issues ***
-- Segfaults at any wizards if using wxpython2.8 under Linux. Use wxpython3.0 instead.
+- Segfaults at any wizards if using wxpython2.8 under Linux. Use wxpython2.9 or later instead.
