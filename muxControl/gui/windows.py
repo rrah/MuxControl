@@ -5,8 +5,7 @@
 # Author:      Robert Walker
 #
 # Created:     28/09/2014
-# Copyright:   (c) Robert Walker 2014
-# Licence:      GPL3
+# Copyright:   (c) Robert Walker 2014 - 15
 #-------------------------------------------------------------------------------
 import wx
 import wx.aui
@@ -32,16 +31,6 @@ class Basic_Window(wx.Frame):
         if dev.get_name() != self.source_selection.dev.lower():
             return
         
-#         kwargs = {}
-#         for thing, changed in updates:
-#             if not changed:
-#                 continue
-#             if thing == 'map_':
-#                 kwargs['map_'] = dev.get_map()
-#             elif thing == 'inputs':
-#                 kwargs['input_labels'] = dev.get_input_labels()
-#             elif thing == 'outputs':
-#                 kwargs['output_labels'] = dev.get_output_labels()
         self.source_selection.update_buttons(**kwargs)
         self.settings.parse_labels(device = dev.get_name(), **kwargs)
 
@@ -141,6 +130,7 @@ class Basic_Window(wx.Frame):
                                 size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
+        self.enable_view_options(self.view_menu_basic)
 
     def on_exit(self, e):
 

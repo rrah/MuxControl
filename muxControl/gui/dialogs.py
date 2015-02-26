@@ -4,9 +4,7 @@
 #
 # Author:      Robert Walker
 #
-# Created:
 # Copyright:   (c) Robert Walker 2015
-# Licence:     GPL3
 #-------------------------------------------------------------------------------
 
 import wx
@@ -14,9 +12,6 @@ import wxExtras.wxPythonExtra as wxx
 
 import firstrun
 
-import logging
-
-import panels
 import wx.lib.scrolledpanel as scroll
 from font import *
 
@@ -161,9 +156,9 @@ class First_Time_Dialog(wxx.Wizard):
     def onPageChanging(self, e):
         self.on_page_changing(e)
 
-    def on_page_changing(self, e):
-        page = e.GetPage()
-        if e.GetDirection():
+    def on_page_changing(self, evt):
+        page = evt.GetPage()
+        if evt.GetDirection():
             # Only do this if going forwards
 
             if page == self.pages[0]: # Device selection page
@@ -183,7 +178,6 @@ class First_Time_Dialog(wxx.Wizard):
                     with device:
                         device.set_host(str(dev_host))
                         device.set_port(str(dev_port))
-                        device.set_enabled(True)
                         device.update()
                 except socket.gaierror:
                     msg = '''Error finding the host.
@@ -196,15 +190,18 @@ Check the details and that the device is plugged in and on, and try again.'''
                         msg = '''Host refused connection.
 Check the details and try again.'''
                     else:
-                        msg = '''Unknown error (Errno {}) occurred.'''
+                        msg = '''Unknown error (Errno {}) occurred.'''.format(e.errno)
 
                 # See if there was an error, otherwise set up the next page
                 if msg is not None:
                     dlg = wx.MessageDialog(parent = None, message = msg,
                                                                 style = wx.OK)
                     dlg.ShowModal()
-                    e.Veto()
+                    evt.Veto()
+                    device.set_enabled(False)
                 else:
+                    with device:
+                        device.set_enabled(True)
                     self.pages[2].set_device_settings(self.settings,
                                                     device.get_input_labels())
 
@@ -218,6 +215,20 @@ Check the details and try again.'''
 
             elif page == self.pages[3]: # output settings page
                 self.settings['outputs'] = self.pages[3].get_sink_selection()
+        
+        elif not evt.GetDirection():
+            # For the backward
+            
+            if page == self.pages[1]: # Device settings page
+                try:
+                    if self.settings['device'] != []:
+                        dev, dev_host, dev_port = self.settings['device']
+                        device = self.devices.find_device(dev.lower()[0:3])
+                        with device:
+                            device.set_enabled(False)
+                        self.settings['device'] = []
+                except KeyError:
+                    pass # Not set up a device
 
     def get_panel_settings(self):
 
@@ -232,12 +243,13 @@ None of the settings will be saved.'''
         if ret == wx.ID_YES:
             self.cancelled = True
             try:
-                device = self.devices.find_device(self.settings['device'][0][0:3].lower())
-                old = self.settings['current_device']
-                with device:
-                    device.set_host = old[0]
-                    device.set_port = old[1]
-                    device.set_enabled = old[2]
+                if self.settings['device'] != []:
+                    device = self.devices.find_device(self.settings['device'][0][0:3].lower())
+                    old = self.settings['current_device']
+                    with device:
+                        device.set_host = old[0]
+                        device.set_port = old[1]
+                        device.set_enabled = old[2]
             except KeyError:
                 # There isn't the relevant keys in the settings, so didn't
                 # get that far in the wizard

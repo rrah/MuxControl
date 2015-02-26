@@ -5,8 +5,7 @@
 # Author:      Robert Walker
 #
 # Created:     09/11/2014
-# Copyright:   (c) Robert Walker 2014
-# Licence:     <your licence>
+# Copyright:   (c) Robert Walker 2014 - 15
 #-------------------------------------------------------------------------------
 
 import logging
@@ -15,9 +14,7 @@ import wx
 import wxExtras.wxPythonExtra as wxx
 from wx import PyDeadObjectError
 
-sources = ['cam 1', 'cam 1', 'cam 3', 'cam 4']
-outputs = ['DaVE 1', 'DaVE 2', 'DaVE 3', 'DaVE 4']
-devices = ['Hub', 'Vik', 'Mux']
+devices = ['Hub', 'Vik']
 
 class Device_Selection(wxx.Wizard_Page):
 
@@ -49,8 +46,12 @@ class Source_Selection(wxx.Wizard_Page):
         return_list = []
         for i in xrange(len(self.source_list)):
             source = self.source_list[i]
-            if source.GetValue():
-                return_list.append(i)
+            try:
+                if source.GetValue():
+                    return_list.append(i)
+            except PyDeadObjectError:
+                # Something died. Should probably find out what
+                logging.debug('Hit dead object. Probably shouldn\'t have')
         return return_list
 
     def set_device_settings(self, settings, input_labels):
@@ -143,9 +144,7 @@ class Sink_Selection(wxx.Wizard_Page):
         sink_head = wx.StaticText(self, label = 'Mixer input')
         mixer_head = wx.StaticText(self, label = 'Output to mixer')
         monitor_head = wx.StaticText(self, label = 'Output to monitor')
-        #head_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.outputs_sizer.AddMany([(sink_head), (mixer_head), (monitor_head)])
-        #self.outputs_sizer.Add(head_sizer)
 
         self.sink_list = []
         for i in xrange(4):
@@ -158,9 +157,7 @@ class Sink_Selection(wxx.Wizard_Page):
             sink_monitor.SetSelection(i + 4) # Cause that's our normal setup
             self.sink_list.append({'num': i, 'mixer':sink_mixer,
                                                     'monitor':sink_monitor})
-            output_sizer = wx.BoxSizer(wx.HORIZONTAL)
             self.outputs_sizer.AddMany([(sink_label), (sink_mixer), (sink_monitor)])
-            #self.outputs_sizer.Add(output_sizer)
         self.sizer.Add(self.outputs_sizer)
         self.SetSizer(self.sizer)
         self.set = True
@@ -191,6 +188,8 @@ class Device_Settings(wxx.Wizard_Page):
         To be called when the device (from a previous page) has been selected.
         Loads in default values for the device"""
 
+        self.device = device
+
         # Check if most of the stuff has been made before
         if not self.set:
             # Text at the top of the page
@@ -199,7 +198,6 @@ class Device_Settings(wxx.Wizard_Page):
             self.sizer.Add(self.top_text)
 
             # And the device settings
-            self.device = device
             host_label = wx.StaticText(self, label = 'Host:')
             self.host_text = wx.TextCtrl(self)
             port_label = wx.StaticText(self, label = 'Port:')

@@ -2,12 +2,14 @@
 # Name:        version
 # Purpose:      Track version number of project
 #
-# Author:      robert
+# Author:      Robert Walker
 #
 # Created:     11/01/2015
-# Copyright:   (c) robert 2015
-# Licence:     <your licence>
+# Copyright:   (c) Robert Walker 2015
 #-------------------------------------------------------------------------------
 
-version = 2.10
-version_text = ' (alpha)'
+
+VERSION = 2.11
+VERSION_TEXT = ' (alpha)'
+version = VERSION
+version_text = VERSION_TEXT

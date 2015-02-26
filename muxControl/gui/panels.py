@@ -5,8 +5,7 @@
 # Author:      Robert Walker
 #
 # Created:     28/09/2014
-# Copyright:   (c) Robert Walker 2014
-# Licence:
+# Copyright:   (c) Robert Walker 2014 - 15
 #-------------------------------------------------------------------------------
 import wx
 import wx.gizmos as giz
@@ -40,7 +39,7 @@ class Source_Selection(scroll.ScrolledPanel):
     Panel for selecting the sources for input to DaVE"""
 
     def update_buttons(self, map_ = None, link = None, reverse = False,
-                                                        input_labels = None):
+                                                        input_labels = None, output_labels = None):
 
         """
         Update the buttons.
@@ -324,7 +323,7 @@ class Combobox_Panel(scroll.ScrolledPanel):
                 
         if map_ is not None:
             for link in map_:
-                self.input_combos[link[0]].SetSelection(link[1])
+                self.input_combos[int(link[0])].SetSelection(int(link[1]))
     
     def on_update(self, e):
         
