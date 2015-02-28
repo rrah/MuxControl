@@ -95,10 +95,15 @@ def main():
             basic_panel_settings = window.get_panel_settings()
             with settings:
                 settings['basic_panel'] = basic_panel_settings
+                # router settings
                 device_settings = basic_panel_settings['router']
-                settings['devices'][device_settings['name'].lower()]['host'] = device_settings['host']
-                settings['devices'][device_settings['name'].lower()]['port'] = device_settings['port']
-                settings['devices'][device_settings['name'].lower()]['enabled'] = True
+                settings['devices'][device_settings['name']]['host'] = device_settings['host']
+                settings['devices'][device_settings['name']]['port'] = device_settings['port']
+                settings['devices'][device_settings['name']]['enabled'] = True
+                
+                # tally settings
+                for thing in ['host', 'port', 'enabled']:
+                    settings['devices']['tally'][thing] = basic_panel_settings['tally'][thing]
                 settings['first_run'] = False
                 settings.save_settings()
             logging.debug('First run settings saved')

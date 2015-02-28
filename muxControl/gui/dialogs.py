@@ -14,6 +14,7 @@ import firstrun
 
 import wx.lib.scrolledpanel as scroll
 from font import *
+from objects import Combobox
 
 import socket
 
@@ -257,3 +258,43 @@ None of the settings will be saved.'''
         else:
             e.Veto()
         dlg.Destroy()
+        
+        
+class Tally_Map_Dlg(wx.Dialog):
+    
+    def on_ok(self, e):
+        
+        self.map_ = [(index, x.GetSelection()) for index, x in enumerate(self.mapping_list) if x.GetSelection() < len(x.GetItems()) - 1]
+        self.EndModal(wx.ID_OK)
+        
+    def get_map(self):
+        
+        return self.map_
+    
+    def __init__(self, parent, input_labels = None, tally_map = None, *args, **kwargs):
+        wx.Dialog.__init__(self, parent, title = 'Tally mapping', *args, **kwargs)
+        
+        if tally_map is not None: self.map_ = tally_map
+        
+        # The options
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.mapping_list = []
+        for i in range(6):
+            mapping = Combobox(self, label = 'Tally output {}'.format(i + 1), choices  = input_labels + ['None']) 
+            mapping.SetSelection(len(mapping.GetItems()) - 1 )
+            self.mapping_list.append(mapping)
+            sizer.Add(mapping)
+        for map_ in tally_map:
+            self.mapping_list[map_[0]].SetSelection(map_[1])
+            
+        # OK/cancel
+        ok_button = wx.Button(self, id = wx.ID_OK)
+        cancel_button = wx.Button(self, id = wx.ID_CANCEL)
+        button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        button_sizer.AddMany([(ok_button), (cancel_button)])
+        
+        sizer.Add(button_sizer)
+        self.SetSizer(sizer)
+        
+        self.Bind(wx.EVT_BUTTON, self.on_ok, ok_button)
+        

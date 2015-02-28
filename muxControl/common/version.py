@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 
 
-VERSION = 2.12
-VERSION_TEXT = ' (alpha)'
+VERSION = 2.20
+VERSION_TEXT = ' (beta)'
 version = VERSION
 version_text = VERSION_TEXT
