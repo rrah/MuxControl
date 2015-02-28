@@ -13,6 +13,7 @@ import logging
 import wx
 import wxExtras.wxPythonExtra as wxx
 from wx import PyDeadObjectError
+from objects import Textctrl
 
 devices = ['Hub', 'Vik']
 
@@ -20,18 +21,73 @@ class Device_Selection(wxx.Wizard_Page):
 
     """
     Panel to select the device to use for the rest of the wizard"""
+    
+    def set_values(self):
+        
+        try:
+            self.device_host.SetValue(self.settings['current']['device'][1])
+            self.device_port.SetValue(self.settings['current']['device'][2])
+        except KeyError:
+            if self.device == 'Hub':
+                self.device_host.SetValue('192.168.10.241')
+                self.device_port.SetValue('9990')
+            elif self.device == 'Vik':
+                self.device_host.SetValue('ob1')
+                self.device_port.SetValue('2004')
 
     def get_device(self):
+        
         return self.device
-
+    
+    def get_device_settings(self):
+        
+        device_settings = {'router': {'name': self.device.lower(),
+                                      'host': self.device_host.GetValue(),
+                                      'port': int(self.device_port.GetValue())},
+                           'tally': {'host': self.tally_host.GetValue(),
+                                     'port': int(self.tally_port.GetValue()) if self.tally_port.GetValue() != '' else 0,
+                                     'enabled': self.tally_check.GetValue()}}
+        return device_settings
+        
+        
     def on_radio_select(self, e):
+        
         self.device = e.GetEventObject().GetStringSelection()
+        self.set_values()
 
-    def __init__(self, *args, **kwargs):
-        wxx.Wizard_Page.__init__(self, *args, **kwargs)
-        dev_select = wx.RadioBox(self, choices = devices, majorDimension = 1)
-        self.device = dev_select.GetStringSelection()
-        self.Bind(wx.EVT_RADIOBOX, self.on_radio_select, dev_select)
+    def __init__(self, parent, settings = None, *args, **kwargs):
+        
+        wxx.Wizard_Page.__init__(self, parent, *args, **kwargs)
+        self.settings = settings
+        
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        def add_many_to_sizer(sizer, items):
+            for item in items:
+                sizer.Add(item, 0, wx.EXPAND | wx.ALL, 5)
+        
+        # Routing device to control
+        device_box = wx.StaticBox(self, label = 'Routing device')
+        device_box_sizer = wx.StaticBoxSizer(orient = wx.VERTICAL, box = device_box)
+        self.device_select = wx.RadioBox(device_box, choices = devices, majorDimension = 1)
+        self.device = self.device_select.GetStringSelection() # default selection
+        self.device_host = Textctrl(device_box, label = 'Host:')
+        self.device_port = Textctrl(device_box, label = 'Port:')
+        add_many_to_sizer(device_box_sizer, [self.device_select, self.device_host, self.device_port])
+        
+        # To tally or not to tally
+        tally_box = wx.StaticBoxSizer(orient = wx.VERTICAL, box = wx.StaticBox(self, label = 'Tally'))
+        self.tally_check = wx.CheckBox(tally_box.GetStaticBox(), label = 'Enable tally')
+        self.tally_host = Textctrl(tally_box.GetStaticBox(), label = 'Host')
+        self.tally_port = Textctrl(tally_box.GetStaticBox(), label = 'Port')
+        tally_box.AddMany([(self.tally_check, 0, wx.EXPAND | wx.ALL, 5), (self.tally_host, 0, wx.EXPAND | wx.ALL, 5), 
+                           (self.tally_port, 0, wx.EXPAND | wx.ALL, 5)])
+        
+        add_many_to_sizer(self.sizer, [device_box_sizer, tally_box])
+        
+        self.SetSizer(self.sizer)
+        self.set_values()
+        self.Bind(wx.EVT_RADIOBOX, self.on_radio_select, self.device_select)
 
 
 class Source_Selection(wxx.Wizard_Page):
@@ -56,7 +112,7 @@ class Source_Selection(wxx.Wizard_Page):
 
     def set_device_settings(self, settings, input_labels):
 
-        self.device, self.host, self.port = settings['device']
+        self.host, self.device, self.port =  [x[1] for x in settings['router'].iteritems()]
         self.sources_sizer = wx.BoxSizer(wx.VERTICAL)
         msg = '''Select what inputs you want to use.'''
         self.top_text = wx.StaticText(self, label = msg)
@@ -85,7 +141,7 @@ class Source_Selection(wxx.Wizard_Page):
             else:
                 index += 1
             source_select = wx.CheckBox(self, label = source)
-            if settings['current_device'][3] == settings['device'][0][0:3].lower():
+            if settings['current_device'][3] == settings['router']['name']:
                 try:
                     if int(index) in settings['current']['inputs']:
                         source_select.SetValue(True)
@@ -179,7 +235,7 @@ class Device_Settings(wxx.Wizard_Page):
         """
         Hands the values over. Again, does no checking of values
         or sanitization"""
-
+        
         return self.device, self.host_text.GetValue(), self.port_text.GetValue()
 
     def set_device(self, device, settings = None):
@@ -198,13 +254,9 @@ class Device_Settings(wxx.Wizard_Page):
             self.sizer.Add(self.top_text)
 
             # And the device settings
-            host_label = wx.StaticText(self, label = 'Host:')
-            self.host_text = wx.TextCtrl(self)
-            port_label = wx.StaticText(self, label = 'Port:')
-            self.port_text = wx.TextCtrl(self)
-            self.grid_sizer.AddMany([(host_label), (self.host_text),
-                                (port_label), (self.port_text)])
-            self.sizer.Add(self.grid_sizer)
+            self.host_text = Textctrl(self, label = 'Host:')
+            self.port_text = Textctrl(self, label = 'Port:')
+            self.sizer.AddMany([(self.host_text), (self.port_text)])
             self.set = True
 
         # Enter default settings

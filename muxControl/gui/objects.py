@@ -104,3 +104,25 @@ class Basic_Button_List(dict):
     def get_selected(self):
 
         return self.selected
+    
+class Textctrl(wx.BoxSizer):
+    
+    """
+    Allows easy setting of wxTextCtrl with added label.""" 
+    
+    def SetValue(self, *args, **kwargs):
+        
+        return self.text_ctrl.SetValue(*args, **kwargs)
+        
+    def GetValue(self, *args, **kwargs):
+        
+        return self.text_ctrl.GetValue(*args, **kwargs)
+    
+    def __init__(self, parent, label = None, *args, **kwargs):
+        wx.BoxSizer.__init__(self, wx.HORIZONTAL)
+        self.text_ctrl = wx.TextCtrl(parent, *args, **kwargs)
+        text_label = wx.StaticText(parent, label = label)
+        
+        self.AddMany([(text_label, 3, wx.EXPAND), (self.text_ctrl, 7, wx.EXPAND)])
+        
+    

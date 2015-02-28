@@ -40,7 +40,7 @@ class Basic_Window(wx.Frame):
         Pull the current labels for the buttons"""
 
         basic_settings = self.settings['basic_panel']
-        device = basic_settings['device'][0].lower()
+        device = basic_settings['router']['name']
 
         # Get the information for the inputs
         inputs = []
@@ -155,7 +155,7 @@ class Basic_Window(wx.Frame):
             pass
         self.source_selection = panels.Source_Selection(self,
                                         *self.get_labels(),
-                            device = self.settings['basic_panel']['device'][0],
+                            device = self.settings['basic_panel']['router']['name'],
                             size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -176,7 +176,7 @@ class Basic_Window(wx.Frame):
             # Already destroyed
             pass
         self.source_selection = panels.Button_Panel(self, self.settings,
-                                self.settings['basic_panel']['device'][0],
+                                self.settings['basic_panel']['router']['name'],
                                 size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -192,7 +192,7 @@ class Basic_Window(wx.Frame):
         except wx.PyDeadObjectError:
             pass
         self.source_selection = panels.Combobox_Panel(self, *self.get_all_labels(),
-                                    device = self.settings['basic_panel']['device'][0],
+                                    device = self.settings['basic_panel']['router']['name'],
                                     size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -208,8 +208,7 @@ class Basic_Window(wx.Frame):
 
     def get_all_labels(self):
 
-        labels = self.settings['devices'][self.settings[
-                                'basic_panel']['device'][0].lower()]['labels']
+        labels = self.settings['devices'][self.settings['basic_panel']['router']['name']]['labels']
         return labels['input'], labels['output']
 
     def on_file_menu_labels(self, e):
@@ -224,7 +223,7 @@ class Basic_Window(wx.Frame):
         new_input_labels, new_output_labels = self.dlg.get_labels()
         
         # Get the device
-        dev = self.dev_list.find_device(self.settings['basic_panel']['device'][0])
+        dev = self.dev_list.find_device(self.settings['basic_panel']['router']['name'])
         
         # Grab lock and set labels
         with dev:
@@ -251,7 +250,7 @@ class Basic_Window(wx.Frame):
         self.settings = settings
         self.source_selection = panels.Source_Selection(self,
                                             *self.get_labels(),
-                                device = self.settings['basic_panel']['device'][0])
+                                device = self.settings['basic_panel']['router']['name'])
 
         # File menu
         file_menu = wx.Menu()

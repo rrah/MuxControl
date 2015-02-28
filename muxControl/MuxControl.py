@@ -95,10 +95,10 @@ def main():
             basic_panel_settings = window.get_panel_settings()
             with settings:
                 settings['basic_panel'] = basic_panel_settings
-                device_settings = basic_panel_settings['device']
-                settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
-                settings['devices'][device_settings[0].lower()]['port'] = device_settings[2]
-                settings['devices'][device_settings[0].lower()]['enabled'] = True
+                device_settings = basic_panel_settings['router']
+                settings['devices'][device_settings['name'].lower()]['host'] = device_settings['host']
+                settings['devices'][device_settings['name'].lower()]['port'] = device_settings['port']
+                settings['devices'][device_settings['name'].lower()]['enabled'] = True
                 settings['first_run'] = False
                 settings.save_settings()
             logging.debug('First run settings saved')
