@@ -9,9 +9,9 @@
 
 import logging
 
-from common.version import *
+from common.version import VERSION, VERSION_TEXT
 
-logging.info('Starting up v{}'.format(version))
+logging.info('Starting up v{}'.format(VERSION))
 
 import sys
 
@@ -42,9 +42,9 @@ def main():
 
     bitmap = wx.Bitmap('images/splash.png')
     splash = wx.SplashScreen(bitmap, wx.SPLASH_CENTER_ON_SCREEN|wx.SPLASH_TIMEOUT, 10000, None)
-    ver_text = 'MuxControl {}'.format(version)
-    if version_text is not None:
-        ver_text += version_text
+    ver_text = 'MuxControl {}'.format(VERSION)
+    if VERSION_TEXT is not None:
+        ver_text += VERSION_TEXT
     splash.version = wx.StaticText(splash, label = ver_text)
 
     # Set up the list of devices
@@ -67,8 +67,13 @@ def main():
                 for type_, label_list in {'inputs':dev['labels']['input'], 'outputs':dev['labels']['output']}.iteritems():
                     args['default_labels'][type_] = [(label['num'], label['label']) for label in label_list]
                     
-            # Create the device object
-            dev = devTypeDict[dev['type']](dev['host'], dev['port'], **args)
+            # Create the device object]
+            try:
+                dev = devTypeDict[dev['type']](dev['host'], dev['port'], **args)
+            except KeyError:
+                # Not a supported device
+                logging.error('Found unsupported device in settings, ignoreing')
+                continue
             with dev:
                 if type(enabled) == bool and enabled and not settings['first_run']:
                     dev.set_enabled(True)
