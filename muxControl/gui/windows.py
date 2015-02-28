@@ -40,7 +40,7 @@ class Basic_Window(wx.Frame):
         Pull the current labels for the buttons"""
 
         basic_settings = self.settings['basic_panel']
-        device = basic_settings['device'][0].lower()
+        device = basic_settings['router']['name']
 
         # Get the information for the inputs
         inputs = []
@@ -58,6 +58,8 @@ class Basic_Window(wx.Frame):
         Tell the device to do the linking"""
 
         dev = self.dev_list.find_device(e.dev)
+        tally = self.dev_list.find_device('tally')
+        output_input_map = e.map_
 
         with dev:
             try:
@@ -65,6 +67,24 @@ class Basic_Window(wx.Frame):
                 logging.debug('Made link {}'.format(e.map_))
             except:
                 logging.exception('Issue making link {}'.format(e.map_))
+                
+        if tally.is_enabled():
+            tally_source_map = self.settings['devices']['tally']['map']
+            for link in output_input_map:
+                if link[1] in [0, 1, 2, 3]:
+                    linked = False
+                    for tally_source in tally_source_map:
+                        if tally_source[1] == link[0]:
+                            with tally:
+                                tally.link(link[1] + 1, tally_source[0] + 1)
+                            linked = True
+                            break
+                    if not linked:
+                        with tally:
+                            tally.link(link[1] + 1, 0)
+                    
+            
+        
         self.source_selection.update_buttons(map_ = e.map_, reverse = True)
 
     def on_update(self, e):
@@ -95,23 +115,23 @@ class Basic_Window(wx.Frame):
         basic_panel_settings = window.get_panel_settings()
         with settings:
             # Disable the current device
-            settings['devices'][settings['basic_panel']['device'][0].lower()]['enabled'] = False
-            current_device = self.dev_list.find_device(settings['basic_panel']['device'][0].lower())
+            settings['devices'][settings['basic_panel']['router']['name']]['enabled'] = False
+            current_device = self.dev_list.find_device(settings['basic_panel']['router']['name'])
             with current_device:
                 current_device.set_enabled(False)
 
 
             # Enable the new device and settings
             settings['basic_panel'] = basic_panel_settings
-            device_settings = basic_panel_settings['device']
-            settings['devices'][device_settings[0].lower()]['host'] = device_settings[1]
-            settings['devices'][device_settings[0].lower()]['port'] = int(device_settings[2])
-            settings['devices'][device_settings[0].lower()]['enabled'] = True
+            device_settings = basic_panel_settings['router']
+            settings['devices'][device_settings['name']]['host'] = device_settings['host']
+            settings['devices'][device_settings['name']]['port'] = int(device_settings['port'])
+            settings['devices'][device_settings['name']]['enabled'] = True
             settings['first_run'] = False
             settings.save_settings()
 
         # And activate the new device
-        new_device_name = settings['basic_panel']['device'][0].lower()
+        new_device_name = settings['basic_panel']['router']['name']
         new_device = self.dev_list.find_device(new_device_name)
         with new_device:
             device_settings = settings['devices'][new_device_name]
@@ -126,7 +146,7 @@ class Basic_Window(wx.Frame):
         self.source_selection.Destroy()
         self.source_selection = panels.Source_Selection(self,
                                 *self.get_labels(),
-                                device = self.settings['basic_panel']['device'][0],
+                                device = self.settings['basic_panel']['router']['name'],
                                 size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -155,7 +175,7 @@ class Basic_Window(wx.Frame):
             pass
         self.source_selection = panels.Source_Selection(self,
                                         *self.get_labels(),
-                            device = self.settings['basic_panel']['device'][0],
+                            device = self.settings['basic_panel']['router']['name'],
                             size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -176,7 +196,7 @@ class Basic_Window(wx.Frame):
             # Already destroyed
             pass
         self.source_selection = panels.Button_Panel(self, self.settings,
-                                self.settings['basic_panel']['device'][0],
+                                self.settings['basic_panel']['router']['name'],
                                 size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -192,7 +212,7 @@ class Basic_Window(wx.Frame):
         except wx.PyDeadObjectError:
             pass
         self.source_selection = panels.Combobox_Panel(self, *self.get_all_labels(),
-                                    device = self.settings['basic_panel']['device'][0],
+                                    device = self.settings['basic_panel']['router']['name'],
                                     size = self.GetClientSize())
         self.source_selection.Show()
         self.Layout()
@@ -208,8 +228,7 @@ class Basic_Window(wx.Frame):
 
     def get_all_labels(self):
 
-        labels = self.settings['devices'][self.settings[
-                                'basic_panel']['device'][0].lower()]['labels']
+        labels = self.settings['devices'][self.settings['basic_panel']['router']['name']]['labels']
         return labels['input'], labels['output']
 
     def on_file_menu_labels(self, e):
@@ -219,12 +238,11 @@ class Basic_Window(wx.Frame):
         
     def get_new_labels(self, e):
         
-        
         # Pull the new labels
         new_input_labels, new_output_labels = self.dlg.get_labels()
         
         # Get the device
-        dev = self.dev_list.find_device(self.settings['basic_panel']['device'][0])
+        dev = self.dev_list.find_device(self.settings['basic_panel']['router']['name'])
         
         # Grab lock and set labels
         with dev:
@@ -243,6 +261,25 @@ class Basic_Window(wx.Frame):
                 view_option.Enable(enable = False)
             else:
                 view_option.Enable(enable = True)
+                
+    def on_tally_map(self, e):
+        
+        router = self.settings['basic_panel']['router']['name']
+        input_labels = [input_['label'] for input_ in self.settings['devices'][router]['labels']['input']]
+        tally_map = self.settings['devices']['tally']['map']
+        dlg = dialogs.Tally_Map_Dlg(self, input_labels = input_labels, tally_map = tally_map)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.settings['devices']['tally']['map'] = dlg.get_map()
+            with self.settings:
+                self.settings.save_settings()
+                
+    def on_tally_enable(self, e):
+        
+        enabled = self.tally_menu_enable.IsChecked()
+        self.settings['devices']['tally']['enabled'] = enabled
+        with self.settings:
+            self.settings.save_settings()
+        self.dev_list.find_device('tally').set_enabled(enabled)
 
     def __init__(self, dev_list, settings, *args, **kwargs):
         wx.Frame.__init__(self, None, *args, size = (800, 600),
@@ -251,7 +288,7 @@ class Basic_Window(wx.Frame):
         self.settings = settings
         self.source_selection = panels.Source_Selection(self,
                                             *self.get_labels(),
-                                device = self.settings['basic_panel']['device'][0])
+                                device = self.settings['basic_panel']['router']['name'])
 
         # File menu
         file_menu = wx.Menu()
@@ -265,7 +302,12 @@ class Basic_Window(wx.Frame):
         self.view_menu_advanced = self.view_menu.Append(-1, '&Advanced')
         self.view_menu_combo = self.view_menu.Append(-1, '&Dropdown')
         self.enable_view_options(self.view_menu_basic)
-
+        
+        # Tally
+        tally_menu = wx.Menu()
+        self.tally_menu_enable = tally_menu.Append(-1, '&Enable', kind = wx.ITEM_CHECK)
+        tally_menu.Check(self.tally_menu_enable.GetId(), self.settings['devices']['tally']['enabled'])
+        tally_menu_map = tally_menu.Append(-1, '&Map')
 
         # Help menu
         help_menu = wx.Menu()
@@ -276,6 +318,7 @@ class Basic_Window(wx.Frame):
         menu_bar = wx.MenuBar()
         menu_bar.Append(file_menu, '&File')
         menu_bar.Append(self.view_menu, '&View')
+        menu_bar.Append(tally_menu, '&Tally')
         menu_bar.Append(help_menu,'&Help')
         self.SetMenuBar(menu_bar)
 
@@ -293,6 +336,8 @@ class Basic_Window(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_view_change_advanced, self.view_menu_advanced)
         self.Bind(wx.EVT_MENU, self.on_view_change_combo, self.view_menu_combo)
         self.Bind(wx.EVT_MENU, self.on_about, help_menu_about)
+        self.Bind(wx.EVT_MENU, self.on_tally_map, tally_menu_map)
+        self.Bind(wx.EVT_MENU, self.on_tally_enable, self.tally_menu_enable)
 
         # And lets get showing
         self.Show()

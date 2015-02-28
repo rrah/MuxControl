@@ -14,6 +14,7 @@ import firstrun
 
 import wx.lib.scrolledpanel as scroll
 from font import *
+from objects import Combobox
 
 import socket
 
@@ -144,10 +145,13 @@ class First_Time_Dialog(wxx.Wizard):
         if current_settings is not None:
             self.settings['current'] = current_settings
         self.cancelled = False
-        self.add_page(firstrun.Device_Selection(self))
-        self.add_page(firstrun.Device_Settings(self))
+        
+        # Add the pages
+        self.add_page(firstrun.Device_Selection(self, settings = self.settings))
         self.add_page(firstrun.Source_Selection(self))
         self.add_page(firstrun.Sink_Selection(self))
+        
+        # Final setting up
         self.SetPageSize((400, 400))
         self.icon = wx.Icon('images/muxcontrol.ico', wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
@@ -162,22 +166,21 @@ class First_Time_Dialog(wxx.Wizard):
             # Only do this if going forwards
 
             if page == self.pages[0]: # Device selection page
-                self.pages[1].set_device(page.get_device(),
-                                                    settings = self.settings)
 
-            elif page == self.pages[1]: # Device settings page
-                msg = None # Reset from last time
-                self.settings['device'] = page.get_device_settings()
-                dev, dev_host, dev_port = self.settings['device']
-                device = self.devices.find_device(dev.lower()[0:3])
+                # Get device details
+                self.settings = page.get_device_settings()
+                device = self.devices.find_device(self.settings['router']['name'])
+                
                 # Save the old settings in case of a cancel
                 self.settings['current_device'] = (device.get_host(),
                                         device.get_port(), device.is_enabled(),
                                                             device.get_name())
+                # Try to make a connection
+                msg = None
                 try:
                     with device:
-                        device.set_host(str(dev_host))
-                        device.set_port(str(dev_port))
+                        device.set_host(self.settings['router']['host'])
+                        device.set_port(self.settings['router']['port'])
                         device.update()
                 except socket.gaierror:
                     msg = '''Error finding the host.
@@ -202,31 +205,29 @@ Check the details and try again.'''
                 else:
                     with device:
                         device.set_enabled(True)
-                    self.pages[2].set_device_settings(self.settings,
+                    self.pages[1].set_device_settings(self.settings,
                                                     device.get_input_labels())
 
-            elif page == self.pages[2]: # input settings page
-                self.settings['inputs'] = self.pages[2].get_source_selection()
+            elif page == self.pages[1]: # input settings page
+                self.settings['inputs'] = self.pages[1].get_source_selection()
 
-                device = self.devices.find_device(
-                                        self.settings['device'][0].lower()[0:3])
-                self.pages[3].set_device_settings(self.settings['device'],
+                device = self.devices.find_device(self.settings['router']['name'])
+                self.pages[2].set_device_settings(self.settings['router'],
                                                     device.get_output_labels())
 
-            elif page == self.pages[3]: # output settings page
-                self.settings['outputs'] = self.pages[3].get_sink_selection()
+            elif page == self.pages[2]: # output settings page
+                self.settings['outputs'] = self.pages[2].get_sink_selection()
         
         elif not evt.GetDirection():
             # For the backward
             
-            if page == self.pages[1]: # Device settings page
+            if page == self.pages[1]:
                 try:
-                    if self.settings['device'] != []:
-                        dev, dev_host, dev_port = self.settings['device']
-                        device = self.devices.find_device(dev.lower()[0:3])
-                        with device:
-                            device.set_enabled(False)
-                        self.settings['device'] = []
+                    dev = self.settings['router']['name']
+                    device = self.devices.find_device(dev.lower())
+                    with device:
+                        device.set_enabled(False)
+                    del self.settings['router']
                 except KeyError:
                     pass # Not set up a device
 
@@ -257,3 +258,43 @@ None of the settings will be saved.'''
         else:
             e.Veto()
         dlg.Destroy()
+        
+        
+class Tally_Map_Dlg(wx.Dialog):
+    
+    def on_ok(self, e):
+        
+        self.map_ = [(index, x.GetSelection()) for index, x in enumerate(self.mapping_list) if x.GetSelection() < len(x.GetItems()) - 1]
+        self.EndModal(wx.ID_OK)
+        
+    def get_map(self):
+        
+        return self.map_
+    
+    def __init__(self, parent, input_labels = None, tally_map = None, *args, **kwargs):
+        wx.Dialog.__init__(self, parent, title = 'Tally mapping', *args, **kwargs)
+        
+        if tally_map is not None: self.map_ = tally_map
+        
+        # The options
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.mapping_list = []
+        for i in range(6):
+            mapping = Combobox(self, label = 'Tally output {}'.format(i + 1), choices  = input_labels + ['None']) 
+            mapping.SetSelection(len(mapping.GetItems()) - 1 )
+            self.mapping_list.append(mapping)
+            sizer.Add(mapping)
+        for map_ in tally_map:
+            self.mapping_list[map_[0]].SetSelection(map_[1])
+            
+        # OK/cancel
+        ok_button = wx.Button(self, id = wx.ID_OK)
+        cancel_button = wx.Button(self, id = wx.ID_CANCEL)
+        button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        button_sizer.AddMany([(ok_button), (cancel_button)])
+        
+        sizer.Add(button_sizer)
+        self.SetSizer(sizer)
+        
+        self.Bind(wx.EVT_BUTTON, self.on_ok, ok_button)
+        

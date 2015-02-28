@@ -200,7 +200,8 @@ example = """
         "enabled": false,
         "type": "Tally",
         "host": "tally.ystv",
-        "port": 2000
+        "port": 2000,
+        "map": []
       },
       "vik": {
         "enabled": false,
