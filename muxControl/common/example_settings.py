@@ -282,12 +282,12 @@ example = """
             },
             {
               "num": 14,
-              "label": "GFX Prog",
+              "label": "Multiview",
               "enabled": true
             },
             {
               "num": 15,
-              "label": "Multiview",
+              "label": "GFX Prog",
               "enabled": true
             }
           ],
@@ -334,37 +334,37 @@ example = """
             },
             {
               "num": 8,
-              "label": "Program Monitor",
+              "label": "Multi 5",
               "enabled": true
             },
             {
               "num": 9,
-              "label": "Program Monitor 2",
+              "label": "Multi 6",
               "enabled": true
             },
             {
               "num": 10,
-              "label": "Multiview Monitor",
+              "label": "Multi 7",
               "enabled": true
             },
             {
               "num": 11,
-              "label": "Unused",
+              "label": "Multi 8",
               "enabled": true
             },
             {
               "num": 12,
-              "label": "Unused",
+              "label": "Clean rec",
               "enabled": true
             },
             {
               "num": 13,
-              "label": "Corio",
+              "label": "Multi Patch",
               "enabled": true
             },
             {
               "num": 14,
-              "label": "Recording",
+              "label": "Corio",
               "enabled": true
             },
             {
