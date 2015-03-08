@@ -282,12 +282,12 @@ example = """
             },
             {
               "num": 14,
-              "label": "GFX Prog",
+              "label": "Multiview",
               "enabled": true
             },
             {
               "num": 15,
-              "label": "Multiview",
+              "label": "GFX Prog",
               "enabled": true
             }
           ],
