@@ -313,7 +313,7 @@ class Combobox_Panel(scroll.ScrolledPanel):
     
     def update_buttons(self, map_ = None, link = None, reverse = False, input_labels = None, output_labels = None):
         
-                
+
         if input_labels is not None:
             for input_combo in self.input_combos:
                 selection = input_combo.GetSelection()

@@ -85,7 +85,7 @@ class Basic_Window(wx.Frame):
                     
             
         
-        self.source_selection.update_buttons(map_ = e.map_, reverse = True)
+        ##self.source_selection.update_buttons(map_ = e.map_, reverse = True)
 
     def on_update(self, e):
 
